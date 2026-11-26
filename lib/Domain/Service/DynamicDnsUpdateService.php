@@ -41,7 +41,8 @@ readonly class DynamicDnsUpdateService
         private DynamicDnsRepositoryInterface $repository,
         private ?LegacyLogger $auditLogger = null,
         private ?IpAddressRetriever $ipRetriever = null,
-        private ?\Closure $rectifyZone = null
+        private ?\Closure $rectifyZone = null,
+        private ?\Closure $atomically = null
     ) {
     }
 
@@ -250,25 +251,33 @@ readonly class DynamicDnsUpdateService
             }
         }
 
-        $wasUpdated = false;
-        $hasValidRecords = false;
-        foreach ($wanted as $recordType => $ips) {
-            $syncResult = $this->syncDnsRecords($zoneId, $hostname, $recordType, $ips, $existing[$recordType]);
-            $wasUpdated = $wasUpdated || $syncResult['wasUpdated'];
-            $hasValidRecords = $hasValidRecords || $syncResult['hasExistingRecords'] || $syncResult['finalIpCount'] > 0;
-        }
-
-        if ($wasUpdated) {
-            $this->repository->updateSOASerial($zoneId);
-            // Nodes may have been added or removed, so a signed zone's NSEC/NSEC3 chain needs rebuilding
-            if ($this->rectifyZone !== null) {
-                ($this->rectifyZone)($zoneName);
+        // One unit, so a failure part way leaves neither added nor removed addresses behind
+        $sync = function () use ($zoneId, $hostname, $wanted, $existing): array {
+            $wasUpdated = false;
+            $hasValidRecords = false;
+            foreach ($wanted as $recordType => $ips) {
+                $syncResult = $this->syncDnsRecords($zoneId, $hostname, $recordType, $ips, $existing[$recordType]);
+                $wasUpdated = $wasUpdated || $syncResult['wasUpdated'];
+                $hasValidRecords = $hasValidRecords || $syncResult['hasExistingRecords'] || $syncResult['finalIpCount'] > 0;
             }
+
+            if ($wasUpdated) {
+                $this->repository->updateSOASerial($zoneId);
+            }
+
+            return ['wasUpdated' => $wasUpdated, 'hasValidRecords' => $hasValidRecords];
+        };
+        $synced = $this->atomically !== null ? ($this->atomically)($sync) : $sync();
+
+        // Nodes may have been added or removed, so a signed zone's NSEC/NSEC3 chain needs
+        // rebuilding; after the commit, where the rectify can see the new rows.
+        if ($synced['wasUpdated'] && $this->rectifyZone !== null) {
+            ($this->rectifyZone)($zoneName);
         }
 
         return [
-            'wasUpdated' => $wasUpdated,
-            'hasValidRecords' => $hasValidRecords,
+            'wasUpdated' => $synced['wasUpdated'],
+            'hasValidRecords' => $synced['hasValidRecords'],
             'removalRefused' => false,
         ];
     }

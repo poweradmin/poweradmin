@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -32,6 +32,13 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 class DynamicDnsValidationService
 {
+    // A round-robin set is a handful of addresses; 16 per family keeps the answer small enough
+    // for UDP and stops one request from writing an arbitrarily large RRset.
+    public const MAX_ADDRESSES_PER_FAMILY = 16;
+
+    // Bounds the work before parsing; far above the cap so duplicates in a list still pass.
+    private const MAX_LIST_ENTRIES = 256;
+
     private HostnameValidator $hostnameValidator;
     private IPAddressValidator $ipAddressValidator;
     private ConfigurationManager $config;
@@ -89,8 +96,19 @@ class DynamicDnsValidationService
 
     public function validateIpAddresses(string $ipv4String, string $ipv6String): ValidationResult
     {
+        if (substr_count($ipv4String, ',') >= self::MAX_LIST_ENTRIES || substr_count($ipv6String, ',') >= self::MAX_LIST_ENTRIES) {
+            return ValidationResult::failure(['The supplied IP address list is too long']);
+        }
+
         try {
             $ipList = IpAddressList::fromCommaSeparatedStrings($ipv4String, $ipv6String);
+
+            if (
+                count($ipList->getIpv4Addresses()) > self::MAX_ADDRESSES_PER_FAMILY
+                || count($ipList->getIpv6Addresses()) > self::MAX_ADDRESSES_PER_FAMILY
+            ) {
+                return ValidationResult::failure(['The supplied IP address list has more than ' . self::MAX_ADDRESSES_PER_FAMILY . ' addresses of one family']);
+            }
 
             if ($ipList->isEmpty()) {
                 return ValidationResult::failure(['At least one valid IP address is required']);

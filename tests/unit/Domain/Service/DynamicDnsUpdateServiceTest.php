@@ -259,6 +259,74 @@ class DynamicDnsUpdateServiceTest extends TestCase
         $this->assertTrue($result['changed']);
     }
 
+    public function testTheSyncAndTheSerialBumpRunInsideTheAtomicWrapperAndTheRectifyAfterIt(): void
+    {
+        $events = [];
+        $service = new DynamicDnsUpdateService(
+            $this->validationService,
+            $this->authService,
+            $this->repository,
+            null,
+            null,
+            function (string $zone) use (&$events): void {
+                $events[] = 'rectify';
+            },
+            function (callable $work) use (&$events): mixed {
+                $events[] = 'begin';
+                $result = $work();
+                $events[] = 'commit';
+
+                return $result;
+            }
+        );
+        $hostname = new HostnameValue('test.example.com');
+
+        $this->authService->method('getUserZones')->willReturn([1 => 'example.com']);
+        $this->repository->method('getZoneType')->willReturn('MASTER');
+        $this->repository->method('getDnsRecords')->willReturn(['192.168.1.1' => 10]);
+        $this->repository->method('insertDnsRecord')->willReturnCallback(function () use (&$events): void {
+            $events[] = 'insert';
+        });
+        $this->repository->method('deleteDnsRecord')->willReturnCallback(function () use (&$events): void {
+            $events[] = 'delete';
+        });
+        $this->repository->method('updateSOASerial')->willReturnCallback(function () use (&$events): void {
+            $events[] = 'serial';
+        });
+
+        $result = $service->applyForUser(new User(1, 'x', false), 'user', $hostname, new IpAddressList(['192.168.1.9'], []), false);
+
+        $this->assertSame('good', $result['status']);
+        $this->assertSame(['begin', 'insert', 'delete', 'serial', 'commit', 'rectify'], $events);
+    }
+
+    public function testAFailureInsideTheAtomicWrapperStopsBeforeTheSerialAndTheRectify(): void
+    {
+        $rectified = false;
+        $service = new DynamicDnsUpdateService(
+            $this->validationService,
+            $this->authService,
+            $this->repository,
+            null,
+            null,
+            function () use (&$rectified): void {
+                $rectified = true;
+            },
+            fn(callable $work): mixed => $work()
+        );
+
+        $this->authService->method('getUserZones')->willReturn([1 => 'example.com']);
+        $this->repository->method('getZoneType')->willReturn('MASTER');
+        $this->repository->method('getDnsRecords')->willReturn([]);
+        $this->repository->method('insertDnsRecord')->willThrowException(new \RuntimeException('insert failed'));
+        $this->repository->expects($this->never())->method('updateSOASerial');
+
+        $result = $service->applyForUser(new User(1, 'x', false), 'user', new HostnameValue('test.example.com'), new IpAddressList(['192.168.1.9'], []), false);
+
+        $this->assertSame('dnserr', $result['status']);
+        $this->assertFalse($rectified);
+    }
+
     public function testProcessUpdateReturnsNochgWhenNoUpdateNeeded(): void
     {
         $request = new DynamicDnsRequest(

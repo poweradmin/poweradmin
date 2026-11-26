@@ -133,6 +133,38 @@ class DynamicDnsValidationServiceTest extends TestCase
         $this->assertTrue($result->isValid());
     }
 
+    public function testValidateIpAddressesAcceptsTheCapPerFamily(): void
+    {
+        $v4 = implode(',', array_map(static fn(int $i): string => "10.0.0.$i", range(1, 16)));
+        $v6 = implode(',', array_map(static fn(int $i): string => "2001:db8::$i", range(1, 16)));
+
+        $this->assertTrue($this->validationService->validateIpAddresses($v4, $v6)->isValid());
+    }
+
+    public function testValidateIpAddressesRefusesMoreThanTheCapOfOneFamily(): void
+    {
+        $v4 = implode(',', array_map(static fn(int $i): string => "10.0.0.$i", range(1, 17)));
+        $v6 = implode(',', array_map(static fn(int $i): string => "2001:db8::$i", range(1, 17)));
+
+        $this->assertFalse($this->validationService->validateIpAddresses($v4, '')->isValid());
+        $this->assertFalse($this->validationService->validateIpAddresses('', $v6)->isValid());
+    }
+
+    public function testValidateIpAddressesCountsDistinctAddresses(): void
+    {
+        $this->assertTrue($this->validationService->validateIpAddresses(implode(',', array_fill(0, 40, '10.0.0.1')), '')->isValid());
+    }
+
+    public function testValidateIpAddressesRefusesAnOversizedListBeforeParsingIt(): void
+    {
+        $list = implode(',', array_fill(0, 5000, '10.0.0.1'));
+
+        $result = $this->validationService->validateIpAddresses($list, '');
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('IP address', $result->getErrors()[0]);
+    }
+
     public function testValidateIpAddressesEmpty(): void
     {
         $result = $this->validationService->validateIpAddresses('', '');

@@ -192,6 +192,36 @@ readonly class SqlDynamicDnsRepository implements DynamicDnsRepositoryInterface
         RecordManager::deleteRecordZoneTempl($this->db, $recordId);
     }
 
+    /**
+     * Runs $work in one transaction (or inside the caller's), rolling back when it throws.
+     */
+    public function transactional(callable $work): mixed
+    {
+        if ($this->db->inTransaction()) {
+            return $work();
+        }
+
+        $this->db->beginTransaction();
+        try {
+            if ($this->db->getAttribute(PDO::ATTR_DRIVER_NAME) === 'sqlite') {
+                // Take the write lock now so a second update waits on busy_timeout instead of failing at once;
+                // a no-op write keeps PDO aware of the transaction, so nested code joins it.
+                $this->db->exec("UPDATE {$this->recordsTable} SET id = id WHERE 1 = 0");
+            }
+            $result = $work();
+            $this->db->commit();
+
+            return $result;
+        } catch (\Throwable $e) {
+            try {
+                $this->db->rollBack();
+            } catch (\PDOException) {
+                // A failed commit may already have ended the transaction
+            }
+            throw $e;
+        }
+    }
+
     public function updateSOASerial(int $zoneId): void
     {
         $this->soaRecordManager->updateSOASerial($zoneId);
