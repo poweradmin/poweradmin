@@ -82,6 +82,11 @@ class Permission
             return true;
         }
 
+        // A template editor with no zone edit rights must not seed SOA/NS either
+        if ($permEdit === 'none' && in_array(self::canonicalType($type), self::RESTRICTED_TYPES_FOR_CLIENT, true)) {
+            return true;
+        }
+
         return self::canonicalType($type) === 'LUA' && !in_array($permEdit, ['all', 'own'], true);
     }
 
