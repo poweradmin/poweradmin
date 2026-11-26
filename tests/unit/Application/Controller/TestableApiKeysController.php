@@ -55,6 +55,22 @@ class TestableApiKeysController extends ApiKeysController
         $this->requestData = $requestData;
     }
 
+    /** @var string[] */
+    public array $errors = [];
+
+    public function showError(string $error, ?string $recordName = null): void
+    {
+        $this->errors[] = $error;
+    }
+
+    /** @var string[] */
+    public array $redirects = [];
+
+    public function redirect(string $url, array $args = []): void
+    {
+        $this->redirects[] = $url;
+    }
+
     public function render(string $template, array $params): void
     {
         $this->rendered[] = [$template, $params];

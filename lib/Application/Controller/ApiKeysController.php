@@ -190,13 +190,19 @@ class ApiKeysController extends BaseController
                 }
             }
 
+            $zones = $this->assignableZoneIds($scope['zones']);
+            if ($zones === null) {
+                $this->showError(_('You do not have permission to access this zone.'));
+                return;
+            }
+
             // Create the API key
             $apiKey = $this->apiKeyService->createApiKey(
                 $name,
                 $expiresAtDate,
                 $scope['is_readonly'],
                 $scope['operations'],
-                $scope['zones']
+                $zones
             );
 
             if ($apiKey !== null) {
@@ -268,6 +274,13 @@ class ApiKeysController extends BaseController
                 }
             }
 
+            $zones = $this->assignableZoneIds($scope['zones']);
+            if ($zones === null) {
+                $this->showError(_('You do not have permission to access this zone.'));
+                return;
+            }
+            $zones = $this->keepHiddenScope($zones, $apiKey->getZoneIds() ?? []);
+
             // Kept apart from $apiKey, so a refused edit re-renders the stored key
             $updated = $this->apiKeyService->updateApiKey(
                 $id,
@@ -276,7 +289,7 @@ class ApiKeysController extends BaseController
                 $disabled,
                 $scope['is_readonly'],
                 $scope['operations'],
-                $scope['zones']
+                $zones
             );
 
             if ($updated !== null) {
@@ -452,6 +465,46 @@ class ApiKeysController extends BaseController
             'operations' => is_array($operations) ? $operations : null,
             'zones' => is_array($zones) ? $zones : [],
         ];
+    }
+
+    /**
+     * Submitted zone ids as integers, or null when one is outside the zones the editor may assign.
+     *
+     * @param array<mixed> $submitted
+     * @return int[]|null
+     */
+    private function assignableZoneIds(array $submitted): ?array
+    {
+        $assignable = array_column($this->getAssignableZones(), 'id');
+        $ids = [];
+        foreach ($submitted as $id) {
+            $id = is_scalar($id) ? (int)$id : 0;
+            if (!in_array($id, $assignable, true)) {
+                return null;
+            }
+            $ids[] = $id;
+        }
+
+        return array_values(array_unique($ids));
+    }
+
+    /**
+     * Adds back the stored zone ids the form cannot show (deleted zones, zones the editor
+     * cannot see), so an edit that never rendered them does not drop the restriction.
+     *
+     * @param int[] $zones
+     * @param int[] $stored
+     * @return int[]
+     */
+    private function keepHiddenScope(array $zones, array $stored): array
+    {
+        $assignable = array_column($this->getAssignableZones(), 'id');
+        $hidden = array_filter(
+            array_map('intval', $stored),
+            static fn(int $id): bool => $id > 0 && !in_array($id, $assignable, true)
+        );
+
+        return array_values(array_unique([...$zones, ...$hidden]));
     }
 
     /**
