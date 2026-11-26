@@ -789,6 +789,11 @@ final class DomainManager implements DomainManagerInterface
 
         $canAddZones = $this->userHasPermission(Permission::PERM_ZONE_MASTER_ADD)
             || $this->userHasPermission(Permission::PERM_ZONE_SLAVE_ADD);
+        // The applier removes the earlier template records first, so refuse before it runs
+        // rather than leave the zone without them and write nothing back.
+        if ($zone_template_id != 0 && !$canAddZones) {
+            return ZoneWriteResult::forbidden(_('You do not have permission to add zones.'));
+        }
 
         $result = $this->templateApplier->applyTemplate($zone_id, $zone_template_id, $dns_ttl, $canAddZones);
         // A partial API-mode apply has already written to the backend, so it still needs the rectify

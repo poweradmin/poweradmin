@@ -100,9 +100,9 @@ class ZoneTemplateApplier
     /**
      * Apply a template to a zone, or unlink the zone with template id 0.
      *
-     * The caller has already authorised the change. $writeRecords carries the
-     * zone-add grant: without it the earlier records are still removed and the
-     * zone repointed, but no template records are written. Template records that
+     * The caller has already authorised the change, including the zone-add grant
+     * (DomainManager refuses without it). With $writeRecords false the earlier records
+     * are removed and the zone repointed, but nothing is written. Template records that
      * would break the CNAME rule are skipped and reported; the rest are kept.
      */
     public function applyTemplate(int $zoneId, int $templateId, int $defaultTtl, bool $writeRecords): ZoneWriteResult

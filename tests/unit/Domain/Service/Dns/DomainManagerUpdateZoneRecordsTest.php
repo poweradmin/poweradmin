@@ -367,7 +367,7 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
         $this->assertSame([], $this->loggedDeletes);
     }
 
-    public function testWithoutAZoneAddGrantTheOldRecordsGoButNoneAreWritten(): void
+    public function testWithoutAZoneAddGrantTheTemplateApplyIsRefusedAndRecordsStay(): void
     {
         $this->seedZone(self::TEMPLATE_ID);
         $this->seedRecord(101, 'old.example', 'A', '192.0.2.1', linkedTo: self::TEMPLATE_ID);
@@ -377,11 +377,12 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
 
         $result = $this->manager([Permission::PERM_ZONE_CONTENT_EDIT_OTHERS])->updateZoneRecords(self::TTL, self::ZONE_ID, self::TEMPLATE_ID);
 
-        $this->assertTrue($result->success);
-        $this->assertSame([], $this->rows('SELECT id FROM records'));
-        $this->assertSame([], $this->rows('SELECT id FROM records_zone_templ'));
+        $this->assertFalse($result->success);
+        $this->assertSame(Refusal::FORBIDDEN, $result->refusal);
+        $this->assertSame([['id' => 101]], $this->rows('SELECT id FROM records'));
+        $this->assertSame([['record_id' => 101]], $this->rows('SELECT record_id FROM records_zone_templ'));
         $this->assertSame([['zone_templ_id' => self::TEMPLATE_ID]], $this->rows('SELECT zone_templ_id FROM zones'));
-        $this->assertSame([101], array_column($this->loggedDeletes, 'id'));
+        $this->assertSame([], $this->loggedDeletes);
     }
 
     public function testApiBackendRemovesByEncodedIdAndSkipsTheSoa(): void
