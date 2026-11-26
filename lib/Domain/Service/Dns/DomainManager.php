@@ -1118,6 +1118,13 @@ class DomainManager implements DomainManagerInterface
         $zone_master_add = $this->userHasPermission('zone_master_add');
         $zone_slave_add = $this->userHasPermission('zone_slave_add');
 
+        // The template records are only rewritten for users who can add zones, so refuse
+        // before the old ones are deleted rather than leave the zone without them.
+        if ($zone_template_id != 0 && !$zone_master_add && !$zone_slave_add) {
+            $this->messageService->addSystemError(_('You do not have permission to add records to this zone.'));
+            return false;
+        }
+
         $soa_rec = $this->soaRecordManager->getSOARecord($zone_id);
 
         $isApiBackend = $this->backendProvider->isApiBackend();

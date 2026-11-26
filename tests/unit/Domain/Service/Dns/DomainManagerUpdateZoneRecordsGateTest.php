@@ -97,6 +97,19 @@ class DomainManagerUpdateZoneRecordsGateTest extends SqliteIntegrationTestCase
     }
 
     #[RunInSeparateProcess]
+    public function testEditorWithoutZoneAddRightsIsRefusedAndRecordsStayUntouched(): void
+    {
+        $this->grant('zone_content_edit_own');
+        $this->ownZone(true);
+        $this->db->exec("INSERT INTO records (id, domain_id, name, type, content, ttl, prio) VALUES (1, " . self::ZONE_ID . ", 'example.com', 'NS', 'ns1.example.com', 3600, 0)");
+        $this->db->exec("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (" . self::ZONE_ID . ", 1, " . self::TEMPLATE_ID . ")");
+
+        $this->assertFalse($this->makeDomainManager()->updateZoneRecords('sqlite', 3600, self::ZONE_ID, self::TEMPLATE_ID));
+        $this->assertSame(1, $this->recordCount());
+        $this->assertSame(1, (int)$this->db->query("SELECT COUNT(*) FROM records_zone_templ")->fetchColumn());
+    }
+
+    #[RunInSeparateProcess]
     public function testUnlinkingTheTemplateWritesNoRecordsSoMetaEditIsEnough(): void
     {
         $this->grant('zone_meta_edit_others');
