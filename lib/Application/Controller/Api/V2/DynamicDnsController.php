@@ -37,6 +37,7 @@ use Poweradmin\Domain\Service\DynamicDnsUpdateService;
 use Poweradmin\Domain\Service\DynamicDnsValidationService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Repository\SqlDynamicDnsRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -69,7 +70,8 @@ class DynamicDnsController extends PublicApiController
             new LegacyLogger($this->db),
             new IpAddressRetriever($_SERVER),
             fn(string $zoneName) => DnssecProviderFactory::rectifyAfterWrite($this->db, $config, $zoneName, DnsBackendProviderFactory::apiClientFrom($backendProvider)),
-            $repository instanceof SqlDynamicDnsRepository ? $repository->transactional(...) : null
+            $repository instanceof SqlDynamicDnsRepository ? $repository->transactional(...) : null,
+            new RecordChangeLogger($this->db, null, $config)
         );
         $this->permissionService = new ApiPermissionService($this->db);
     }

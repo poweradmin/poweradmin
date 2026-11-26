@@ -27,14 +27,18 @@ use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\ValueObject\DynamicDnsRequest;
 use Poweradmin\Domain\ValueObject\HostnameValue;
 use Poweradmin\Domain\ValueObject\IpAddressList;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 readonly class DynamicDnsUpdateService
 {
+    private const RECORD_TTL = 60;
+
     public function __construct(
         private DynamicDnsValidationService $validationService,
         private DynamicDnsAuthenticationService $authService,
@@ -42,7 +46,8 @@ readonly class DynamicDnsUpdateService
         private ?LegacyLogger $auditLogger = null,
         private ?IpAddressRetriever $ipRetriever = null,
         private ?\Closure $rectifyZone = null,
-        private ?\Closure $atomically = null
+        private ?\Closure $atomically = null,
+        private ?RecordChangeLogger $changeLogger = null
     ) {
     }
 
@@ -123,6 +128,7 @@ readonly class DynamicDnsUpdateService
                 return $this->emptyResult('cname', $zoneId);
             }
 
+            $this->attributeChangesTo($user, $username);
             $updateResult = $this->updateZone($zoneId, $zoneName, $hostname, $ipList, $dualstackUpdate, $mayRemoveRecords);
         } catch (\Exception $e) {
             return $this->emptyResult('dnserr', $zoneId);
@@ -151,6 +157,17 @@ readonly class DynamicDnsUpdateService
             'applied_ipv6' => $appliedV6,
             'changed' => $updateResult['wasUpdated'],
         ];
+    }
+
+    /**
+     * The change log reads the acting user from the session or the API context. A legacy
+     * dynamic_update.php request has neither, so its rows would be recorded as "system".
+     */
+    private function attributeChangesTo(User $user, string $username): void
+    {
+        if ($this->changeLogger !== null && (new UserContextService())->getLoggedInUserId() === null) {
+            UserContextService::setApiUserContext($user->getId(), $username);
+        }
     }
 
     /**
@@ -255,8 +272,10 @@ readonly class DynamicDnsUpdateService
         $sync = function () use ($zoneId, $hostname, $wanted, $existing): array {
             $wasUpdated = false;
             $hasValidRecords = false;
+            $changes = [];
             foreach ($wanted as $recordType => $ips) {
                 $syncResult = $this->syncDnsRecords($zoneId, $hostname, $recordType, $ips, $existing[$recordType]);
+                $changes = [...$changes, ...$syncResult['changes']];
                 $wasUpdated = $wasUpdated || $syncResult['wasUpdated'];
                 $hasValidRecords = $hasValidRecords || $syncResult['hasExistingRecords'] || $syncResult['finalIpCount'] > 0;
             }
@@ -265,9 +284,11 @@ readonly class DynamicDnsUpdateService
                 $this->repository->updateSOASerial($zoneId);
             }
 
-            return ['wasUpdated' => $wasUpdated, 'hasValidRecords' => $hasValidRecords];
+            return ['wasUpdated' => $wasUpdated, 'hasValidRecords' => $hasValidRecords, 'changes' => $changes];
         };
         $synced = $this->atomically !== null ? ($this->atomically)($sync) : $sync();
+
+        $this->logChanges($zoneId, $zoneName, $hostname, $synced['changes']);
 
         // Nodes may have been added or removed, so a signed zone's NSEC/NSEC3 chain needs
         // rebuilding; after the commit, where the rectify can see the new rows.
@@ -283,12 +304,43 @@ readonly class DynamicDnsUpdateService
     }
 
     /**
+     * Written after the commit, so a failing log write cannot undo or abort an applied update.
+     *
+     * @param list<array{action: string, type: string, content: string, id: int|string|null}> $changes
+     */
+    private function logChanges(int $zoneId, string $zoneName, HostnameValue $hostname, array $changes): void
+    {
+        if ($this->changeLogger === null) {
+            return;
+        }
+
+        foreach ($changes as $change) {
+            $record = [
+                'id' => $change['id'],
+                'name' => $hostname->getValue(),
+                'type' => $change['type'],
+                'content' => $change['content'],
+                'ttl' => $change['action'] === 'create' ? self::RECORD_TTL : null,
+                'zone_name' => $zoneName,
+            ];
+            try {
+                $change['action'] === 'create'
+                    ? $this->changeLogger->logRecordCreate($record, $zoneId)
+                    : $this->changeLogger->logRecordDelete($record, $zoneId);
+            } catch (\Throwable) {
+                // The record change is already applied; the audit line above still names it
+            }
+        }
+    }
+
+    /**
      * @param array<string, int|string> $existing current record ids of this type, keyed by content
      */
     private function syncDnsRecords(int $zoneId, HostnameValue $hostname, string $recordType, array $newIps, array $existing): array
     {
         $hasExistingRecords = !empty($existing);
         $wasUpdated = false;
+        $changes = [];
 
         foreach ($newIps as $ip) {
             if (isset($existing[$ip])) {
@@ -296,15 +348,18 @@ readonly class DynamicDnsUpdateService
                 continue;
             }
             $this->repository->insertDnsRecord($zoneId, $hostname, $recordType, $ip);
+            $changes[] = ['action' => 'create', 'type' => $recordType, 'content' => (string)$ip, 'id' => null];
             $wasUpdated = true;
         }
 
-        foreach ($existing as $recordId) {
+        foreach ($existing as $content => $recordId) {
             $this->repository->deleteDnsRecord($recordId);
+            $changes[] = ['action' => 'delete', 'type' => $recordType, 'content' => (string)$content, 'id' => $recordId];
             $wasUpdated = true;
         }
 
         return [
+            'changes' => $changes,
             'wasUpdated' => $wasUpdated,
             'hasExistingRecords' => $hasExistingRecords,
             'finalIpCount' => count($newIps),

@@ -9,6 +9,8 @@ use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
 use Poweradmin\Domain\Service\DynamicDnsAuthenticationService;
 use Poweradmin\Domain\Service\DynamicDnsUpdateService;
 use Poweradmin\Domain\Service\DynamicDnsValidationService;
+use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Domain\ValueObject\DynamicDnsRequest;
 use Poweradmin\Domain\ValueObject\HostnameValue;
 use Poweradmin\Domain\ValueObject\IpAddressList;
@@ -325,6 +327,95 @@ class DynamicDnsUpdateServiceTest extends TestCase
 
         $this->assertSame('dnserr', $result['status']);
         $this->assertFalse($rectified);
+    }
+
+    public function testAnAppliedSyncLogsEachCreatedAndDeletedAddress(): void
+    {
+        $logger = $this->createMock(RecordChangeLogger::class);
+        $created = [];
+        $deleted = [];
+        $logger->method('logRecordCreate')->willReturnCallback(function (array $record, ?int $zoneId) use (&$created): void {
+            $created[] = [$record, $zoneId];
+        });
+        $logger->method('logRecordDelete')->willReturnCallback(function (array $record, ?int $zoneId) use (&$deleted): void {
+            $deleted[] = [$record, $zoneId];
+        });
+        $service = $this->serviceWithLogger($logger);
+
+        $this->authService->method('getUserZones')->willReturn([1 => 'example.com']);
+        $this->repository->method('getZoneType')->willReturn('MASTER');
+        $this->repository->method('getDnsRecords')->willReturn(['192.168.1.1' => 10, '192.168.1.2' => 11]);
+
+        $result = $service->applyForUser(new User(1, 'x', false), 'user', new HostnameValue('test.example.com'), new IpAddressList(['192.168.1.2', '192.168.1.9'], []), false);
+
+        $this->assertSame('good', $result['status']);
+        $this->assertCount(1, $created);
+        $this->assertSame(1, $created[0][1]);
+        $this->assertSame('192.168.1.9', $created[0][0]['content']);
+        $this->assertSame('A', $created[0][0]['type']);
+        $this->assertSame('test.example.com', $created[0][0]['name']);
+        $this->assertSame('example.com', $created[0][0]['zone_name']);
+        $this->assertCount(1, $deleted);
+        $this->assertSame(10, $deleted[0][0]['id']);
+        $this->assertSame('192.168.1.1', $deleted[0][0]['content']);
+    }
+
+    public function testAnUnchangedSyncLogsNothing(): void
+    {
+        $logger = $this->createMock(RecordChangeLogger::class);
+        $logger->expects($this->never())->method('logRecordCreate');
+        $logger->expects($this->never())->method('logRecordDelete');
+        $service = $this->serviceWithLogger($logger);
+
+        $this->authService->method('getUserZones')->willReturn([1 => 'example.com']);
+        $this->repository->method('getZoneType')->willReturn('MASTER');
+        $this->repository->method('getDnsRecords')->willReturn(['192.168.1.1' => 10]);
+
+        $result = $service->applyForUser(new User(1, 'x', false), 'user', new HostnameValue('test.example.com'), new IpAddressList(['192.168.1.1'], []), false);
+
+        $this->assertSame('good', $result['status']);
+        $this->assertFalse($result['changed']);
+    }
+
+    public function testAFailingChangeLogDoesNotUndoTheUpdate(): void
+    {
+        $logger = $this->createMock(RecordChangeLogger::class);
+        $logger->method('logRecordCreate')->willThrowException(new \PDOException('log table gone'));
+        $service = $this->serviceWithLogger($logger);
+
+        $this->authService->method('getUserZones')->willReturn([1 => 'example.com']);
+        $this->repository->method('getZoneType')->willReturn('MASTER');
+        $this->repository->method('getDnsRecords')->willReturn([]);
+
+        $result = $service->applyForUser(new User(1, 'x', false), 'user', new HostnameValue('test.example.com'), new IpAddressList(['192.168.1.9'], []), false);
+
+        $this->assertSame('good', $result['status']);
+    }
+
+    public function testChangesAreAttributedToTheDdnsUserWhenNoOneIsSignedIn(): void
+    {
+        UserContextService::clearApiUserContext();
+        $_SESSION = [];
+        $service = $this->serviceWithLogger($this->createMock(RecordChangeLogger::class));
+
+        $this->authService->method('getUserZones')->willReturn([1 => 'example.com']);
+        $this->repository->method('getZoneType')->willReturn('MASTER');
+        $this->repository->method('getDnsRecords')->willReturn([]);
+
+        try {
+            $service->applyForUser(new User(7, 'x', false), 'ddns-user', new HostnameValue('test.example.com'), new IpAddressList(['192.168.1.9'], []), false);
+
+            $context = new UserContextService();
+            $this->assertSame(7, $context->getLoggedInUserId());
+            $this->assertSame('ddns-user', $context->getLoggedInUsername());
+        } finally {
+            UserContextService::clearApiUserContext();
+        }
+    }
+
+    private function serviceWithLogger(RecordChangeLogger $logger): DynamicDnsUpdateService
+    {
+        return new DynamicDnsUpdateService($this->validationService, $this->authService, $this->repository, null, null, null, null, $logger);
     }
 
     public function testProcessUpdateReturnsNochgWhenNoUpdateNeeded(): void

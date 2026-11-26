@@ -22,6 +22,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Repository\SqlDynamicDnsRepository;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
@@ -64,7 +65,8 @@ $updateService = new DynamicDnsUpdateService(
     new LegacyLogger($db),
     new IpAddressRetriever($_SERVER),
     fn(string $zoneName) => DnssecProviderFactory::rectifyAfterWrite($db, $config, $zoneName, DnsBackendProviderFactory::apiClientFrom($backendProvider)),
-    $repository instanceof SqlDynamicDnsRepository ? $repository->transactional(...) : null
+    $repository instanceof SqlDynamicDnsRepository ? $repository->transactional(...) : null,
+    new RecordChangeLogger($db, null, $config)
 );
 
 $result = $updateService->processUpdate(DynamicDnsRequest::fromHttpRequest($request));
