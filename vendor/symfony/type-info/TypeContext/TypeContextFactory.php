@@ -24,7 +24,6 @@ use PHPStan\PhpDocParser\ParserConfig;
 use Symfony\Component\TypeInfo\Exception\ExceptionInterface;
 use Symfony\Component\TypeInfo\Exception\LogicException;
 use Symfony\Component\TypeInfo\Exception\RuntimeException;
-use Symfony\Component\TypeInfo\Exception\UnsupportedException;
 use Symfony\Component\TypeInfo\Type;
 use Symfony\Component\TypeInfo\Type\ObjectType;
 use Symfony\Component\TypeInfo\TypeResolver\StringTypeResolver;
@@ -97,6 +96,26 @@ final class TypeContextFactory
             return null;
         }
 
+        // a trait member is read in the scope of the trait, but "self" and "parent" refer to the class using the trait
+        if ($traitReflection = $this->getDeclaringTrait($reflection, $declaringClassReflection)) {
+            $typeContext = $this->createFromClassName($declaringClassReflection->getName(), $traitReflection->getName());
+
+            $templates = match (true) {
+                $reflection instanceof \ReflectionFunctionAbstract => $this->collectTemplates($reflection, $typeContext),
+                $reflection instanceof \ReflectionParameter => $this->collectTemplates($reflection->getDeclaringFunction(), $typeContext),
+                default => [],
+            };
+
+            return new TypeContext(
+                $typeContext->calledClassName,
+                $declaringClassReflection->getName(),
+                $typeContext->namespace,
+                $typeContext->uses,
+                $templates + $typeContext->templates,
+                $typeContext->typeAliases,
+            );
+        }
+
         $typeContext = $this->createIntermediateTypeContext($declaringClassReflection->getName(), $declaringClassReflection);
 
         $templates = match (true) {
@@ -162,6 +181,37 @@ final class TypeContextFactory
     }
 
     /**
+     * Finds the trait where a property, a method or a parameter is written, since reflection gives the class using the trait as their declaring class.
+     */
+    private function getDeclaringTrait(\Reflector $reflection, \ReflectionClass $classReflection): ?\ReflectionClass
+    {
+        if ($reflection instanceof \ReflectionParameter) {
+            $reflection = $reflection->getDeclaringFunction();
+        }
+
+        if (!$reflection instanceof \ReflectionProperty && !$reflection instanceof \ReflectionFunctionAbstract) {
+            return null;
+        }
+
+        foreach ($classReflection->getTraits() as $traitReflection) {
+            if ($declaringTraitReflection = $this->getDeclaringTrait($reflection, $traitReflection)) {
+                return $declaringTraitReflection;
+            }
+
+            if ($reflection instanceof \ReflectionProperty) {
+                // a class can declare a property of its traits again, with another doc comment
+                if ($traitReflection->hasProperty($reflection->name) && $traitReflection->getProperty($reflection->name)->getDocComment() === $reflection->getDocComment()) {
+                    return $traitReflection;
+                }
+            } elseif ($traitReflection->getFileName() === $reflection->getFileName() && $traitReflection->getStartLine() <= $reflection->getStartLine() && $reflection->getEndLine() <= $traitReflection->getEndLine()) {
+                return $traitReflection;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * @return array<string, string>
      */
     private function collectUses(\ReflectionClass $reflection): array
@@ -218,7 +268,7 @@ final class TypeContextFactory
             $traitUses[] = $this->collectUses($traitReflection);
         }
 
-        return array_merge($uses, ...$traitUses);
+        return $uses + array_merge(...$traitUses);
     }
 
     /**
@@ -264,7 +314,7 @@ final class TypeContextFactory
                 if (null !== $typeString) {
                     $type = $this->stringTypeResolver->resolve($typeString, $typeContext);
                 }
-            } catch (UnsupportedException) {
+            } catch (ExceptionInterface) {
             }
 
             $templates[$tag->value->name] = $type;
@@ -301,14 +351,16 @@ final class TypeContextFactory
                 throw new LogicException(\sprintf('Type alias "%s" is not imported from a valid class name.', $tag->value->importedAlias));
             }
 
-            if (isset($this->collectingTypeAliases[$importedFromType->getClassName()])) {
-                throw new LogicException(\sprintf('Cannot import "%s" type alias from "%s" as it is recursive.', $tag->value->importedAlias, $importedFromType->getClassName()));
+            $importedFromClassName = (self::$reflectionClassCache[$importedFromType->getClassName()] ??= new \ReflectionClass($importedFromType->getClassName()))->getName();
+
+            if (isset($this->collectingTypeAliases[$importedFromClassName])) {
+                throw new LogicException(\sprintf('Cannot import "%s" type alias from "%s" as it is recursive.', $tag->value->importedAlias, $importedFromClassName));
             }
 
             $this->collectingTypeAliases[$typeContext->declaringClassName] = true;
 
             try {
-                $importedFromContext = $this->createFromClassName($importedFromType->getClassName());
+                $importedFromContext = $this->createFromClassName($importedFromClassName);
             } finally {
                 unset($this->collectingTypeAliases[$typeContext->declaringClassName]);
             }
@@ -321,7 +373,7 @@ final class TypeContextFactory
                     continue;
                 }
 
-                throw new LogicException(\sprintf('Cannot find any "%s" type alias in "%s".', $tag->value->importedAlias, $importedFromType->getClassName()));
+                throw new LogicException(\sprintf('Cannot find any "%s" type alias in "%s".', $tag->value->importedAlias, $importedFromClassName));
             }
 
             $resolvedAliases[$tag->value->importedAs ?? $tag->value->importedAlias] = $typeAlias;

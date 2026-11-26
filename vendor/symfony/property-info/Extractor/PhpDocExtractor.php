@@ -204,21 +204,11 @@ class PhpDocExtractor implements PropertyDescriptionExtractorInterface, Property
 
     public function getTypeFromConstructor(string $class, string $property): ?Type
     {
-        if (![$docBlock] = $this->getDocBlockFromConstructor($class, $property)) {
+        if (![$docBlock, $declaringClass] = $this->getDocBlockFromConstructor($class, $property)) {
             return null;
         }
 
-        $types = [];
-        /** @var DocBlock\Tags\Var_|DocBlock\Tags\Return_|DocBlock\Tags\Param $tag */
-        foreach ($docBlock->getTagsByName('param') as $tag) {
-            if ($tag instanceof InvalidTag || !$tagType = $tag->getType()) {
-                continue;
-            }
-
-            $types[] = $this->phpDocTypeHelper->getType($tagType);
-        }
-
-        return $types[0] ?? null;
+        return $this->getTypeFromDocBlock($docBlock, self::MUTATOR, $class, $declaringClass, null);
     }
 
     public function getDocBlock(string $class, string $property): ?DocBlock
@@ -241,7 +231,7 @@ class PhpDocExtractor implements PropertyDescriptionExtractorInterface, Property
         }
 
         try {
-            $docBlock = $this->docBlockFactory->create($reflectionConstructor, $this->contextFactory->createFromReflector($reflectionConstructor));
+            $docBlock = $this->docBlockFactory->create($reflectionConstructor, $this->createFromReflector($this->getDeclaringTrait($reflectionConstructor) ?? $reflectionConstructor->getDeclaringClass()));
 
             return [$this->filterDocBlockParams($docBlock, $property), $reflectionConstructor->class];
         } catch (\InvalidArgumentException) {
@@ -266,6 +256,11 @@ class PhpDocExtractor implements PropertyDescriptionExtractorInterface, Property
 
         if (isset($this->docBlocks[$propertyHash])) {
             return $this->docBlocks[$propertyHash];
+        }
+
+        if (1000 < \count($this->docBlocks)) {
+            // stop memory leak if there are many keys
+            $this->docBlocks = \array_slice($this->docBlocks, 500, null, true);
         }
 
         try {
@@ -306,7 +301,8 @@ class PhpDocExtractor implements PropertyDescriptionExtractorInterface, Property
         $reflector = $reflectionProperty->getDeclaringClass();
 
         foreach ($reflector->getTraits() as $trait) {
-            if ($trait->hasProperty($property)) {
+            // a class can declare a property of its traits again, with another doc comment
+            if ($trait->hasProperty($property) && $trait->getProperty($property)->getDocComment() === $reflectionProperty->getDocComment()) {
                 return $this->getDocBlockFromProperty($trait->getName(), $property, $reflector->isTrait() ? $originalClass : $reflector->getName());
             }
         }
@@ -332,9 +328,8 @@ class PhpDocExtractor implements PropertyDescriptionExtractorInterface, Property
     /**
      * @return array{DocBlock, int, ?string, string}|null
      */
-    private function getDocBlockFromMethod(string $class, string $ucFirstProperty, int $type, ?string $originalClass = null): ?array
+    private function getDocBlockFromMethod(string $class, string $ucFirstProperty, int $type): ?array
     {
-        $originalClass ??= $class;
         $prefixes = self::ACCESSOR === $type ? $this->accessorPrefixes : $this->mutatorPrefixes;
         $prefix = null;
         $method = null;
@@ -373,27 +368,29 @@ class PhpDocExtractor implements PropertyDescriptionExtractorInterface, Property
             return null;
         }
 
-        $reflector = $method->getDeclaringClass();
+        $declaringClass = $method->class;
 
-        foreach ($reflector->getTraits() as $trait) {
-            if ($trait->hasMethod($methodName)) {
-                return $this->getDocBlockFromMethod($trait->getName(), $ucFirstProperty, $type, $reflector->isTrait() ? $originalClass : $reflector->getName());
+        // a method that implements an abstract trait method uses the docblock of the trait when its own docblock has no tag for the type, for example when PHP gives it the docblock of a "use" statement
+        if (!str_contains((string) $method->getDocComment(), self::ACCESSOR === $type ? '@return' : '@param')) {
+            foreach ($method->getDeclaringClass()->getTraits() as $trait) {
+                if ($trait->hasMethod($method->name) && $trait->getMethod($method->name)->isAbstract()) {
+                    $method = $trait->getMethod($method->name);
+                    break;
+                }
             }
         }
 
-        $context = $this->createFromReflector($reflector);
+        $context = $this->createFromReflector($this->getDeclaringTrait($method) ?? $method->getDeclaringClass());
         $prefix = self::ACCESSOR === $type ? null : $prefix;
 
         try {
-            $declaringClass = $reflector->isTrait() ? $originalClass : $reflector->getName();
-
             return [$this->docBlockFactory->create($method, $context), $type, $prefix, $declaringClass];
         } catch (\InvalidArgumentException) {
             return null;
         } catch (\RuntimeException) {
             // Workaround for phpdocumentor/reflection-docblock < 6 not supporting ?Type<...> syntax
             if (($rawDoc = $method->getDocComment()) && $docBlock = $this->getNullableGenericDocBlock($rawDoc, $context)) {
-                return [$docBlock, $type, $prefix, $declaringClass ?? ($reflector->isTrait() ? $originalClass : $reflector->getName())];
+                return [$docBlock, $type, $prefix, $declaringClass];
             }
 
             return null;
@@ -425,6 +422,24 @@ class PhpDocExtractor implements PropertyDescriptionExtractorInterface, Property
     }
 
     /**
+     * Finds the trait where a method is written, since reflection gives the class using the trait as its declaring class.
+     */
+    private function getDeclaringTrait(\ReflectionMethod $method, ?\ReflectionClass $class = null): ?\ReflectionClass
+    {
+        foreach (($class ?? $method->getDeclaringClass())->getTraits() as $trait) {
+            if ($declaringTrait = $this->getDeclaringTrait($method, $trait)) {
+                return $declaringTrait;
+            }
+
+            if ($trait->getFileName() === $method->getFileName() && $trait->getStartLine() <= $method->getStartLine() && $method->getEndLine() <= $trait->getEndLine()) {
+                return $trait;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * @return array{DocBlock, string}|null
      */
     private function getPromotedPropertyDocBlockData(string $class, string $property): ?array
@@ -433,6 +448,11 @@ class PhpDocExtractor implements PropertyDescriptionExtractorInterface, Property
 
         if (isset($this->promotedPropertyDocBlocks[$propertyHash])) {
             return false === $this->promotedPropertyDocBlocks[$propertyHash] ? null : $this->promotedPropertyDocBlocks[$propertyHash];
+        }
+
+        if (1000 < \count($this->promotedPropertyDocBlocks)) {
+            // stop memory leak if there are many keys
+            $this->promotedPropertyDocBlocks = \array_slice($this->promotedPropertyDocBlocks, 500, null, true);
         }
 
         try {
@@ -494,7 +514,7 @@ class PhpDocExtractor implements PropertyDescriptionExtractorInterface, Property
         try {
             return match ($type->getClassName()) {
                 'self' => Type::object($typeContext->getDeclaringClass()),
-                'static' => Type::object($typeContext->getCalledClass()),
+                'static', '$this' => Type::object($typeContext->getCalledClass()),
                 'parent' => Type::object($typeContext->getParentClass()),
                 default => $type,
             };
@@ -521,7 +541,12 @@ class PhpDocExtractor implements PropertyDescriptionExtractorInterface, Property
                 continue;
             }
 
-            $type = $this->phpDocTypeHelper->getType($tagType);
+            try {
+                $type = $this->phpDocTypeHelper->getType($tagType);
+            } catch (\InvalidArgumentException) {
+                $type = null;
+            }
+
             $types[] = $type ? $this->resolveClassKeywords($type, $typeContext) : null;
         }
 

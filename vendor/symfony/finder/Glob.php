@@ -45,6 +45,7 @@ class Glob
         $curlies = [];
         $bracketScanEnd = 0;
         $regex = '';
+        $notSlash = '/' === $delimiter ? '[^\/]' : '[^/]';
         if ($unanchored = str_starts_with($glob, '**/')) {
             $glob = '/'.$glob;
         }
@@ -82,10 +83,10 @@ class Glob
             } elseif ('*' === $car) {
                 if ($escaping || $strictWildcardSlash || !str_ends_with($regex, '.*')) {
                     // ".*.*" matches the same as ".*" but backtracks quadratically
-                    $regex .= $escaping ? '\\*' : ($strictWildcardSlash ? '[^/]*' : '.*');
+                    $regex .= $escaping ? '\\*' : ($strictWildcardSlash ? $notSlash.'*' : '.*');
                 }
             } elseif ('?' === $car) {
-                $regex .= $escaping ? '\\?' : ($strictWildcardSlash ? '[^/]' : '.');
+                $regex .= $escaping ? '\\?' : ($strictWildcardSlash ? $notSlash : '.');
             } elseif ('{' === $car) {
                 if (!$escaping) {
                     $curlies[] = [\strlen($regex)];
@@ -137,13 +138,13 @@ class Glob
     /**
      * Returns "\[" when no "]" closes the "[" at position $i, or when a "/" comes before the closing "]".
      *
-     * $scanEnd is where the last scan stopped without finding a "]": every "[" before that position gets the same result.
+     * $scanEnd is where the last scan stopped without finding a "]": every "[" before that position gets the same result, except one that starts a POSIX class such as "[:alpha:]", which opens a bracket expression of its own.
      */
     private static function bracketExpressionToRegex(string $glob, int &$i, string $delimiter, int &$scanEnd): string
     {
         $sizeGlob = \strlen($glob);
 
-        if ($i < $scanEnd) {
+        if ($i < $scanEnd && !preg_match('/\[:[a-z]++:\]/A', $glob, $m, 0, $i)) {
             return '\\[';
         }
 
@@ -154,8 +155,10 @@ class Glob
 
             if (']' === $car && $j > $i + 1) {
                 $i = $j;
+                $class .= ']';
 
-                return $class.']';
+                // PCRE rejects some bracket expressions that POSIX leaves undefined, such as a range whose endpoints are reversed: those match nothing
+                return false === @preg_match($delimiter.$class.$delimiter, '') ? '(?!)' : $class;
             }
 
             if ('/' === $car || ('\\' === $car && '/' === ($glob[$j + 1] ?? ''))) {
@@ -170,7 +173,8 @@ class Glob
                     break;
                 }
                 $class .= preg_quote($glob[$j], $delimiter);
-            } elseif ($delimiter === $car || str_contains('.()|+^$', $car)) {
+            } elseif ($delimiter === $car || str_contains('.()|+^$:', $car)) {
+                // ":" is escaped so that a class such as "[:alpha:]" is not read as a POSIX one
                 $class .= '\\'.$car;
             } else {
                 $class .= $car;

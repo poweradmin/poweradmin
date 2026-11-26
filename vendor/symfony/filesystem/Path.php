@@ -220,7 +220,7 @@ final class Path
             $scheme = '';
         }
 
-        $firstCharacter = $path[0];
+        $firstCharacter = $path[0] ?? '';
 
         if ('/' === $firstCharacter) {
             return $scheme.'/';
@@ -355,7 +355,7 @@ final class Path
         }
 
         // No actual extension in path
-        if (!$actualExtension) {
+        if ('' === $actualExtension) {
             return $path.(str_ends_with($path, '.') ? '' : '.').$extension;
         }
 
