@@ -177,7 +177,11 @@ class Permission
      */
     public static function isTemplateRecordTypeRestricted(string $type, string $permEdit): bool
     {
-        if (self::isRecordTypeRestrictedForClient($type, $permEdit)) {
+        // Editing no zone content directly is no stronger standing than the client level
+        if (
+            in_array($permEdit, ['own_as_client', 'none'], true)
+            && in_array(self::canonicalRecordType($type), self::RESTRICTED_TYPES_FOR_CLIENT, true)
+        ) {
             return true;
         }
 
