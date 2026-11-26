@@ -34,6 +34,7 @@ use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\Dns\SupermasterManager;
 use Poweradmin\Domain\Service\Dns\ZoneWriteResult;
+use Poweradmin\Domain\Service\User\CreateUserCommand;
 use Poweradmin\Domain\Service\User\UpdateUserCommand;
 use Poweradmin\Domain\Service\User\UserManagementService;
 use Poweradmin\Domain\Service\User\UserProfileAssembler;
@@ -74,7 +75,7 @@ class UserManagementServiceAccountReleaseTest extends TestCase
         $this->rebuild();
     }
 
-    private function rebuild(?DomainManagerInterface $domainManager = null): void
+    private function rebuild(?DomainManagerInterface $domainManager = null, bool $adopts = false): void
     {
         $permissions = $this->createMock(PermissionService::class);
         $permissions->method('canDeleteZoneById')->willReturn(true);
@@ -93,8 +94,61 @@ class UserManagementServiceAccountReleaseTest extends TestCase
             $domainManager ?? $this->createMock(DomainManagerInterface::class),
             $zones,
             accountSync: $this->accountSync,
-            supermasters: $this->supermasters
+            supermasters: $this->supermasters,
+            adoptsZoneOwnerFromAccount: $adopts
         );
+    }
+
+    #[Test]
+    public function testANewUserCannotTakeTheAccountOfAnOwnerlessZone(): void
+    {
+        $this->rebuild(adopts: true);
+        $this->accountSync->method('hasOwnerlessZoneWithAccount')->willReturnCallback(fn(string $account): bool => $account === 'pending');
+        $this->userRepository->expects($this->never())->method('createUser');
+
+        $result = $this->service->createUser(new CreateUserCommand('pending', 'Secret123!', 'Mallory', 'm@example.com', permissionTemplateId: 3));
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(UserManagementService::ERR_USERNAME_CLAIMED, $result['code']);
+    }
+
+    #[Test]
+    public function testANewUserCannotTakeTheAccountOfAnAutoprimary(): void
+    {
+        $this->rebuild(adopts: true);
+        $this->supermasters->method('getSupermasters')->willReturn([['master_ip' => '192.0.2.1', 'ns_name' => 'ns.example.com', 'account' => 'tenant', 'fullname' => '']]);
+        $this->userRepository->expects($this->never())->method('createUser');
+
+        $result = $this->service->createUser(new CreateUserCommand('tenant', 'Secret123!', 'Mallory', 'm@example.com', permissionTemplateId: 3));
+
+        $this->assertSame(UserManagementService::ERR_USERNAME_CLAIMED, $result['code']);
+    }
+
+    #[Test]
+    public function testARenameCannotTakeAPendingAccountName(): void
+    {
+        $this->rebuild(adopts: true);
+        $this->storedUsername = 'old';
+        $this->accountSync->method('hasOwnerlessZoneWithAccount')->willReturn(true);
+        $this->userRepository->expects($this->never())->method('updateUser');
+
+        $result = $this->service->updateUser(2, new UpdateUserCommand(username: 'pending'));
+
+        $this->assertSame(UserManagementService::ERR_USERNAME_CLAIMED, $result['code']);
+    }
+
+    #[Test]
+    public function testAKeptNameIsNotCheckedAndTheCheckIsOffWithoutAdoption(): void
+    {
+        $this->accountSync->expects($this->never())->method('hasOwnerlessZoneWithAccount');
+        $this->userRepository->method('updateUser')->willReturn(true);
+        $this->storedUsername = 'old';
+
+        $this->assertTrue($this->service->updateUser(2, new UpdateUserCommand(username: 'pending'))['success']);
+
+        $this->rebuild(adopts: true);
+        $this->storedUsername = 'same';
+        $this->assertTrue($this->service->updateUser(2, new UpdateUserCommand(username: 'same', fullname: 'Someone'))['success']);
     }
 
     #[Test]

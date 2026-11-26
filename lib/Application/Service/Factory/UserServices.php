@@ -135,7 +135,8 @@ final class UserServices
             new EmailChangeNotifier($this->services->mailService(), $this->config),
             $this->services->zoneAccountSyncService(),
             $this->services->supermasterManager(),
-            $this->services->userMfaRepository()
+            $this->services->userMfaRepository(),
+            (bool)$this->config->get('dns', 'adopt_zone_owner_from_account', false)
         );
     }
 

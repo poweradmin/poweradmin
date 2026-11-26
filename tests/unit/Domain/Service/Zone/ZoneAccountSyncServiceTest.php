@@ -61,6 +61,21 @@ class ZoneAccountSyncServiceTest extends TestCase
     }
 
     #[Test]
+    public function anAccountIsPendingOnlyWhileAZoneCarryingItHasNoDirectOwner(): void
+    {
+        $this->backendProvider->method('getZoneIdsByAccount')->willReturnMap([['pending', [7, 8]], ['settled', [9]], ['unused', []]]);
+        $this->owners->method('oldestOwnerUsername')->willReturnCallback(fn(int $zoneId): ?string => $zoneId === 8 ? null : 'bob');
+
+        $service = new ZoneAccountSyncService($this->owners, $this->config, $this->backendProvider);
+
+        $this->assertTrue($service->hasOwnerlessZoneWithAccount('pending'));
+        $this->assertFalse($service->hasOwnerlessZoneWithAccount('settled'));
+        $this->assertFalse($service->hasOwnerlessZoneWithAccount('unused'));
+        $this->assertFalse($service->hasOwnerlessZoneWithAccount(''));
+        $this->assertFalse((new ZoneAccountSyncService($this->owners, $this->config, null))->hasOwnerlessZoneWithAccount('pending'));
+    }
+
+    #[Test]
     public function syncIsDisabledByDefault(): void
     {
         $this->setSyncEnabled(false);

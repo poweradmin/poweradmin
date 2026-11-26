@@ -52,6 +52,25 @@ class ZoneAccountSyncService
     }
 
     /**
+     * Whether a zone with no direct owner carries this account. Adoption by account would
+     * hand such a zone to a user of that name.
+     */
+    public function hasOwnerlessZoneWithAccount(string $account): bool
+    {
+        if ($this->backendProvider === null || $account === '') {
+            return false;
+        }
+
+        foreach ($this->backendProvider->getZoneIdsByAccount($account) as $domainId) {
+            if ($this->owners->oldestOwnerUsername($domainId) === null) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Update the zone's PowerDNS account field with the oldest owner's username
      *
      * @param int $domainId Domain ID

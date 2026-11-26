@@ -60,6 +60,7 @@ class UserManagementService
     public const ERR_PASSWORD_POLICY = 'password_policy';
     public const ERR_FIELD_LENGTH = 'field_length';
     public const ERR_USERNAME_EXISTS = 'username_exists';
+    public const ERR_USERNAME_CLAIMED = 'username_claimed';
     public const ERR_EMAIL_EXISTS = 'email_exists';
     public const ERR_INVALID_EMAIL = 'invalid_email';
     public const ERR_NO_TEMPLATE = 'no_template';
@@ -105,7 +106,8 @@ class UserManagementService
         private readonly ?EmailChangeNotifierInterface $emailChangeNotifier = null,
         private readonly ?ZoneAccountSyncService $accountSync = null,
         private readonly ?SupermasterManager $supermasters = null,
-        private readonly ?UserMfaRepositoryInterface $mfaRepository = null
+        private readonly ?UserMfaRepositoryInterface $mfaRepository = null,
+        private readonly bool $adoptsZoneOwnerFromAccount = false
     ) {
         $this->ownershipLimit = $ownershipLimit;
         $this->protectLastAdminOnEdit = $protectLastAdminOnEdit;
@@ -275,6 +277,9 @@ class UserManagementService
         if ($this->userRepository->getUserByUsername($command->username)) {
             return $this->usernameExists();
         }
+        if ($this->accountNameClaimed($command->username)) {
+            return $this->usernameClaimed();
+        }
 
         if ($command->email !== '' && ($emailError = $this->invalidEmailError($command->email)) !== null) {
             return $emailError;
@@ -436,6 +441,9 @@ class UserManagementService
             $existingUser = $this->userRepository->getUserByUsername($command->username);
             if ($existingUser && (int)$existingUser['id'] !== $userId) {
                 return $this->usernameExists();
+            }
+            if ($this->accountNameClaimed($command->username)) {
+                return $this->usernameClaimed();
             }
         }
 
@@ -1118,6 +1126,38 @@ class UserManagementService
             'message' => 'Username must not start or end with whitespace or contain control characters',
             'refusal' => Refusal::INVALID_INPUT,
             'code' => self::ERR_USERNAME_REQUIRED,
+        ];
+    }
+
+    /**
+     * Whether adoption would hand zones to a user of this name: an ownerless zone carries it as
+     * its account, or an autoprimary does. Such a name is for the account's real user to take.
+     */
+    private function accountNameClaimed(string $username): bool
+    {
+        if (!$this->adoptsZoneOwnerFromAccount) {
+            return false;
+        }
+        if ($this->accountSync?->hasOwnerlessZoneWithAccount($username)) {
+            return true;
+        }
+        foreach ($this->supermasters?->getSupermasters() ?? [] as $supermaster) {
+            if ($supermaster['account'] === $username) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /** @return array{success: false, message: string, refusal: Refusal, code: string} */
+    private function usernameClaimed(): array
+    {
+        return [
+            'success' => false,
+            'message' => 'Username matches the account of zones or autoprimaries that have no owner yet',
+            'refusal' => Refusal::CONFLICT,
+            'code' => self::ERR_USERNAME_CLAIMED,
         ];
     }
 

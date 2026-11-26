@@ -42,6 +42,7 @@ final class UserFormMessages
         return match ($result['code'] ?? null) {
             UserManagementService::ERR_USERNAME_REQUIRED => _('Enter a valid user name.'),
             UserManagementService::ERR_USERNAME_EXISTS => _('Username exist already, please choose another one.'),
+            UserManagementService::ERR_USERNAME_CLAIMED => _('This username matches the account of zones or autoprimaries that have no owner yet, please choose another one.'),
             UserManagementService::ERR_EMAIL_EXISTS => _('Email address already exists, please choose another one.'),
             UserManagementService::ERR_INVALID_EMAIL => _('Enter a valid email address.'),
             UserManagementService::ERR_PASSWORD_REQUIRED => _('Please fill in all required fields correctly.'),
