@@ -35,6 +35,23 @@ use Poweradmin\Domain\Service\Validation\ValidationResult;
 class StringValidator
 {
     /**
+     * Check the inside of a quoted DNS string the way PowerDNS reads it
+     *
+     * A quote is escaped only after an odd run of backslashes, so an interior bare quote
+     * or content ending in an odd run of backslashes (escaping the closing quote) fails.
+     *
+     * @param string $inner The string without its enclosing quotes
+     */
+    public static function hasValidQuotedEscapes(string $inner): bool
+    {
+        if (preg_match('/(?<!\\\\)(?:\\\\\\\\)*"/', $inner)) {
+            return false;
+        }
+
+        return (strlen($inner) - strlen(rtrim($inner, '\\'))) % 2 === 0;
+    }
+
+    /**
      * Blank means unset; otherwise a whole number from 0 to 65535 (the records.prio range).
      */
     public static function isValidPriority(mixed $prio): bool

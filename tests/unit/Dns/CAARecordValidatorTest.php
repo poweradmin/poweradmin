@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -264,5 +264,19 @@ class CAARecordValidatorTest extends TestCase
 
         $this->assertTrue($result->isValid());
         $this->assertSame('0 issue "letsencrypt.org"', $result->getData()['content']);
+    }
+
+    public function testQuotedParityRefusesEscapedClosingQuote()
+    {
+        $result = $this->validator->validate('0 iodef "mailto:a@example.com\\"', 'example.com', 0, 3600, 86400);
+
+        $this->assertFalse($result->isValid());
+    }
+
+    public function testQuotedParityRefusesInteriorBareQuote()
+    {
+        $result = $this->validator->validate('0 iodef "mailto:a"b@example.com"', 'example.com', 0, 3600, 86400);
+
+        $this->assertFalse($result->isValid());
     }
 }

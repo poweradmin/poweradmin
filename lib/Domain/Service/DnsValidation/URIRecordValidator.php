@@ -59,7 +59,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class URIRecordValidator implements DnsRecordValidatorInterface
@@ -242,6 +242,11 @@ class URIRecordValidator implements DnsRecordValidatorInterface
         $priority = (int)$matches[1];
         $weight = (int)$matches[2];
         $uri = $matches[3];
+
+        if (!StringValidator::hasValidQuotedEscapes($uri)) {
+            $errors[] = _('Backslashes must precede all quotes (") in value content.');
+            return ['isValid' => false, 'errors' => $errors];
+        }
 
         // Validate priority (0-65535)
         if ($priority < 0 || $priority > 65535) {
