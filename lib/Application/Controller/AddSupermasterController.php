@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -42,9 +42,9 @@ class AddSupermasterController extends BaseController
     {
         $this->checkPermission('supermaster_add', _("You do not have the permission to add a new supermaster."));
 
-        $master_ip = $_POST["master_ip"] ?? "";
-        $ns_name = $_POST["ns_name"] ?? "";
-        $account = $_POST["account"] ?? "";
+        $master_ip = is_string($_POST["master_ip"] ?? null) ? $_POST["master_ip"] : "";
+        $ns_name = is_string($_POST["ns_name"] ?? null) ? $_POST["ns_name"] : "";
+        $account = is_string($_POST["account"] ?? null) ? $_POST["account"] : "";
 
         if ($this->isPost()) {
             $this->validateCsrfToken();
