@@ -987,8 +987,18 @@ class UsersController extends PublicApiController
             }
 
             // Get request body for zone transfer options
-            $requestBody = json_decode($this->request->getContent(), true) ?? [];
-            $transferToUserId = isset($requestBody['transfer_to_user_id']) ? (int)$requestBody['transfer_to_user_id'] : null;
+            $requestBody = json_decode($this->request->getContent(), true);
+            if (!is_array($requestBody)) {
+                $requestBody = [];
+            }
+            $transferToUserId = null;
+            if (isset($requestBody['transfer_to_user_id'])) {
+                // An array or boolean must not be cast into user 1
+                $transferToUserId = $this->inputInt($requestBody, 'transfer_to_user_id');
+                if ($transferToUserId === null || $transferToUserId <= 0) {
+                    return $this->returnApiError('transfer_to_user_id must be a numeric ID', 400);
+                }
+            }
 
             // Use the domain service to delete the user
             $result = $this->userManagementService->deleteUser($targetUserId, $transferToUserId, $currentUserId);
