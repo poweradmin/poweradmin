@@ -635,7 +635,7 @@ services:
       - ./conf/saml-idp-authsources.php:/var/www/simplesamlphp/config/authsources.php:ro
 
   ldapadmin:
-    image: phpldapadmin/phpldapadmin:2.3.12@sha256:0760985c0911bd648c40d5288c7ea6975805fa1d86817c5716a869616105cc08
+    image: phpldapadmin/phpldapadmin:2.3.13@sha256:c29df275d4d4c364a63cb0ae8dacd4ab753dfbd444b2d05eecd05725dbdb9c16
     container_name: ldapadmin
     networks:
       - internal
