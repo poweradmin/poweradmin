@@ -259,4 +259,27 @@ class TLSARecordValidatorTest extends TestCase
         $this->assertTrue($result->isValid());
         $this->assertSame("3 1 1 $hash", $result->getData()['content']);
     }
+
+    public function testRefusesEmptyLabelInServiceName()
+    {
+        $result = $this->validator->validate('3 1 1 a0b9b16969687adf0323d15048fb4fa4c354c4e01594e8956522cfe3566cae74', '_443._tcp..example.com', 0, 3600, 86400);
+
+        $this->assertFalse($result->isValid());
+    }
+
+    public function testRefusesOverlongLabelInServiceName()
+    {
+        $name = '_443._tcp.' . str_repeat('a', 64) . '.example.com';
+        $result = $this->validator->validate('3 1 1 a0b9b16969687adf0323d15048fb4fa4c354c4e01594e8956522cfe3566cae74', $name, 0, 3600, 86400);
+
+        $this->assertFalse($result->isValid());
+    }
+
+    public function testAcceptsServiceNameWithValidLabels()
+    {
+        $result = $this->validator->validate('3 1 1 a0b9b16969687adf0323d15048fb4fa4c354c4e01594e8956522cfe3566cae74', '_443._tcp.www.example.com', 0, 3600, 86400);
+
+        $this->assertTrue($result->isValid());
+        $this->assertSame('_443._tcp.www.example.com', $result->getData()['name']);
+    }
 }

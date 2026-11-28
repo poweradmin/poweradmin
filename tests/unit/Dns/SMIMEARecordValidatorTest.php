@@ -288,4 +288,29 @@ class SMIMEARecordValidatorTest extends TestCase
         $data = $result->getData();
         $this->assertEquals(86400, $data['ttl']);
     }
+
+    public function testRefusesEmptyLabelInSmimecertName()
+    {
+        $hash = str_repeat('a', 56);
+        $result = $this->validator->validate('3 1 1 a0b9b16969687adf0323d15048fb4fa4c354c4e01594e8956522cfe3566cae74', $hash . '._smimecert..example.com', 0, 3600, 86400);
+
+        $this->assertFalse($result->isValid());
+    }
+
+    public function testRefusesOverlongLabelInSmimecertName()
+    {
+        $name = str_repeat('a', 64) . '._smimecert.example.com';
+        $result = $this->validator->validate('3 1 1 a0b9b16969687adf0323d15048fb4fa4c354c4e01594e8956522cfe3566cae74', $name, 0, 3600, 86400);
+
+        $this->assertFalse($result->isValid());
+    }
+
+    public function testAcceptsHashedSmimecertName()
+    {
+        $name = substr(hash('sha256', 'user'), 0, 56) . '._smimecert.example.com';
+        $result = $this->validator->validate('3 1 1 a0b9b16969687adf0323d15048fb4fa4c354c4e01594e8956522cfe3566cae74', $name, 0, 3600, 86400);
+
+        $this->assertTrue($result->isValid());
+        $this->assertSame($name, $result->getData()['name']);
+    }
 }

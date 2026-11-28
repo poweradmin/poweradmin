@@ -102,6 +102,12 @@ class TLSARecordValidator implements DnsRecordValidatorInterface
             return ValidationResult::failure(_('Invalid characters in hostname.'));
         }
 
+        // Service names skip the hostname branch below but must still be loadable by PowerDNS
+        $nameResult = $this->hostnameValidator->validate($name, true);
+        if (!$nameResult->isValid()) {
+            return $nameResult->withField(RecordField::NAME);
+        }
+
         // Initialize warnings array
         $warnings = [];
 

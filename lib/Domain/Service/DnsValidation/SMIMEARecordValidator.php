@@ -100,6 +100,12 @@ class SMIMEARecordValidator implements DnsRecordValidatorInterface
             return ValidationResult::failure(_('Invalid characters in hostname.'));
         }
 
+        // The ._smimecert. branch below skips hostname checks but PowerDNS must still load the name
+        $nameResult = $this->hostnameValidator->validate($name, true);
+        if (!$nameResult->isValid()) {
+            return $nameResult->withField(RecordField::NAME);
+        }
+
         // SMIMEA records are typically of the form: <hash-of-localpart>._smimecert.<domain>
         // The local-part hash is the SHA-256 hash (hex encoded) of the local part of the email address
         if (strpos($name, '._smimecert.') !== false) {
