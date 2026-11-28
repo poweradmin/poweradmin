@@ -45,6 +45,9 @@ use RuntimeException;
 
 class OidcService extends LoggingService
 {
+    private const IDP_REQUEST_TIMEOUT = 10;
+    private const IDP_CONNECT_TIMEOUT = 5;
+
     private ConfigurationManager $configManager;
     private AuthenticationService $authenticationService;
     private SessionService $sessionService;
@@ -436,8 +439,13 @@ class OidcService extends LoggingService
             return null;
         }
 
-        // A 307 or 308 would re-send the token request, client secret included, to any Location
-        $httpClient = new \GuzzleHttp\Client(['allow_redirects' => false]);
+        // A 307 or 308 would re-send the token request, client secret included, to any Location.
+        // Anyone can start a login, so a hanging IdP must not hold a PHP worker without limit.
+        $httpClient = new \GuzzleHttp\Client([
+            'allow_redirects' => false,
+            'timeout' => self::IDP_REQUEST_TIMEOUT,
+            'connect_timeout' => self::IDP_CONNECT_TIMEOUT,
+        ]);
 
         return new GenericProvider([
             'clientId' => $config['client_id'],
