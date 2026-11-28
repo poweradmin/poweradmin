@@ -220,6 +220,19 @@ class EditZoneMetadataControllerTest extends TestCase
         $this->assertSame([], $errors);
     }
 
+    public function testNormalizeSubmittedMetadataSkipsRowsThatAreNotArrays(): void
+    {
+        $controller = $this->createControllerWithConfig([]);
+
+        $rows = $this->invokePrivateMethod($controller, 'normalizeSubmittedMetadata', [[
+            'junk',
+            ['kind_key' => ['x'], 'content' => 'y'],
+            ['kind_key' => 'ALLOW-AXFR-FROM', 'content' => '192.0.2.10'],
+        ]]);
+
+        $this->assertSame([['kind' => 'ALLOW-AXFR-FROM', 'content' => '192.0.2.10']], $rows);
+    }
+
     public function testValidateMetadataRowsAcceptsListedOptionAndFreeFormKinds(): void
     {
         $controller = $this->createControllerWithConfig([]);

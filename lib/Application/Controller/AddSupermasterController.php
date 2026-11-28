@@ -54,6 +54,10 @@ class AddSupermasterController extends BaseController
         $master_ip = $this->request->getPostParam('master_ip', "");
         $ns_name = $this->request->getPostParam('ns_name', "");
         $account = $this->request->getPostParam('account', "");
+        // An array posted for a text field reads as empty
+        $master_ip = is_string($master_ip) ? $master_ip : '';
+        $ns_name = is_string($ns_name) ? $ns_name : '';
+        $account = is_string($account) ? $account : '';
 
         if ($this->isPost()) {
             $this->validateCsrfToken();

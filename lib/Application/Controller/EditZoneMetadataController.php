@@ -121,7 +121,13 @@ class EditZoneMetadataController extends BaseController
 
         if ($this->isPost()) {
             $this->validateCsrfToken();
-            $submittedMetadata = $this->normalizeSubmittedMetadata($this->request->getPostParam('metadata', []));
+            $postedMetadata = $this->request->getPostParam('metadata', []);
+            if (!is_array($postedMetadata)) {
+                $this->setMessage('edit_zone_metadata', 'error', _('Failed to update zone metadata.'));
+                $this->renderPage($zoneId, $zone, $this->loadMetadata($zoneId, $zone['name']), $canEditMetadata);
+                return;
+            }
+            $submittedMetadata = $this->normalizeSubmittedMetadata($postedMetadata);
 
             // Cheap in-memory checks first; loadMetadata() costs two PowerDNS API
             // calls in API-backend mode and is only needed past this point.
@@ -355,7 +361,7 @@ class EditZoneMetadataController extends BaseController
      * Empty rows are ignored and partially filled rows are dropped so the editor can
      * preserve a simple add/remove-row workflow without producing invalid writes.
      *
-     * @param array<int, array<string, mixed>> $submittedMetadata
+     * @param array<mixed> $submittedMetadata posted data, so a row may not be an array
      * @return array<int, array{kind: string, content: string}>
      */
     private function normalizeSubmittedMetadata(array $submittedMetadata): array
@@ -363,8 +369,11 @@ class EditZoneMetadataController extends BaseController
         $rows = [];
 
         foreach ($submittedMetadata as $row) {
+            if (!is_array($row)) {
+                continue;
+            }
             $kind = $this->resolveSubmittedKind($row);
-            $content = trim((string) ($row['content'] ?? ''));
+            $content = trim($this->submittedString($row['content'] ?? ''));
 
             if ($kind === '' && $content === '') {
                 continue;
@@ -390,12 +399,20 @@ class EditZoneMetadataController extends BaseController
      */
     private function resolveSubmittedKind(array $row): string
     {
-        $selectedKind = strtoupper(trim((string) ($row['kind_key'] ?? '')));
+        $selectedKind = strtoupper(trim($this->submittedString($row['kind_key'] ?? '')));
         if ($selectedKind === self::CUSTOM_KIND) {
-            $selectedKind = strtoupper(trim((string) ($row['custom_kind'] ?? '')));
+            $selectedKind = strtoupper(trim($this->submittedString($row['custom_kind'] ?? '')));
         }
 
         return $selectedKind;
+    }
+
+    /**
+     * A posted field as text; an array or other non-scalar shape reads as empty.
+     */
+    private function submittedString(mixed $value): string
+    {
+        return is_scalar($value) ? (string) $value : '';
     }
 
     /**

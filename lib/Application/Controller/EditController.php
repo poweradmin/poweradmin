@@ -663,7 +663,8 @@ class EditController extends BaseController
 
         if ($this->request->getPostParam('slave_master_change') !== null) {
             $this->validateCsrfToken();
-            if ($domainManager->changeZoneSlaveMaster($zone_id, $this->request->getPostParam('new_master', ''))) {
+            $newMaster = $this->request->getPostParam('new_master', '');
+            if ($domainManager->changeZoneSlaveMaster($zone_id, is_string($newMaster) ? $newMaster : '')) {
                 $this->setMessage('edit', 'success', _('Slave master has been changed successfully.'));
             }
         }

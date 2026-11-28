@@ -71,7 +71,11 @@ class DeleteDomainsController extends BaseController
 
     public function run(): void
     {
-        $zone_ids = $this->request->getPostParam('zone_id');
+        // One list of distinct positive ids, so a duplicate or odd shape cannot skew the delete
+        $zone_ids = array_values(array_unique(array_filter(
+            array_map('intval', array_filter((array)$this->request->getPostParam('zone_id'), 'is_scalar')),
+            fn(int $id): bool => $id > 0
+        )));
         if (!$zone_ids) {
             $referrer = $_SERVER['HTTP_REFERER'] ?? null;
             $return_page = 'list_forward_zones';

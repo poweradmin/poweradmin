@@ -48,8 +48,8 @@ class UnlinkZonesTemplController extends BaseController
         if ($this->isPost()) {
             $this->validateCsrfToken();
 
-            $zone_ids = $this->request->getPostParam('zone_ids', []);
-            $template_id = filter_input(INPUT_POST, 'template_id', FILTER_VALIDATE_INT);
+            $zone_ids = array_filter((array)$this->request->getPostParam('zone_ids', []), 'is_scalar');
+            $template_id = filter_var($this->request->getPostParam('template_id'), FILTER_VALIDATE_INT);
 
             if (empty($zone_ids)) {
                 $this->showError(_('No zones selected.'));
