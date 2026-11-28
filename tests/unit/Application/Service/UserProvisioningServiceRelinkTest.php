@@ -85,6 +85,30 @@ class UserProvisioningServiceRelinkTest extends TestCase
         $this->assertSame('sub-owner', $this->db->query("SELECT oidc_subject FROM oidc_user_links WHERE provider_id = 'okta'")->fetchColumn());
     }
 
+    public function testEmailMatchDoesNotLinkAnAccountThatManagesUsers(): void
+    {
+        $this->db->exec("INSERT INTO perm_items (id, name) VALUES (40, 'user_edit_others')");
+        $this->db->exec("INSERT INTO perm_templ (id, name) VALUES (5, 'Helpdesk')");
+        $this->db->exec("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (5, 40)");
+        $userInfo = new OidcUserInfo(username: 'mallory', email: 'jane@example.org', providerId: 'okta', subject: 'sub-mallory', rawData: ['email_verified' => true]);
+
+        $this->assertNull($this->service->provisionUser($userInfo, 'okta'));
+        $this->assertSame('0', (string) $this->db->query("SELECT COUNT(*) FROM oidc_user_links WHERE user_id = 2")->fetchColumn());
+    }
+
+    public function testEmailMatchDoesNotLinkAnAccountThatManagesPermissionTemplatesThroughAGroup(): void
+    {
+        $this->db->exec("INSERT INTO perm_items (id, name) VALUES (41, 'templ_perm_edit')");
+        $this->db->exec("INSERT INTO perm_templ (id, name) VALUES (6, 'Template admins')");
+        $this->db->exec("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (6, 41)");
+        $this->db->exec("INSERT INTO user_groups (id, name, perm_templ) VALUES (1, 'Admins', 6)");
+        $this->db->exec("INSERT INTO user_group_members (group_id, user_id) VALUES (1, 2)");
+        $userInfo = new OidcUserInfo(username: 'mallory', email: 'jane@example.org', providerId: 'okta', subject: 'sub-mallory', rawData: ['email_verified' => true]);
+
+        $this->assertNull($this->service->provisionUser($userInfo, 'okta'));
+        $this->assertSame('0', (string) $this->db->query("SELECT COUNT(*) FROM oidc_user_links WHERE user_id = 2")->fetchColumn());
+    }
+
     public function testEmailMatchDoesNotLinkAnAccountWithALocalPassword(): void
     {
         // A user who set their own address to the victim's would otherwise receive the victim's identity

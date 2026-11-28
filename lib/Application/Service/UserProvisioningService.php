@@ -40,6 +40,16 @@ use ReflectionClass;
  */
 class UserProvisioningService extends LoggingService
 {
+    /** Permissions that let an account change other accounts or what they may do; an email match never links these. */
+    private const ACCOUNT_ADMIN_PERMISSIONS = [
+        'user_add_new',
+        'user_edit_others',
+        'user_passwd_edit_others',
+        'user_edit_templ_perm',
+        'templ_perm_add',
+        'templ_perm_edit',
+    ];
+
     // Authentication method constants
     public const AUTH_METHOD_SQL = 'sql';
     public const AUTH_METHOD_LDAP = 'ldap';
@@ -157,6 +167,15 @@ class UserProvisioningService extends LoggingService
                         ['method' => strtoupper($authMethod), 'id' => $existingUserId]
                     );
                     return null;
+                }
+
+                if ($existingUserId !== null && $this->userHoldsAccountAdminPermission($existingUserId)) {
+                    // Rights over other users or permission templates lead to superuser in a few steps.
+                    $this->logWarning(
+                        'Refusing to link {method} identity to account {id} by email: the account can manage users or permission templates',
+                        ['method' => strtoupper($authMethod), 'id' => $existingUserId]
+                    );
+                    $existingUserId = null;
                 }
 
                 if ($existingUserId) {
@@ -278,6 +297,22 @@ class UserProvisioningService extends LoggingService
             $this->logError('Error checking superuser permission: {error}', ['error' => $e->getMessage()]);
             return true;
         }
+    }
+
+    /**
+     * Check whether an account may manage other users or permission templates, directly or via a group.
+     */
+    private function userHoldsAccountAdminPermission(int $userId): bool
+    {
+        try {
+            $held = $this->userRepository->getUserPermissions($userId);
+        } catch (\Exception $e) {
+            // Fail closed: an unreadable permission state must not permit linking.
+            $this->logError('Error checking account permissions: {error}', ['error' => $e->getMessage()]);
+            return true;
+        }
+
+        return array_intersect($held, self::ACCOUNT_ADMIN_PERMISSIONS) !== [];
     }
 
     /**
