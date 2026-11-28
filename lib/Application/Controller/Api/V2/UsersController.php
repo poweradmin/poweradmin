@@ -1016,7 +1016,13 @@ class UsersController extends PublicApiController
 
             // Get request body for zone transfer options (the body is optional here)
             $requestBody = $this->getValidatedJsonBody() ?? [];
-            $transferToUserId = isset($requestBody['transfer_to_user_id']) ? (int)$requestBody['transfer_to_user_id'] : null;
+            $transferToUserId = null;
+            if (isset($requestBody['transfer_to_user_id'])) {
+                $transferToUserId = $this->inputInt($requestBody, 'transfer_to_user_id');
+                if ($transferToUserId === null) {
+                    return $this->returnApiError('transfer_to_user_id must be a numeric ID', 400);
+                }
+            }
 
             $targetUsername = (string)($this->userRepository->getUserById($targetUserId)['username'] ?? "ID: $targetUserId");
 
