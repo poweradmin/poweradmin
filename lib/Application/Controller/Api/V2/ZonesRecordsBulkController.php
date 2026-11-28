@@ -28,7 +28,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -363,8 +363,8 @@ class ZonesRecordsBulkController extends PublicApiController
                 RecordChangeLogger::endChangeset();
             }
         } catch (ApiErrorException $e) {
-            // Client validation errors - return detailed error response with appropriate 4xx status code
-            $statusCode = (int) ($e->getCode() >= 400 && $e->getCode() < 500 ? $e->getCode() : 400);
+            // Operation errors - return detailed error response with the error's own 4xx or 5xx status code
+            $statusCode = (int) ($e->getCode() >= 400 && $e->getCode() < 600 ? $e->getCode() : 400);
 
             // Return detailed error information as advertised in OpenAPI spec
             if (!empty($results['errors'])) {
@@ -469,7 +469,7 @@ class ZonesRecordsBulkController extends PublicApiController
         // Insert record via backend provider
         $newRecordId = $this->insertRecordViaBackend($zoneId, $normalizedName, $type, $validatedContent, $validatedTtl, $validatedPriority, $disabled);
         if ($newRecordId === null) {
-            throw new Exception('Failed to create record');
+            throw new ApiErrorException('Failed to create record', 500);
         }
 
         try {
@@ -579,7 +579,7 @@ class ZonesRecordsBulkController extends PublicApiController
 
         // Use RecordManager to edit the record
         if (!$this->recordManager->editRecord($recordData)) {
-            throw new Exception('Failed to update record');
+            throw new ApiErrorException('Failed to update record', 500);
         }
 
         return $recordData['type'];
@@ -617,7 +617,7 @@ class ZonesRecordsBulkController extends PublicApiController
 
         // Use RecordManager to delete the record
         if (!$this->recordManager->deleteRecord($recordId)) {
-            throw new Exception('Failed to delete record');
+            throw new ApiErrorException('Failed to delete record', 500);
         }
 
         // Clean up per-record comment
