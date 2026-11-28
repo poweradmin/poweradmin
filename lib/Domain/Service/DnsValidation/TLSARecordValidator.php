@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -71,7 +71,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class TLSARecordValidator implements DnsRecordValidatorInterface
@@ -108,6 +108,12 @@ class TLSARecordValidator implements DnsRecordValidatorInterface
 
         // Initialize warnings array
         $warnings = [];
+
+        // Underscore labels pass the hostname \w class; empty or over-long labels still fail
+        $hostnameResult = $this->hostnameValidator->validate($name, true);
+        if (!$hostnameResult->isValid()) {
+            return $hostnameResult;
+        }
 
         // Special handling for _443._tcp.www.example.com test format
         if (in_array($name, ['_443._tcp.www.example.com'])) {
@@ -160,11 +166,7 @@ class TLSARecordValidator implements DnsRecordValidatorInterface
                 $warnings[] = _('The local part of an email address is hashed with SHA-256 and placed before _smimecert.<domain>');
             }
         } else {
-            // For non-service names, use regular hostname validation
-            $hostnameResult = $this->hostnameValidator->validate($name, true);
-            if (!$hostnameResult->isValid()) {
-                return $hostnameResult;
-            }
+            // For non-service names, use the normalized hostname
             $hostnameData = $hostnameResult->getData();
             $name = $hostnameData['hostname'];
 

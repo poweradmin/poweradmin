@@ -69,7 +69,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class SMIMEARecordValidator implements DnsRecordValidatorInterface
@@ -104,6 +104,12 @@ class SMIMEARecordValidator implements DnsRecordValidatorInterface
             return ValidationResult::failure(_('Invalid characters in hostname.'));
         }
 
+        // The hash label is hex, but empty or over-long labels still make PowerDNS refuse the zone
+        $hostnameResult = $this->hostnameValidator->validate($name, true);
+        if (!$hostnameResult->isValid()) {
+            return $hostnameResult;
+        }
+
         // SMIMEA records are typically of the form: <hash-of-localpart>._smimecert.<domain>
         // The local-part hash is the SHA-256 hash (hex encoded) of the local part of the email address
         if (strpos($name, '._smimecert.') !== false) {
@@ -119,11 +125,7 @@ class SMIMEARecordValidator implements DnsRecordValidatorInterface
             // Add information about the format
             $warnings[] = sprintf(_('SMIMEA record name is in the format: SHA256(local-part)._smimecert.domain.tld for email addresses like %s'), 'local-part@domain.tld');
         } else {
-            // For non-SMIMEA format names, use regular hostname validation but add a warning
-            $hostnameResult = $this->hostnameValidator->validate($name, true);
-            if (!$hostnameResult->isValid()) {
-                return $hostnameResult;
-            }
+            // For non-SMIMEA format names, use the normalized hostname but add a warning
             $hostnameData = $hostnameResult->getData();
             $name = $hostnameData['hostname'];
 
