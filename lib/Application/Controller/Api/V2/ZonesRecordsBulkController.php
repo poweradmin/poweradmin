@@ -306,8 +306,8 @@ class ZonesRecordsBulkController extends PublicApiController
                 throw $e;
             }
         } catch (ApiErrorException $e) {
-            // Client validation errors - return detailed error response with appropriate 4xx status code
-            $statusCode = (int) ($e->getCode() >= 400 && $e->getCode() < 500 ? $e->getCode() : 400);
+            // Client errors and API backend failures - return per-operation results with the matching status code
+            $statusCode = (int) ($e->getCode() >= 400 && $e->getCode() < 600 ? $e->getCode() : 400);
 
             // Return detailed error information as advertised in OpenAPI spec
             if (!empty($results['errors'])) {
@@ -418,7 +418,7 @@ class ZonesRecordsBulkController extends PublicApiController
         // Insert record via backend provider
         $newRecordId = $this->insertRecordViaBackend($zoneId, $normalizedName, $type, $validatedContent, $validatedTtl, $validatedPriority, $disabled);
         if ($newRecordId === null) {
-            throw new Exception('Failed to create record');
+            throw $this->backendFailure('Failed to create record');
         }
 
         return $type;
@@ -482,7 +482,7 @@ class ZonesRecordsBulkController extends PublicApiController
 
         // Use RecordManager to edit the record
         if (!$this->recordManager->editRecord($recordData)) {
-            throw new Exception('Failed to update record');
+            throw $this->backendFailure('Failed to update record');
         }
 
         return $recordData['type'];
@@ -520,7 +520,7 @@ class ZonesRecordsBulkController extends PublicApiController
 
         // Use RecordManager to delete the record
         if (!$this->recordManager->deleteRecord($recordId)) {
-            throw new Exception('Failed to delete record');
+            throw $this->backendFailure('Failed to delete record');
         }
 
         // Clean up per-record comment
@@ -577,5 +577,16 @@ class ZonesRecordsBulkController extends PublicApiController
         }
 
         return $recordZoneId === $this->backendProvider->getZoneIdByName($zoneName);
+    }
+
+    /**
+     * A failed backend write. In API backend mode earlier operations are already applied,
+     * so it must reach the per-operation results branch; SQL mode keeps the plain failure.
+     */
+    private function backendFailure(string $message): Exception
+    {
+        return $this->backendProvider->isApiBackend()
+            ? new ApiErrorException($message, 500)
+            : new Exception($message);
     }
 }
