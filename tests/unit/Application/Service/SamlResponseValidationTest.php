@@ -130,7 +130,7 @@ class SamlResponseValidationTest extends TestCase
 
         $this->assertSame('http://localhost:8089/saml/acs', $seen);
         // The pin is static state, so it must not outlive the call
-        $this->assertSame('80', \OneLogin\Saml2\Utils::getSelfPort());
+        $this->assertSame('80', (string) \OneLogin\Saml2\Utils::getSelfPort());
     }
 
     public function testCurrentUrlKeepsThePathPrefixAProxyStripped(): void
