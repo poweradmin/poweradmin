@@ -24,7 +24,9 @@ namespace Poweradmin\Tests\Unit\Module\SecondaryZoneImport\Controller;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
+use Poweradmin\Application\Service\Zone\ChangeRequestMessages;
 use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
@@ -45,6 +47,11 @@ class SecondaryZoneImportControllerTest extends ZoneCreateControllerTestCase
     /** @var DomainManagerInterface&MockObject */
     private DomainManagerInterface $domainManager;
 
+    private string $zoneType = 'SLAVE';
+
+    /** @var array<string, array<string, mixed>> */
+    private array $configOverrides = [];
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -53,11 +60,15 @@ class SecondaryZoneImportControllerTest extends ZoneCreateControllerTestCase
         $this->domainManager = $this->createMock(DomainManagerInterface::class);
         $this->domainManager->method('retrieveZone')->willReturn(true);
         $this->factory->method('domainManager')->willReturn($this->domainManager);
+
+        $domains = $this->createMock(DomainRepositoryInterface::class);
+        $domains->method('getDomainType')->willReturnCallback(fn(): string => $this->zoneType);
+        $this->factory->method('domainRepository')->willReturn($domains);
     }
 
     private function makeController(): SecondaryZoneImportController
     {
-        return new SecondaryZoneImportController($this->requestData(), true, $this->environment($this->configure()));
+        return new SecondaryZoneImportController($this->requestData(), true, $this->environment($this->configure($this->configOverrides)));
     }
 
     /** @param array<string, mixed> $fields */
@@ -158,5 +169,33 @@ class SecondaryZoneImportControllerTest extends ZoneCreateControllerTestCase
         $controller->run();
 
         $this->assertSame([['error', 'You do not have permission to change this zone to that type.']], $this->messagesFor(self::PAGE));
+    }
+
+    public function testOnlyASecondaryZoneCanBeConverted(): void
+    {
+        $this->granted = [Permission::PERM_ZONE_SLAVE_ADD, Permission::PERM_ZONE_META_EDIT_OTHERS];
+        $this->zoneType = 'MASTER';
+        $this->domainManager->expects($this->never())->method('changeZoneType');
+        $this->post(['action' => 'convert', 'zone_id' => '1']);
+
+        $halt = $this->haltOf(fn() => $this->makeController()->run());
+
+        $this->assertSame(RequestHalted::KIND_ERROR, $halt->kind);
+        $this->assertSame('Invalid zone.', $halt->target);
+    }
+
+    public function testAZoneUnderChangeApprovalIsNotConvertedDirectly(): void
+    {
+        $this->granted = [Permission::PERM_ZONE_SLAVE_ADD, Permission::PERM_ZONE_META_EDIT_OTHERS];
+        $this->configOverrides = ['approval' => ['enabled' => true, 'require_review_for_all' => true]];
+        $this->permissions->method('getChangeRequestPermissionLevelForZone')->willReturn('all');
+        $this->permissions->method('canCreateZone')->willReturn(true);
+        $this->domainManager->expects($this->never())->method('changeZoneType');
+        $this->post(['action' => 'convert', 'zone_id' => '1']);
+
+        $controller = $this->makeController();
+        $controller->run();
+
+        $this->assertSame([['error', ChangeRequestMessages::requiresApproval()]], $this->messagesFor(self::PAGE));
     }
 }

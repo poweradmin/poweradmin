@@ -22,11 +22,13 @@
 
 namespace Poweradmin\Module\SecondaryZoneImport\Controller;
 
+use Poweradmin\Application\Service\Zone\ChangeRequestMessages;
 use Poweradmin\Application\Service\Zone\ZoneCreateRequest;
 use Poweradmin\Application\Service\Zone\ZoneCreateFormMessages;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Utility\DnsIdnService;
+use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
 
 /**
@@ -163,6 +165,19 @@ class SecondaryZoneImportController extends BaseController
         $zoneId = (int)$this->httpRequest->getPostParam('zone_id', 0);
         if (!$this->userMayAccessZone($zoneId)) {
             $this->showError(_('Invalid zone.'));
+            return;
+        }
+
+        // Only a secondary has anything to convert; a primary or native zone would be rewritten as is
+        if (strtoupper($this->moduleServices()->domainRepository()->getDomainType($zoneId)) !== 'SLAVE') {
+            $this->showError(_('Invalid zone.'));
+            return;
+        }
+
+        // Converting rewrites the zone directly, which a reviewed zone does not allow
+        if ($this->changeApprovalModeForZone($zoneId) === ChangeApprovalPolicy::MODE_REQUEST) {
+            $this->setMessage('import', 'error', ChangeRequestMessages::requiresApproval());
+            $this->showForm();
             return;
         }
 
