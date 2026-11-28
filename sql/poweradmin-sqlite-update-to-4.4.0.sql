@@ -18,6 +18,7 @@ SELECT pt.id, pi.id
 FROM perm_templ pt
 JOIN perm_items pi ON pi.name = 'zone_content_edit_own_as_client'
 WHERE (SELECT missing FROM pa_add_client_edit) = 1
-  AND ((pt.name = 'Editor' AND pt.template_type = 'user') OR (pt.name = 'Editors' AND pt.template_type = 'group'));
+  AND ((pt.name = 'Editor' AND pt.template_type = 'user' AND pt.descr = 'Edit own zone records but cannot modify SOA and NS records.')
+    OR (pt.name = 'Editors' AND pt.template_type = 'group' AND pt.descr = 'Edit zone records (no SOA/NS) for group members.'));
 
 DROP TABLE pa_add_client_edit;

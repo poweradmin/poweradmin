@@ -19,6 +19,7 @@ BEGIN
         RETURNING id INTO new_id;
         INSERT INTO perm_templ_items (templ_id, perm_id)
         SELECT id, new_id FROM perm_templ
-        WHERE (name = 'Editor' AND template_type = 'user') OR (name = 'Editors' AND template_type = 'group');
+        WHERE (name = 'Editor' AND template_type = 'user' AND descr = 'Edit own zone records but cannot modify SOA and NS records.')
+           OR (name = 'Editors' AND template_type = 'group' AND descr = 'Edit zone records (no SOA/NS) for group members.');
     END IF;
 END $$;
