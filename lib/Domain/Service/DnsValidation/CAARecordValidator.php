@@ -306,8 +306,7 @@ class CAARecordValidator implements DnsRecordValidatorInterface
         $subContent = substr($value, 1, -1);
 
         // Check for unescaped quotes in the content (RFC 8659 requires escaping)
-        $pattern = '/(?<!\\\\)"/';
-        if (preg_match($pattern, $subContent)) {
+        if (!$this->hasOnlyEscapedQuotes($subContent)) {
             return ValidationResult::failure(_('Backslashes must precede all quotes (") in value content.'));
         }
 
@@ -324,5 +323,26 @@ class CAARecordValidator implements DnsRecordValidatorInterface
         }
 
         return ValidationResult::success(true);
+    }
+
+    /**
+     * True when no quote in the text between the outer quotes is bare and the text
+     * does not end in a lone backslash, which would escape the closing quote.
+     */
+    private function hasOnlyEscapedQuotes(string $inner): bool
+    {
+        $length = strlen($inner);
+        for ($i = 0; $i < $length; $i++) {
+            if ($inner[$i] === '\\') {
+                if ($i + 1 >= $length) {
+                    return false;
+                }
+                $i++;
+            } elseif ($inner[$i] === '"') {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

@@ -239,6 +239,11 @@ class URIRecordValidator implements DnsRecordValidatorInterface
         $weight = (int)$matches[2];
         $uri = $matches[3];
 
+        if (!$this->hasOnlyEscapedQuotes($uri)) {
+            $errors[] = _('URI record must be in the format: <priority> <weight> "<target URI>"');
+            return ['isValid' => false, 'errors' => $errors];
+        }
+
         // Validate priority (0-65535)
         if ($priority < 0 || $priority > 65535) {
             $errors[] = _('URI priority must be between 0 and 65535 (16-bit unsigned integer).');
@@ -334,5 +339,26 @@ class URIRecordValidator implements DnsRecordValidatorInterface
     {
         preg_match('/^(\d+)\s+/', $content, $matches);
         return isset($matches[1]) ? (int)$matches[1] : 0;
+    }
+
+    /**
+     * True when no quote in the text between the outer quotes is bare and the text
+     * does not end in a lone backslash, which would escape the closing quote.
+     */
+    private function hasOnlyEscapedQuotes(string $inner): bool
+    {
+        $length = strlen($inner);
+        for ($i = 0; $i < $length; $i++) {
+            if ($inner[$i] === '\\') {
+                if ($i + 1 >= $length) {
+                    return false;
+                }
+                $i++;
+            } elseif ($inner[$i] === '"') {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

@@ -181,9 +181,8 @@ class TXTRecordValidator implements DnsRecordValidatorInterface
 
             $subContent = substr($content, 1, -1);
 
-            // Check for unescaped quotes
-            $pattern = '/(?<!\\\\)"/';
-            if (preg_match($pattern, $subContent)) {
+            // Check for unescaped quotes and a trailing lone backslash
+            if (!$this->hasOnlyEscapedQuotes($subContent)) {
                 return ValidationResult::failure(_('Backslashes must precede all quotes (") in TXT content'));
             }
 
@@ -204,9 +203,8 @@ class TXTRecordValidator implements DnsRecordValidatorInterface
                 // Remove the quotes for length calculation
                 $unquoted = substr($stringPart, 1, -1);
 
-                // Check for unescaped quotes
-                $pattern = '/(?<!\\\\)"/';
-                if (preg_match($pattern, $unquoted)) {
+                // Check for unescaped quotes and a trailing lone backslash
+                if (!$this->hasOnlyEscapedQuotes($unquoted)) {
                     return ValidationResult::failure(_('Backslashes must precede all quotes (") in TXT content'));
                 }
 
@@ -246,7 +244,7 @@ class TXTRecordValidator implements DnsRecordValidatorInterface
         $content = trim($content);
 
         // Check if we have multiple quoted strings
-        if (!preg_match('/^"[^"]*"(\s+"[^"]*")+$/', $content)) {
+        if (!preg_match('/^"(?:[^"\\\\]|\\\\.)*"(?:\s+"(?:[^"\\\\]|\\\\.)*")+$/', $content)) {
             return false;
         }
 
@@ -282,5 +280,26 @@ class TXTRecordValidator implements DnsRecordValidatorInterface
         }
 
         return ValidationResult::failure(_('Invalid value for priority field. TXT records must have priority value of 0.'));
+    }
+
+    /**
+     * True when no quote in the text between the outer quotes is bare and the text
+     * does not end in a lone backslash, which would escape the closing quote.
+     */
+    private function hasOnlyEscapedQuotes(string $inner): bool
+    {
+        $length = strlen($inner);
+        for ($i = 0; $i < $length; $i++) {
+            if ($inner[$i] === '\\') {
+                if ($i + 1 >= $length) {
+                    return false;
+                }
+                $i++;
+            } elseif ($inner[$i] === '"') {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

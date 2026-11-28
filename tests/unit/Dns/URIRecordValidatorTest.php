@@ -210,4 +210,20 @@ class URIRecordValidatorTest extends TestCase
             $this->assertEquals($content, $data['content']);
         }
     }
+
+    public function testRefusesBadlyQuotedStrings(): void
+    {
+        foreach (['10 1 "https://example.com/abc\\"', '10 1 "https://example.com/a"b"', '10 1 "https://example.com/a\\\\\\"'] as $content) {
+            $result = $this->validator->validate($content, 'uri.example.com', 0, 3600, 86400);
+            $this->assertFalse($result->isValid(), $content);
+        }
+    }
+
+    public function testAcceptsCorrectlyEscapedQuotedStrings(): void
+    {
+        foreach (['10 1 "https://example.com/a\\\\"', '10 1 "https://example.com/a\\"b"', '10 1 "https://example.com/abc"'] as $content) {
+            $result = $this->validator->validate($content, 'uri.example.com', 0, 3600, 86400);
+            $this->assertTrue($result->isValid(), $content . ' ' . implode(' ', $result->getErrors()));
+        }
+    }
 }
