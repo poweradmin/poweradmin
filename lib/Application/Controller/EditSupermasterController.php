@@ -25,7 +25,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -106,7 +106,7 @@ class EditSupermasterController extends BaseController
             return;
         }
 
-        $info = $dnsRecord->getSupermasterInfoFromIp($old_master_ip);
+        $info = $dnsRecord->getSupermasterInfoFromIp($old_master_ip, $old_ns_name);
 
         // If POST didn't provide values, use the existing ones
         if ($new_master_ip === null) {
