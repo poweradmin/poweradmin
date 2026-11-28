@@ -16770,6 +16770,11 @@ msgstr "%d törölt csoport adatai eltávolítva; %d sikertelen"
 msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
 msgstr "A sablon rekordjai kimaradtak, mert ütköznek egy azonos nevű CNAME rekorddal: %s"
 
+#: lib/Domain/Service/Dns/ZoneTemplateApplier.php:141
+#, php-format
+msgid "Template records skipped because their type is not allowed in this zone: %s"
+msgstr "A sablon rekordjai kimaradtak, mert a típusuk nem engedélyezett ebben a zónában: %s"
+
 #: lib/Domain/Service/Dns/DomainManager.php:264
 #, php-format
 msgid "The zone template has CNAME records that conflict with other records at the same name: %s"
@@ -16777,10 +16782,10 @@ msgstr "A zónasablon olyan CNAME rekordokat tartalmaz, amelyek ütköznek más,
 
 #: lib/Application/Controller/Template/EditZoneTemplController.php:254
 #, php-format
-msgid "%d zone was updated without the template records that conflict with a CNAME."
-msgid_plural "%d zones were updated without the template records that conflict with a CNAME."
-msgstr[0] "%d zóna frissült a CNAME-mel ütköző sablonrekordok nélkül."
-msgstr[1] "%d zóna frissült a CNAME-mel ütköző sablonrekordok nélkül."
+msgid "%d zone was updated without some of the template records."
+msgid_plural "%d zones were updated without some of the template records."
+msgstr[0] "%d zóna frissült a sablon néhány rekordja nélkül."
+msgstr[1] "%d zóna frissült a sablon néhány rekordja nélkül."
 
 #: lib/Application/Controller/User/EditPermTemplController.php:102
 msgid "This permission template was changed by someone else after you opened it. Review the current values and save again."

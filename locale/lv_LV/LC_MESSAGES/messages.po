@@ -16332,6 +16332,11 @@ msgstr "Dzēstās grupas, kuru dati noņemti: %d; neizdevās: %d"
 msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
 msgstr "Veidnes ieraksti tika izlaisti, jo tie ir pretrunā ar tāda paša nosaukuma CNAME ierakstu: %s"
 
+#: lib/Domain/Service/Dns/ZoneTemplateApplier.php:141
+#, php-format
+msgid "Template records skipped because their type is not allowed in this zone: %s"
+msgstr "Veidnes ieraksti tika izlaisti, jo to tips šajā zonā nav atļauts: %s"
+
 #: lib/Domain/Service/Dns/DomainManager.php:264
 #, php-format
 msgid "The zone template has CNAME records that conflict with other records at the same name: %s"
@@ -16339,11 +16344,11 @@ msgstr "Zonas veidnē ir CNAME ieraksti, kas ir pretrunā ar citiem tāda paša 
 
 #: lib/Application/Controller/Template/EditZoneTemplController.php:254
 #, php-format
-msgid "%d zone was updated without the template records that conflict with a CNAME."
-msgid_plural "%d zones were updated without the template records that conflict with a CNAME."
-msgstr[0] "Zonas, kas atjauninātas bez veidnes ierakstiem, kuri ir pretrunā ar CNAME: %d"
-msgstr[1] "Zonas, kas atjauninātas bez veidnes ierakstiem, kuri ir pretrunā ar CNAME: %d"
-msgstr[2] "Zonas, kas atjauninātas bez veidnes ierakstiem, kuri ir pretrunā ar CNAME: %d"
+msgid "%d zone was updated without some of the template records."
+msgid_plural "%d zones were updated without some of the template records."
+msgstr[0] "Zonas, kas atjauninātas bez dažiem veidnes ierakstiem: %d"
+msgstr[1] "Zonas, kas atjauninātas bez dažiem veidnes ierakstiem: %d"
+msgstr[2] "Zonas, kas atjauninātas bez dažiem veidnes ierakstiem: %d"
 
 #: lib/Application/Controller/User/EditPermTemplController.php:102
 msgid "This permission template was changed by someone else after you opened it. Review the current values and save again."

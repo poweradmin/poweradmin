@@ -17079,6 +17079,11 @@ msgstr "Au fost eliminate cele a %d grupuri șterse; %d au eșuat"
 msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
 msgstr "Înregistrările șablonului au fost omise deoarece sunt în conflict cu un CNAME cu același nume: %s"
 
+#: lib/Domain/Service/Dns/ZoneTemplateApplier.php:141
+#, php-format
+msgid "Template records skipped because their type is not allowed in this zone: %s"
+msgstr "Înregistrările șablonului au fost omise deoarece tipul lor nu este permis în această zonă: %s"
+
 #: lib/Domain/Service/Dns/DomainManager.php:264
 #, php-format
 msgid "The zone template has CNAME records that conflict with other records at the same name: %s"
@@ -17086,11 +17091,11 @@ msgstr "Șablonul de zonă conține înregistrări CNAME în conflict cu alte î
 
 #: lib/Application/Controller/Template/EditZoneTemplController.php:254
 #, php-format
-msgid "%d zone was updated without the template records that conflict with a CNAME."
-msgid_plural "%d zones were updated without the template records that conflict with a CNAME."
-msgstr[0] "Zone actualizate fără înregistrările șablonului aflate în conflict cu un CNAME: %d"
-msgstr[1] "Zone actualizate fără înregistrările șablonului aflate în conflict cu un CNAME: %d"
-msgstr[2] "Zone actualizate fără înregistrările șablonului aflate în conflict cu un CNAME: %d"
+msgid "%d zone was updated without some of the template records."
+msgid_plural "%d zones were updated without some of the template records."
+msgstr[0] "Zone actualizate fără unele dintre înregistrările șablonului: %d"
+msgstr[1] "Zone actualizate fără unele dintre înregistrările șablonului: %d"
+msgstr[2] "Zone actualizate fără unele dintre înregistrările șablonului: %d"
 
 #: lib/Application/Controller/User/EditPermTemplController.php:102
 msgid "This permission template was changed by someone else after you opened it. Review the current values and save again."

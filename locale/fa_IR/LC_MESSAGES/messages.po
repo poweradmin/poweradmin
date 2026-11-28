@@ -16452,6 +16452,11 @@ msgstr "گروه‌های حذف‌شده‌ای که داده‌هایشان ب
 msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
 msgstr "رکوردهای قالب نادیده گرفته شدند، زیرا با یک CNAME هم‌نام تداخل دارند: %s"
 
+#: lib/Domain/Service/Dns/ZoneTemplateApplier.php:141
+#, php-format
+msgid "Template records skipped because their type is not allowed in this zone: %s"
+msgstr "رکوردهای قالب نادیده گرفته شدند، زیرا نوع آن‌ها در این منطقه مجاز نیست: %s"
+
 #: lib/Domain/Service/Dns/DomainManager.php:264
 #, php-format
 msgid "The zone template has CNAME records that conflict with other records at the same name: %s"
@@ -16459,10 +16464,10 @@ msgstr "قالب منطقه رکوردهای CNAME دارد که با رکورد
 
 #: lib/Application/Controller/Template/EditZoneTemplController.php:254
 #, php-format
-msgid "%d zone was updated without the template records that conflict with a CNAME."
-msgid_plural "%d zones were updated without the template records that conflict with a CNAME."
-msgstr[0] "%d منطقه بدون رکوردهای قالبِ متداخل با CNAME به‌روزرسانی شد."
-msgstr[1] "%d منطقه بدون رکوردهای قالبِ متداخل با CNAME به‌روزرسانی شدند."
+msgid "%d zone was updated without some of the template records."
+msgid_plural "%d zones were updated without some of the template records."
+msgstr[0] "%d منطقه بدون برخی از رکوردهای قالب به‌روزرسانی شد."
+msgstr[1] "%d منطقه بدون برخی از رکوردهای قالب به‌روزرسانی شدند."
 
 #: lib/Application/Controller/User/EditPermTemplController.php:102
 msgid "This permission template was changed by someone else after you opened it. Review the current values and save again."

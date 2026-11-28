@@ -16706,6 +16706,11 @@ msgstr "Data bagi %d kumpulan yang dipadam telah dialih keluar; %d gagal"
 msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
 msgstr "Rekod templat dilangkau kerana bercanggah dengan CNAME yang sama nama: %s"
 
+#: lib/Domain/Service/Dns/ZoneTemplateApplier.php:141
+#, php-format
+msgid "Template records skipped because their type is not allowed in this zone: %s"
+msgstr "Rekod templat dilangkau kerana jenisnya tidak dibenarkan dalam zon ini: %s"
+
 #: lib/Domain/Service/Dns/DomainManager.php:264
 #, php-format
 msgid "The zone template has CNAME records that conflict with other records at the same name: %s"
@@ -16713,9 +16718,9 @@ msgstr "Templat zon mempunyai rekod CNAME yang bercanggah dengan rekod lain yang
 
 #: lib/Application/Controller/Template/EditZoneTemplController.php:254
 #, php-format
-msgid "%d zone was updated without the template records that conflict with a CNAME."
-msgid_plural "%d zones were updated without the template records that conflict with a CNAME."
-msgstr[0] "%d zon dikemas kini tanpa rekod templat yang bercanggah dengan CNAME."
+msgid "%d zone was updated without some of the template records."
+msgid_plural "%d zones were updated without some of the template records."
+msgstr[0] "%d zon dikemas kini tanpa sebahagian rekod templat."
 
 #: lib/Application/Controller/User/EditPermTemplController.php:102
 msgid "This permission template was changed by someone else after you opened it. Review the current values and save again."

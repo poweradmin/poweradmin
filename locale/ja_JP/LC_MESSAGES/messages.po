@@ -16564,6 +16564,11 @@ msgstr "%d 件の削除済みグループの割り当てとメンバーシップ
 msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
 msgstr "同じ名前の CNAME と競合するため、テンプレートのレコードをスキップしました: %s"
 
+#: lib/Domain/Service/Dns/ZoneTemplateApplier.php:141
+#, php-format
+msgid "Template records skipped because their type is not allowed in this zone: %s"
+msgstr "このゾーンでは許可されていないタイプのため、テンプレートのレコードをスキップしました: %s"
+
 #: lib/Domain/Service/Dns/DomainManager.php:264
 #, php-format
 msgid "The zone template has CNAME records that conflict with other records at the same name: %s"
@@ -16571,9 +16576,9 @@ msgstr "ゾーンテンプレートに、同じ名前の他のレコードと競
 
 #: lib/Application/Controller/Template/EditZoneTemplController.php:254
 #, php-format
-msgid "%d zone was updated without the template records that conflict with a CNAME."
-msgid_plural "%d zones were updated without the template records that conflict with a CNAME."
-msgstr[0] "%d 個のゾーンを、CNAME と競合するテンプレートレコードを除いて更新しました。"
+msgid "%d zone was updated without some of the template records."
+msgid_plural "%d zones were updated without some of the template records."
+msgstr[0] "%d 個のゾーンを、一部のテンプレートレコードを除いて更新しました。"
 
 #: lib/Application/Controller/User/EditPermTemplController.php:102
 msgid "This permission template was changed by someone else after you opened it. Review the current values and save again."

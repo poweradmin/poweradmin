@@ -17042,6 +17042,11 @@ msgstr "Grúpaí scriosta ar baineadh a sonraí: %d; theip ar: %d"
 msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
 msgstr "Fágadh taifid an teimpléid ar lár mar go dtagann siad salach ar CNAME leis an ainm céanna: %s"
 
+#: lib/Domain/Service/Dns/ZoneTemplateApplier.php:141
+#, php-format
+msgid "Template records skipped because their type is not allowed in this zone: %s"
+msgstr "Fágadh taifid an teimpléid ar lár mar nach gceadaítear a gcineál sa chrios seo: %s"
+
 #: lib/Domain/Service/Dns/DomainManager.php:264
 #, php-format
 msgid "The zone template has CNAME records that conflict with other records at the same name: %s"
@@ -17049,13 +17054,13 @@ msgstr "Tá taifid CNAME sa teimpléad creasa a thagann salach ar thaifid eile l
 
 #: lib/Application/Controller/Template/EditZoneTemplController.php:254
 #, php-format
-msgid "%d zone was updated without the template records that conflict with a CNAME."
-msgid_plural "%d zones were updated without the template records that conflict with a CNAME."
-msgstr[0] "Creasanna a nuashonraíodh gan na taifid teimpléid a thagann salach ar CNAME: %d"
-msgstr[1] "Creasanna a nuashonraíodh gan na taifid teimpléid a thagann salach ar CNAME: %d"
-msgstr[2] "Creasanna a nuashonraíodh gan na taifid teimpléid a thagann salach ar CNAME: %d"
-msgstr[3] "Creasanna a nuashonraíodh gan na taifid teimpléid a thagann salach ar CNAME: %d"
-msgstr[4] "Creasanna a nuashonraíodh gan na taifid teimpléid a thagann salach ar CNAME: %d"
+msgid "%d zone was updated without some of the template records."
+msgid_plural "%d zones were updated without some of the template records."
+msgstr[0] "Creasanna a nuashonraíodh gan cuid de thaifid an teimpléid: %d"
+msgstr[1] "Creasanna a nuashonraíodh gan cuid de thaifid an teimpléid: %d"
+msgstr[2] "Creasanna a nuashonraíodh gan cuid de thaifid an teimpléid: %d"
+msgstr[3] "Creasanna a nuashonraíodh gan cuid de thaifid an teimpléid: %d"
+msgstr[4] "Creasanna a nuashonraíodh gan cuid de thaifid an teimpléid: %d"
 
 #: lib/Application/Controller/User/EditPermTemplController.php:102
 msgid "This permission template was changed by someone else after you opened it. Review the current values and save again."

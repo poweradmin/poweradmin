@@ -17170,6 +17170,11 @@ msgstr "Retirées pour %d groupes supprimés ; %d en échec"
 msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
 msgstr "Des enregistrements du modèle ont été ignorés car ils sont en conflit avec un CNAME du même nom : %s"
 
+#: lib/Domain/Service/Dns/ZoneTemplateApplier.php:141
+#, php-format
+msgid "Template records skipped because their type is not allowed in this zone: %s"
+msgstr "Des enregistrements du modèle ont été ignorés car leur type n'est pas autorisé dans cette zone : %s"
+
 #: lib/Domain/Service/Dns/DomainManager.php:264
 #, php-format
 msgid "The zone template has CNAME records that conflict with other records at the same name: %s"
@@ -17177,10 +17182,10 @@ msgstr "Le modèle de zone contient des enregistrements CNAME en conflit avec d'
 
 #: lib/Application/Controller/Template/EditZoneTemplController.php:254
 #, php-format
-msgid "%d zone was updated without the template records that conflict with a CNAME."
-msgid_plural "%d zones were updated without the template records that conflict with a CNAME."
-msgstr[0] "%d zone a été mise à jour sans les enregistrements du modèle en conflit avec un CNAME."
-msgstr[1] "%d zones ont été mises à jour sans les enregistrements du modèle en conflit avec un CNAME."
+msgid "%d zone was updated without some of the template records."
+msgid_plural "%d zones were updated without some of the template records."
+msgstr[0] "%d zone a été mise à jour sans certains enregistrements du modèle."
+msgstr[1] "%d zones ont été mises à jour sans certains enregistrements du modèle."
 
 #: lib/Application/Controller/User/EditPermTemplController.php:102
 msgid "This permission template was changed by someone else after you opened it. Review the current values and save again."

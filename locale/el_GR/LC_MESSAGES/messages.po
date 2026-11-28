@@ -17143,6 +17143,11 @@ msgstr "Αφαιρέθηκαν αυτές %d διαγραμμένων ομάδω
 msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
 msgstr "Οι εγγραφές του προτύπου παραλείφθηκαν επειδή συγκρούονται με εγγραφή CNAME με το ίδιο όνομα: %s"
 
+#: lib/Domain/Service/Dns/ZoneTemplateApplier.php:141
+#, php-format
+msgid "Template records skipped because their type is not allowed in this zone: %s"
+msgstr "Οι εγγραφές του προτύπου παραλείφθηκαν επειδή ο τύπος τους δεν επιτρέπεται σε αυτή τη ζώνη: %s"
+
 #: lib/Domain/Service/Dns/DomainManager.php:264
 #, php-format
 msgid "The zone template has CNAME records that conflict with other records at the same name: %s"
@@ -17150,10 +17155,10 @@ msgstr "Το πρότυπο ζώνης περιέχει εγγραφές CNAME �
 
 #: lib/Application/Controller/Template/EditZoneTemplController.php:254
 #, php-format
-msgid "%d zone was updated without the template records that conflict with a CNAME."
-msgid_plural "%d zones were updated without the template records that conflict with a CNAME."
-msgstr[0] "%d ζώνη ενημερώθηκε χωρίς τις εγγραφές του προτύπου που συγκρούονται με CNAME."
-msgstr[1] "%d ζώνες ενημερώθηκαν χωρίς τις εγγραφές του προτύπου που συγκρούονται με CNAME."
+msgid "%d zone was updated without some of the template records."
+msgid_plural "%d zones were updated without some of the template records."
+msgstr[0] "%d ζώνη ενημερώθηκε χωρίς ορισμένες από τις εγγραφές του προτύπου."
+msgstr[1] "%d ζώνες ενημερώθηκαν χωρίς ορισμένες από τις εγγραφές του προτύπου."
 
 #: lib/Application/Controller/User/EditPermTemplController.php:102
 msgid "This permission template was changed by someone else after you opened it. Review the current values and save again."
