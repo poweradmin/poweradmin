@@ -106,6 +106,13 @@ class SMIMEARecordValidator implements DnsRecordValidatorInterface
             return ValidationResult::failure(_('Invalid characters in hostname.'));
         }
 
+        // Always validate the name as a hostname, whichever form it takes.
+        $hostnameResult = $this->hostnameValidator->validate($name, true);
+        if (!$hostnameResult->isValid()) {
+            return $hostnameResult;
+        }
+        $name = $hostnameResult->getData()['hostname'];
+
         // SMIMEA records are typically of the form: <hash-of-localpart>._smimecert.<domain>
         // The local-part hash is the SHA-256 hash (hex encoded) of the local part of the email address
         if (strpos($name, '._smimecert.') !== false) {
@@ -121,14 +128,7 @@ class SMIMEARecordValidator implements DnsRecordValidatorInterface
             // Add information about the format
             $warnings[] = sprintf(_('SMIMEA record name is in the format: SHA256(local-part)._smimecert.domain.tld for email addresses like %s'), 'local-part@domain.tld');
         } else {
-            // For non-SMIMEA format names, use regular hostname validation but add a warning
-            $hostnameResult = $this->hostnameValidator->validate($name, true);
-            if (!$hostnameResult->isValid()) {
-                return $hostnameResult;
-            }
-            $hostnameData = $hostnameResult->getData();
-            $name = $hostnameData['hostname'];
-
+            // Not the standard SMIMEA name format
             $warnings[] = _('This does not use the standard SMIMEA name format. SMIMEA records should typically use: SHA256(local-part)._smimecert.domain.tld');
         }
 

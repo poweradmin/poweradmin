@@ -243,4 +243,20 @@ class TLSARecordValidatorTest extends TestCase
         $data = $result->getData();
         $this->assertEquals(86400, $data['ttl']);
     }
+
+    public function testRejectsMalformedHostnameLabelsInUnderscoreNames()
+    {
+        $content = '3 1 1 a0b9b16969687adf0323d15048fb4fa4c354c4e01594e8956522cfe3566cae74';
+        foreach (['_443._tcp.-bad.example.com', '_443._tcp..example.com', '_443._tcp.bad-.example.com'] as $name) {
+            $result = $this->validator->validate($content, $name, 0, 3600, 86400);
+            $this->assertFalse($result->isValid(), $name);
+        }
+    }
+
+    public function testAcceptsWellFormedUnderscoreName()
+    {
+        $content = '3 1 1 a0b9b16969687adf0323d15048fb4fa4c354c4e01594e8956522cfe3566cae74';
+        $result = $this->validator->validate($content, '_443._tcp.www.example.com', 0, 3600, 86400);
+        $this->assertTrue($result->isValid());
+    }
 }
