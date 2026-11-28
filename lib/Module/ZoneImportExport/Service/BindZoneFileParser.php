@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Module\ZoneImportExport\Service;
 
+use Poweradmin\Domain\Utility\DnsHelper;
+
 /**
  * BIND zone file parser.
  *
@@ -490,6 +492,38 @@ class BindZoneFileParser
     }
 
     /**
+     * Resolve an "@" kept in the name fields of record content (the file had no $ORIGIN)
+     * to the zone name. Free-text types are returned unchanged.
+     */
+    public static function resolveKeptOrigin(string $type, string $content, string $zoneName): string
+    {
+        $positions = match (strtoupper($type)) {
+            'MX', 'KX', 'NS', 'CNAME', 'PTR', 'DNAME', 'AFSDB' => [0],
+            'SRV' => [2],
+            'SOA' => [0, 1],
+            'NAPTR' => [5],
+            default => [],
+        };
+        if ($positions === [] || !str_contains($content, '@')) {
+            return $content;
+        }
+
+        // A view variant (example.com..internal) holds its records under its apex, as owners do
+        $origin = DnsHelper::zoneApexName($zoneName);
+        if ($origin === '') {
+            $origin = '.';
+        }
+        $tokens = explode(' ', $content);
+        foreach ($positions as $i) {
+            if (($tokens[$i] ?? null) === '@') {
+                $tokens[$i] = $origin;
+            }
+        }
+
+        return implode(' ', $tokens);
+    }
+
+    /**
      * Make a name fully qualified (ending with a dot stripped for PowerDNS storage).
      */
     private function makeAbsolute(string $name, ?string $origin): string
@@ -498,7 +532,7 @@ class BindZoneFileParser
             return $origin ?? '';
         }
 
-        // @ means the origin; without one it is kept for the zone name to fill in
+        // @ means the origin; without one it stays for resolveKeptOrigin() at import
         if ($name === '@') {
             return $origin ?? $name;
         }

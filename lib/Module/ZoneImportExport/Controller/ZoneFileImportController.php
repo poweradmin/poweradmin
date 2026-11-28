@@ -435,6 +435,7 @@ class ZoneFileImportController extends BaseController
         $nameNormalizer = new HostnameValidator($this->config);
         foreach ($records as $record) {
             $record->name = strtolower($nameNormalizer->normalizeRecordName((string)$record->name, (string)$zoneName));
+            $record->content = BindZoneFileParser::resolveKeptOrigin((string)$record->type, (string)$record->content, (string)$zoneName);
         }
 
         // Import records
