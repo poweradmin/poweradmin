@@ -35,9 +35,9 @@ class AddSupermasterController extends BaseController
     {
         $this->checkPermission(Permission::PERM_SUPERMASTER_ADD, _("You do not have the permission to add a new supermaster."));
 
-        $master_ip = $this->httpRequest->getPostParam('master_ip', "");
-        $ns_name = $this->httpRequest->getPostParam('ns_name', "");
-        $account = $this->httpRequest->getPostParam('account', "");
+        $master_ip = $this->httpRequest->getPostString('master_ip');
+        $ns_name = $this->httpRequest->getPostString('ns_name');
+        $account = $this->httpRequest->getPostString('account');
 
         if ($this->isPost()) {
             $this->addSuperMaster($master_ip, $ns_name, $account);
