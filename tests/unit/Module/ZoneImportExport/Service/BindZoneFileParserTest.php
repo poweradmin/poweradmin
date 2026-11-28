@@ -218,6 +218,38 @@ ZONE;
         $this->assertEquals('@', $records[0]->content);
     }
 
+    public function testResolveKeptOriginFillsTheNameFieldsOfEachType(): void
+    {
+        $cases = [
+            ['MX', '@', 'example.org'],
+            ['KX', '@', 'example.org'],
+            ['CNAME', '@', 'example.org'],
+            ['NS', '@', 'example.org'],
+            ['PTR', '@', 'example.org'],
+            ['DNAME', '@', 'example.org'],
+            ['AFSDB', '@', 'example.org'],
+            ['SRV', '5 5060 @', '5 5060 example.org'],
+            ['SOA', '@ @ 1 2 3 4 5', 'example.org example.org 1 2 3 4 5'],
+            ['NAPTR', '10 10 "s" "SIP+D2U" "" @', '10 10 "s" "SIP+D2U" "" example.org'],
+        ];
+        foreach ($cases as [$type, $content, $expected]) {
+            $this->assertSame($expected, BindZoneFileParser::resolveKeptOrigin($type, $content, 'example.org.'), $type);
+        }
+    }
+
+    public function testResolveKeptOriginLeavesFreeTextAlone(): void
+    {
+        foreach (['TXT' => '"@"', 'SPF' => '"v=spf1 @"', 'CAA' => '0 issue "@"', 'URI' => '10 1 "@"', 'RP' => '@ @', 'A' => '192.0.2.1'] as $type => $content) {
+            $this->assertSame($content, BindZoneFileParser::resolveKeptOrigin($type, $content, 'example.org'), $type);
+        }
+    }
+
+    public function testResolveKeptOriginKeepsNamesThatAreNotAnAt(): void
+    {
+        $this->assertSame('mail.example.com', BindZoneFileParser::resolveKeptOrigin('MX', 'mail.example.com', 'example.org'));
+        $this->assertSame('1 2 a@b.example.com', BindZoneFileParser::resolveKeptOrigin('SRV', '1 2 a@b.example.com', 'example.org'));
+    }
+
     public function testParseMultilineRecord(): void
     {
         $content = <<<ZONE
@@ -2426,5 +2458,11 @@ ZONE;
 
         $this->assertCount(1, $records);
         $this->assertSame('"a\\\\" "b;c"', $records[0]->content);
+    }
+
+    public function testKeptOriginResolvesToTheApexOfAViewVariant(): void
+    {
+        $this->assertSame('example.com', BindZoneFileParser::resolveKeptOrigin('MX', '@', 'example.com..internal'));
+        $this->assertSame('.', BindZoneFileParser::resolveKeptOrigin('NS', '@', '.'));
     }
 }

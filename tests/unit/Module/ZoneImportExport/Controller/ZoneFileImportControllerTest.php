@@ -742,6 +742,24 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         $this->assertSame(2, $this->renderedParams()['fail_count']);
     }
 
+    public function testAtInRecordDataFromAFileWithoutAnOriginBecomesTheZoneName(): void
+    {
+        $this->zoneName = 'example.org';
+        $this->post(['import_mode' => 'existing', 'existing_zone_id' => (string)self::ZONE_ID]);
+        $this->upload("\$TTL 3600\n@ IN MX 10 @\nwww IN CNAME @\n@ IN TXT \"@\"\n");
+        $this->makeController()->run();
+
+        $this->post(['import_mode' => 'existing', 'existing_zone_id' => (string)self::ZONE_ID, 'conflict_strategy' => 'add_all']);
+        $_FILES = [];
+        $this->makeController()->execute();
+
+        $this->assertSame(
+            [['example.org', 'MX', 'example.org'], ['www.example.org', 'CNAME', 'example.org'], ['example.org', 'TXT', '"@"']],
+            array_map(fn(array $w): array => [$w[1], $w[2], $w[3]], $this->writes)
+        );
+        $this->assertSame(0, $this->renderedParams()['fail_count']);
+    }
+
     public function testConfirmAsNewZoneCreatesTheZoneFromTheSubmittedNameTypeAndGroups(): void
     {
         $resolver = $this->createMock(ZoneCreateOwnershipResolver::class);
