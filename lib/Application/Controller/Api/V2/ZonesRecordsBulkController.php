@@ -342,8 +342,11 @@ class ZonesRecordsBulkController extends PublicApiController
                 return $this->applyOperations($zoneId, $input['operations'], $zoneType, $zone['name'] ?? null, $useTransaction, $results, $dryRun);
             });
         } catch (ApiErrorException $e) {
-            // Client validation errors - return detailed error response with appropriate 4xx status code
-            $statusCode = (int) ($e->getCode() >= 400 && $e->getCode() < 500 ? $e->getCode() : 400);
+            // Client errors keep their 4xx; backend faults (5xx) still report the partial results
+            $statusCode = (int) ($e->getCode() >= 400 && $e->getCode() < 600 ? $e->getCode() : 400);
+            if ($statusCode >= 500) {
+                $this->logger->error('[API Error] ZonesRecordsBulkController::bulkRecordOperations - {message}', ['message' => $e->getMessage()]);
+            }
 
             // Return detailed error information as advertised in OpenAPI spec
             if (!empty($results['errors'])) {
@@ -436,6 +439,11 @@ class ZonesRecordsBulkController extends PublicApiController
             // Any failed operation rethrows above, so reaching here means all succeeded
             return $this->returnApiResponse($results, true, 'Bulk operations completed successfully', 200);
         } catch (\Throwable $e) {
+            // No transaction to undo the writes that went through, so the audit trail records them
+            $applied = $results['created'] + $results['updated'] + $results['deleted'];
+            if (!$useTransaction && !$dryRun && $applied > 0) {
+                $this->services()->auditService()->logApiBulkRecords($zoneId, $applied);
+            }
             if ($useTransaction) {
                 $this->services()->transaction()->rollBack();
 
@@ -629,7 +637,7 @@ class ZonesRecordsBulkController extends PublicApiController
         if (!$result->success) {
             // Backend faults keep the generic contract string; refusals carry their reason
             if ($result->refusal === Refusal::BACKEND_FAILURE) {
-                throw new Exception('Failed to update record');
+                throw new ApiErrorException('Failed to update record', RefusalStatus::of(Refusal::BACKEND_FAILURE));
             }
             throw new ApiErrorException($result->refusal === Refusal::BACKEND_REJECTED ? $this->recordWriteErrorMessage($result, 'Failed to update record') : (string)$result->message, RefusalStatus::of($result->refusal));
         }
@@ -866,7 +874,7 @@ class ZonesRecordsBulkController extends PublicApiController
         if (!$result->success) {
             // Backend faults keep the generic contract string; refusals carry their reason
             if ($result->refusal === Refusal::BACKEND_FAILURE) {
-                throw new Exception('Failed to delete record');
+                throw new ApiErrorException('Failed to delete record', RefusalStatus::of(Refusal::BACKEND_FAILURE));
             }
             throw new ApiErrorException($result->refusal === Refusal::BACKEND_REJECTED ? $this->recordWriteErrorMessage($result, 'Failed to delete record') : (string)$result->message, RefusalStatus::of($result->refusal));
         }

@@ -854,9 +854,48 @@ class ZonesRecordsBulkControllerTest extends V2ControllerTestCase
 
         $response = $this->bulk(['operations' => [['action' => 'update', 'id' => 3, 'content' => '192.0.2.6']]]);
 
-        // A plain Exception, not an ApiErrorException, so the generic 500 arm answers.
         $this->assertSame(500, $response->getStatusCode());
         $this->assertSame('Bulk operations failed', $this->messageOf($response));
+        $this->assertSame(['Operation 0 (update): Failed to update record'], $this->decode($response)['data']['errors']);
+    }
+
+    public function testABackendFaultAfterAppliedWritesReportsThemWithoutALocalTransaction(): void
+    {
+        $this->localTransactions = false;
+        $this->records->method('getRecordById')->willReturn($this->storedARecord());
+        $this->recordManager->method('addRecordGetId')->willReturn(RecordWriteResult::ok(1));
+        $this->recordManager->method('deleteRecord')->willReturn(RecordWriteResult::backendFailure('boom'));
+        $this->audit->expects($this->once())->method('logApiBulkRecords')->with(self::ZONE_ID, 1);
+
+        $response = $this->bulk(['operations' => [
+            $this->createOperation(),
+            ['action' => 'delete', 'id' => 3],
+        ]]);
+        $body = $this->decode($response);
+
+        $this->assertSame(500, $response->getStatusCode());
+        $this->assertSame('Bulk operations failed', $this->messageOf($response));
+        $this->assertSame(1, $body['data']['created']);
+        $this->assertSame(1, $body['data']['failed']);
+        $this->assertSame(['Operation 1 (delete): Failed to delete record'], $body['data']['errors']);
+    }
+
+    public function testABackendFaultRollsBackAndZeroesTheCountersWithALocalTransaction(): void
+    {
+        $this->records->method('getRecordById')->willReturn($this->storedARecord());
+        $this->recordManager->method('addRecordGetId')->willReturn(RecordWriteResult::ok(1));
+        $this->recordManager->method('deleteRecord')->willReturn(RecordWriteResult::backendFailure('boom'));
+        $this->audit->expects($this->never())->method('logApiBulkRecords');
+
+        $response = $this->bulk(['operations' => [
+            $this->createOperation(),
+            ['action' => 'delete', 'id' => 3],
+        ]]);
+        $body = $this->decode($response);
+
+        $this->assertSame(500, $response->getStatusCode());
+        $this->assertSame(0, $body['data']['created']);
+        $this->assertSame(['Operation 1 (delete): Failed to delete record'], $body['data']['errors']);
     }
 
     public function testAnUpdateBackendVerdictIsReportedAs422WithThePowerDnsReason(): void
