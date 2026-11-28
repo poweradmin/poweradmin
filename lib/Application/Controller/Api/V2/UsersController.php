@@ -25,7 +25,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -868,7 +868,13 @@ class UsersController extends PublicApiController
 
             // Get request body for zone transfer options
             $requestBody = json_decode($this->request->getContent(), true) ?? [];
-            $transferToUserId = isset($requestBody['transfer_to_user_id']) ? (int)$requestBody['transfer_to_user_id'] : null;
+            $transferToUserId = null;
+            if (is_array($requestBody) && isset($requestBody['transfer_to_user_id'])) {
+                $transferToUserId = $this->inputInt($requestBody, 'transfer_to_user_id');
+                if ($transferToUserId === null) {
+                    return $this->returnApiError('transfer_to_user_id must be a numeric ID', 400);
+                }
+            }
 
             // Use the domain service to delete the user
             $result = $this->userManagementService->deleteUser($targetUserId, $transferToUserId);
