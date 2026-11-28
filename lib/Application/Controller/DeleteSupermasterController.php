@@ -25,7 +25,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -101,9 +101,16 @@ class DeleteSupermasterController extends BaseController
 
     private function showDeleteSuperMaster(): void
     {
-        $master_ip = htmlspecialchars($_GET['master_ip']);
+        $master_ip = is_string($_GET['master_ip'] ?? null) ? $_GET['master_ip'] : '';
+        $ns_name = is_string($_GET['ns_name'] ?? null) ? $_GET['ns_name'] : '';
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $info = $dnsRecord->getSupermasterInfoFromIp($master_ip);
+        if (!$dnsRecord->supermasterIpNameExists($master_ip, $ns_name)) {
+            $this->setMessage('list_supermasters', 'error', _('Super master does not exist.'));
+            $this->redirect('/supermasters');
+            return;
+        }
+        $info = $dnsRecord->getSupermasterInfoFromIp($master_ip, $ns_name);
+        $master_ip = htmlspecialchars($master_ip);
 
         $this->render('delete_supermaster.html', [
             'master_ip' => $master_ip,

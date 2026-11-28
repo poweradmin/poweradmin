@@ -342,12 +342,13 @@ class DnsRecord
      * Retrieve supermaster details from supermaster IP address
      *
      * @param string $master_ip Supermaster IP address
+     * @param string|null $ns_name Supermaster NS name, to pick one row when an IP has several
      *
      * @return array array of supermaster details
      */
-    public function getSupermasterInfoFromIp(string $master_ip): array
+    public function getSupermasterInfoFromIp(string $master_ip, ?string $ns_name = null): array
     {
-        return $this->supermasterManager->getSupermasterInfoFromIp($master_ip);
+        return $this->supermasterManager->getSupermasterInfoFromIp($master_ip, $ns_name);
     }
 
     /** Delete a record by a given record id

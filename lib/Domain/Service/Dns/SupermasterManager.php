@@ -184,10 +184,11 @@ class SupermasterManager implements SupermasterManagerInterface
      * Retrieve supermaster details from supermaster IP address
      *
      * @param string $master_ip Supermaster IP address
+     * @param string|null $ns_name Supermaster NS name, to pick one row when an IP has several
      *
      * @return array array of supermaster details
      */
-    public function getSupermasterInfoFromIp(string $master_ip): array
+    public function getSupermasterInfoFromIp(string $master_ip, ?string $ns_name = null): array
     {
         if (!$this->ipAddressValidator->isValidIPv4($master_ip) && !$this->ipAddressValidator->isValidIPv6($master_ip)) {
             $this->messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s %s'), "getSupermasterInfoFromIp", "No or no valid ipv4 or ipv6 address given."));
@@ -197,7 +198,7 @@ class SupermasterManager implements SupermasterManagerInterface
         if ($this->isApiBackend()) {
             $allSupermasters = $this->getSupermasters();
             foreach ($allSupermasters as $sm) {
-                if ($sm['master_ip'] === $master_ip) {
+                if ($sm['master_ip'] === $master_ip && ($ns_name === null || $sm['ns_name'] === $ns_name)) {
                     return $sm;
                 }
             }
@@ -209,8 +210,12 @@ class SupermasterManager implements SupermasterManagerInterface
         $stmt = $this->db->prepare("SELECT s.ip, s.nameserver, s.account, u.fullname
                                      FROM $supermasters_table s
                                      LEFT JOIN users u ON s.account = u.username
-                                     WHERE s.ip = :master_ip");
-        $stmt->execute([':master_ip' => $master_ip]);
+                                     WHERE s.ip = :master_ip" . ($ns_name !== null ? " AND s.nameserver = :ns_name" : ""));
+        $params = [':master_ip' => $master_ip];
+        if ($ns_name !== null) {
+            $params[':ns_name'] = $ns_name;
+        }
+        $stmt->execute($params);
         $result = $stmt->fetch();
 
         return array(
