@@ -6778,9 +6778,13 @@ msgstr "Bản ghi này xung đột với một bản ghi CNAME hiện có cùng 
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:118
 msgid ""
-"The local-part hash in SMIMEA records should be a 64-character SHA-256 hex "
-"hash. The format should be: SHA256(local-part)._smimecert.domain.tld"
-msgstr "Hàm băm phần cục bộ trong bản ghi SMIMEA phải là một chuỗi băm SHA-256 dạng hex gồm 64 ký tự. Định dạng phải là: SHA256(local-part)._smimecert.domain.tld"
+"The local-part hash in SMIMEA records should be a 56-character hex hash "
+"(SHA-256 truncated to 28 octets). The format should be: "
+"hash(local-part)._smimecert.domain.tld"
+msgstr ""
+"Hàm băm phần cục bộ trong bản ghi SMIMEA phải là một chuỗi băm dạng hex gồm "
+"56 ký tự (SHA-256 được cắt ngắn còn 28 octet). Định dạng phải là: "
+"hash(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
 #, php-format

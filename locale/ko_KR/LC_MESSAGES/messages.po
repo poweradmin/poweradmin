@@ -6719,9 +6719,13 @@ msgstr "이 레코드는 같은 이름의 기존 CNAME 레코드와 충돌합니
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:118
 msgid ""
-"The local-part hash in SMIMEA records should be a 64-character SHA-256 hex "
-"hash. The format should be: SHA256(local-part)._smimecert.domain.tld"
-msgstr "SMIMEA 레코드의 로컬 부분 해시는 64자 SHA-256 16진수 해시여야 합니다. 형식은 다음과 같아야 합니다: SHA256(local-part)._smimecert.domain.tld"
+"The local-part hash in SMIMEA records should be a 56-character hex hash "
+"(SHA-256 truncated to 28 octets). The format should be: "
+"hash(local-part)._smimecert.domain.tld"
+msgstr ""
+"SMIMEA 레코드의 로컬 부분 해시는 56자 16진수 해시(SHA-256을 28옥텟으로 줄인 "
+"값)여야 합니다. 형식은 다음과 같아야 합니다: "
+"hash(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
 #, php-format
