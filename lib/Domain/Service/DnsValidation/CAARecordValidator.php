@@ -306,8 +306,7 @@ class CAARecordValidator implements DnsRecordValidatorInterface
         $subContent = substr($value, 1, -1);
 
         // Check for unescaped quotes in the content (RFC 8659 requires escaping)
-        $pattern = '/(?<!\\\\)"/';
-        if (preg_match($pattern, $subContent)) {
+        if (!StringValidator::hasOnlyEscapedQuotes($subContent)) {
             return ValidationResult::failure(_('Backslashes must precede all quotes (") in value content.'));
         }
 

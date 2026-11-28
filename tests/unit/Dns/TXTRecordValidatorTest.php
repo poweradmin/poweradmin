@@ -597,4 +597,27 @@ class TXTRecordValidatorTest extends TestCase
         $data = $result->getData();
         $this->assertEquals($content, $data['content']);
     }
+
+    /**
+     * @dataProvider quotedStringProvider
+     */
+    public function testQuotedStringParity(string $content, bool $valid)
+    {
+        $result = $this->validator->validate($content, 'txt.example.com', 0, 3600, 86400);
+
+        $this->assertSame($valid, $result->isValid(), $content);
+    }
+
+    public static function quotedStringProvider(): array
+    {
+        return [
+            'escaped final quote' => ['"abc\"', false],
+            'escaped backslash then closing quote' => ['"a\\\\"', true],
+            'escaped interior quote' => ['"a\"b"', true],
+            'bare interior quote' => ['"a"b"', false],
+            'multi-string escaped final quote' => ['"a\" "b"', false],
+            'multi-string valid' => ['"a" "b"', true],
+            'multi-string escaped backslash' => ['"a\\\\" "b"', true],
+        ];
+    }
 }

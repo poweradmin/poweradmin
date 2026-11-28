@@ -465,6 +465,9 @@ class NAPTRRecordValidator implements DnsRecordValidatorInterface
     private function validateQuotedString(string $value): ValidationResult
     {
         if (preg_match('/^".*"$/', $value) === 1) {
+            if (!StringValidator::hasOnlyEscapedQuotes(substr($value, 1, -1))) {
+                return ValidationResult::failure(_('Backslashes must precede all quotes (") in value content.'));
+            }
             return ValidationResult::success(true);
         }
         return ValidationResult::failure(_('Value must be enclosed in double quotes.'));

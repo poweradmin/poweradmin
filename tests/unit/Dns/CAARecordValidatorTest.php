@@ -297,4 +297,24 @@ class CAARecordValidatorTest extends TestCase
         $this->assertTrue($result->isValid());
         $this->assertSame('0 issue "ca.example.org"', $result->getData()['content']);
     }
+
+    /**
+     * @dataProvider quotedValueProvider
+     */
+    public function testQuotedValueParity(string $content, bool $valid)
+    {
+        $result = $this->validator->validate($content, 'host.example.com', 0, 3600, 86400);
+
+        $this->assertSame($valid, $result->isValid(), $content);
+    }
+
+    public static function quotedValueProvider(): array
+    {
+        return [
+            'escaped final quote' => ['0 foo "abc\"', false],
+            'escaped backslash then closing quote' => ['0 foo "a\\\\"', true],
+            'escaped interior quote' => ['0 foo "a\"b"', true],
+            'bare interior quote' => ['0 foo "a"b"', false],
+        ];
+    }
 }

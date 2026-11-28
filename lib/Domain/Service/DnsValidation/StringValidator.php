@@ -84,6 +84,31 @@ class StringValidator
     }
 
     /**
+     * Check the content between a string's outer quotes the way PowerDNS reads it.
+     *
+     * A quote is escaped only after an odd run of backslashes, so any bare quote
+     * is invalid and so is content ending in an odd run (it escapes the closing quote).
+     *
+     * @param string $inner Content between the opening and closing quotes
+     */
+    public static function hasOnlyEscapedQuotes(string $inner): bool
+    {
+        $length = strlen($inner);
+        for ($i = 0; $i < $length; $i++) {
+            if ($inner[$i] === '\\') {
+                $i++;
+                if ($i >= $length) {
+                    return false;
+                }
+            } elseif ($inner[$i] === '"') {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Verify that the string is enclosed in quotes
      *
      * @param string $string Input string

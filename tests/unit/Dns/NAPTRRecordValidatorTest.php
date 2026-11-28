@@ -558,4 +558,25 @@ class NAPTRRecordValidatorTest extends BaseDnsTest
         $this->assertSame(0, $data['prio']);
         $this->assertSame(86400, $data['ttl']);
     }
+
+    /**
+     * @dataProvider quotedRegexpProvider
+     */
+    public function testQuotedRegexpParity(string $regexp, bool $valid)
+    {
+        $content = '100 10 "u" "sip+E2U" ' . $regexp . ' .';
+        $result = $this->validator->validate($content, 'test.example.com', 0, 3600, 86400);
+
+        $this->assertSame($valid, $result->isValid(), $regexp);
+    }
+
+    public static function quotedRegexpProvider(): array
+    {
+        return [
+            'escaped final quote' => ['"!^.*$!sip:a\"', false],
+            'escaped backslash' => ['"!^.*$!sip:a\\\\b!"', true],
+            'escaped interior quote' => ['"!^.*$!sip:a\"b!"', true],
+            'bare interior quote' => ['"!^.*$!sip:a"b!"', false],
+        ];
+    }
 }

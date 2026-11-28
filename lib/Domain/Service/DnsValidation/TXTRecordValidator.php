@@ -180,8 +180,7 @@ class TXTRecordValidator implements DnsRecordValidatorInterface
             $subContent = substr($content, 1, -1);
 
             // Check for unescaped quotes
-            $pattern = '/(?<!\\\\)"/';
-            if (preg_match($pattern, $subContent)) {
+            if (!StringValidator::hasOnlyEscapedQuotes($subContent)) {
                 return ValidationResult::failure(_('Backslashes must precede all quotes (") in TXT content'));
             }
 
@@ -203,8 +202,7 @@ class TXTRecordValidator implements DnsRecordValidatorInterface
                 $unquoted = substr($stringPart, 1, -1);
 
                 // Check for unescaped quotes
-                $pattern = '/(?<!\\\\)"/';
-                if (preg_match($pattern, $unquoted)) {
+                if (!StringValidator::hasOnlyEscapedQuotes($unquoted)) {
                     return ValidationResult::failure(_('Backslashes must precede all quotes (") in TXT content'));
                 }
 
@@ -249,7 +247,7 @@ class TXTRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Split by space but respect quoted content
-        preg_match_all('/"([^"\\\\]|\\\\.)*"/', $content, $matches);
+        preg_match_all('/"[^"]*"/', $content, $matches);
 
         if (empty($matches[0])) {
             return false;

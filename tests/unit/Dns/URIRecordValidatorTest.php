@@ -209,4 +209,24 @@ class URIRecordValidatorTest extends TestCase
             $this->assertEquals($content, $data['content']);
         }
     }
+
+    /**
+     * @dataProvider quotedTargetProvider
+     */
+    public function testQuotedTargetParity(string $content, bool $valid)
+    {
+        $result = $this->validator->validate($content, 'uri.example.com', '', 3600, 86400);
+
+        $this->assertSame($valid, $result->isValid(), $content);
+    }
+
+    public static function quotedTargetProvider(): array
+    {
+        return [
+            'escaped final quote' => ['10 1 "https://example.com/a\"', false],
+            'escaped backslash then closing quote' => ['10 1 "https://example.com/a\\\\"', true],
+            'escaped interior quote' => ['10 1 "https://example.com/a\"b"', true],
+            'bare interior quote' => ['10 1 "http://a"x"', false],
+        ];
+    }
 }

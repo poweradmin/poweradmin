@@ -252,6 +252,11 @@ class URIRecordValidator implements DnsRecordValidatorInterface
             return ['isValid' => false, 'errors' => $errors];
         }
 
+        if (!StringValidator::hasOnlyEscapedQuotes($uri)) {
+            $errors[] = _('Backslashes must precede all quotes (") in value content.');
+            return ['isValid' => false, 'errors' => $errors];
+        }
+
         // Check for empty URI
         if (empty(trim($uri))) {
             $errors[] = _('URI must not be empty.');
