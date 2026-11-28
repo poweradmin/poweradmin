@@ -31,6 +31,7 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\ClassContextLogger;
 use Psr\Log\LoggerInterface;
 use Poweradmin\Domain\Enum\AuthMethod;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UberuserChange;
 use Poweradmin\Domain\Service\User\FullName;
 use Poweradmin\Domain\Service\User\LastSuperAdminGuard;
@@ -51,6 +52,16 @@ class UserProvisioningService
 
     /** Methods with an identity link table; LDAP identity is the username itself. */
     private const LINKABLE_AUTH_METHODS = [self::AUTH_METHOD_OIDC, self::AUTH_METHOD_SAML];
+
+    /** Permissions that let an account change other accounts or what they may do; an email match never links these. */
+    private const ACCOUNT_ADMIN_PERMISSIONS = [
+        Permission::PERM_USER_ADD_NEW,
+        Permission::PERM_USER_EDIT_OTHERS,
+        Permission::PERM_USER_PASSWD_EDIT_OTHERS,
+        Permission::PERM_USER_EDIT_TEMPL_PERM,
+        Permission::PERM_TEMPL_PERM_ADD,
+        Permission::PERM_TEMPL_PERM_EDIT,
+    ];
 
     private LoggerInterface $logger;
     private ConfigurationInterface $configManager;
@@ -190,6 +201,15 @@ class UserProvisioningService
                         ['method' => strtoupper($authMethod), 'id' => $existingUserId]
                     );
                     return null;
+                }
+
+                if ($existingUserId !== null && $this->userHoldsAccountAdminPermission($existingUserId)) {
+                    // Rights over other users or permission templates lead to superuser in a few steps.
+                    $this->logger->warning(
+                        'Refusing to link {method} identity to account {id} by email: the account can manage users or permission templates',
+                        ['method' => strtoupper($authMethod), 'id' => $existingUserId]
+                    );
+                    $existingUserId = null;
                 }
 
                 if ($existingUserId) {
@@ -429,6 +449,22 @@ class UserProvisioningService
             $this->logger->error('Error checking superuser permission: {error}', ['error' => $e->getMessage()]);
             return true;
         }
+    }
+
+    /**
+     * Check whether an account may manage other users or permission templates, directly or via a group.
+     */
+    private function userHoldsAccountAdminPermission(int $userId): bool
+    {
+        try {
+            $held = $this->userRepository->getUserPermissions($userId);
+        } catch (\Exception $e) {
+            // Fail closed: an unreadable permission state must not permit linking.
+            $this->logger->error('Error checking account permissions: {error}', ['error' => $e->getMessage()]);
+            return true;
+        }
+
+        return array_intersect($held, self::ACCOUNT_ADMIN_PERMISSIONS) !== [];
     }
 
     private function accountSignsInExternally(int $userId): bool

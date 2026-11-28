@@ -809,6 +809,64 @@ class UserProvisioningServiceTest extends TestCase
         $this->assertSame(42, $service->provisionUser($userInfo, 'okta'));
     }
 
+    public static function accountAdminPermissionProvider(): array
+    {
+        return [
+            'user_add_new' => ['user_add_new'],
+            'user_edit_others' => ['user_edit_others'],
+            'user_passwd_edit_others' => ['user_passwd_edit_others'],
+            'user_edit_templ_perm' => ['user_edit_templ_perm'],
+            'templ_perm_add' => ['templ_perm_add'],
+            'templ_perm_edit' => ['templ_perm_edit'],
+        ];
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('accountAdminPermissionProvider')]
+    public function testEmailMatchDoesNotLinkAnAccountThatManagesUsers(string $permission): void
+    {
+        $identities = $this->createMock(ExternalIdentityRepositoryInterface::class);
+        $identities->method('findOidcSubjectByUserId')->willReturn(null);
+        $identities->expects($this->never())->method('linkOidc');
+
+        $repository = $this->emailMatchRepository();
+        $repository->method('getUserPermissions')->willReturn(['zone_content_view_own', $permission]);
+
+        $service = $this->createServiceWithMocks($this->emailLinkConfig(), $repository, null, $identities);
+        $userInfo = new OidcUserInfo(username: 'john', email: 'john@example.com', subject: 'sub-1', rawData: ['email_verified' => true]);
+
+        $this->assertNull($service->provisionUser($userInfo, 'okta'));
+    }
+
+    public function testEmailMatchIsRefusedWhenThePermissionLookupFails(): void
+    {
+        $identities = $this->createMock(ExternalIdentityRepositoryInterface::class);
+        $identities->method('findOidcSubjectByUserId')->willReturn(null);
+        $identities->expects($this->never())->method('linkOidc');
+
+        $repository = $this->emailMatchRepository();
+        $repository->method('getUserPermissions')->willThrowException(new \RuntimeException('db down'));
+
+        $service = $this->createServiceWithMocks($this->emailLinkConfig(), $repository, null, $identities);
+        $userInfo = new OidcUserInfo(username: 'john', email: 'john@example.com', subject: 'sub-1', rawData: ['email_verified' => true]);
+
+        $this->assertNull($service->provisionUser($userInfo, 'okta'));
+    }
+
+    public function testEmailMatchLinksAnAccountWithZonePermissionsOnly(): void
+    {
+        $identities = $this->createMock(ExternalIdentityRepositoryInterface::class);
+        $identities->method('findOidcSubjectByUserId')->willReturn(null);
+        $identities->expects($this->once())->method('linkOidc');
+
+        $repository = $this->emailMatchRepository();
+        $repository->method('getUserPermissions')->willReturn(['zone_content_edit_others', 'zone_master_add', 'user_view_others']);
+
+        $service = $this->createServiceWithMocks($this->emailLinkConfig(), $repository, null, $identities);
+        $userInfo = new OidcUserInfo(username: 'john', email: 'john@example.com', subject: 'sub-1', rawData: ['email_verified' => true]);
+
+        $this->assertSame(42, $service->provisionUser($userInfo, 'okta'));
+    }
+
     public function testEmailMatchLinksAnAccountWithoutALinkAtTheProvider(): void
     {
         $identities = $this->createMock(ExternalIdentityRepositoryInterface::class);
