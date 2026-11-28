@@ -94,8 +94,8 @@ class DeleteSupermasterController extends BaseController
     private function showDeleteSuperMaster(): void
     {
         $master_ip = (string)$this->httpRequest->getQueryParam('master_ip');
-        $supermasterManager = $this->services()->supermasterManager();
-        $info = $supermasterManager->getSupermasterInfoFromIp($master_ip);
+        $ns_name = (string)$this->httpRequest->getQueryParam('ns_name');
+        $info = $this->storedEntry($master_ip, $ns_name);
 
         if (empty($info)) {
             $this->setMessage('list_supermasters', 'error', _('Super master does not exist.'));
@@ -107,5 +107,21 @@ class DeleteSupermasterController extends BaseController
             'master_ip' => $master_ip,
             'info' => $info
         ]);
+    }
+
+    /**
+     * The autoprimary is identified by the IP and NS name pair; one IP can carry several.
+     *
+     * @return array{master_ip: string, ns_name: string, account: string, fullname: string}|array{}
+     */
+    private function storedEntry(string $masterIp, string $nsName): array
+    {
+        foreach ($this->services()->supermasterManager()->getSupermasters() as $entry) {
+            if ($entry['master_ip'] === $masterIp && $entry['ns_name'] === $nsName) {
+                return $entry;
+            }
+        }
+
+        return [];
     }
 }
