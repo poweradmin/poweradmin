@@ -120,7 +120,7 @@ class EditSupermasterController extends BaseController
             return;
         }
 
-        $info = $supermasterManager->getSupermasterInfoFromIp($old_master_ip);
+        $info = $supermasterManager->getSupermasterInfoFromIp($old_master_ip, $old_ns_name);
 
         // If POST didn't provide values, use the existing ones
         if ($new_master_ip === null) {

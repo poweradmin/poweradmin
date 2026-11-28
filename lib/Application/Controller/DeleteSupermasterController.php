@@ -107,9 +107,12 @@ class DeleteSupermasterController extends BaseController
 
     private function showDeleteSuperMaster(): void
     {
-        $master_ip = htmlspecialchars($this->request->getQueryParam('master_ip'));
+        $master_ip = $this->request->getQueryParam('master_ip');
+        $ns_name = $this->request->getQueryParam('ns_name');
+        $master_ip = is_string($master_ip) ? htmlspecialchars($master_ip) : '';
+        $ns_name = is_string($ns_name) ? $ns_name : '';
         $supermasterManager = DnsServiceFactory::createSupermasterManager($this->db, $this->getConfig());
-        $info = $supermasterManager->getSupermasterInfoFromIp($master_ip);
+        $info = $ns_name === '' ? [] : $supermasterManager->getSupermasterInfoFromIp($master_ip, $ns_name);
 
         if (empty($info)) {
             $this->setMessage('list_supermasters', 'error', _('Super master does not exist.'));

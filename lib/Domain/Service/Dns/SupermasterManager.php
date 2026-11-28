@@ -186,10 +186,11 @@ class SupermasterManager implements SupermasterManagerInterface
      * Retrieve supermaster details from supermaster IP address
      *
      * @param string $master_ip Supermaster IP address
+     * @param string|null $ns_name Nameserver to match as well, as (ip, nameserver) is the key
      *
      * @return array array of supermaster details
      */
-    public function getSupermasterInfoFromIp(string $master_ip): array
+    public function getSupermasterInfoFromIp(string $master_ip, ?string $ns_name = null): array
     {
         if (!$this->ipAddressValidator->isValidIPv4($master_ip) && !$this->ipAddressValidator->isValidIPv6($master_ip)) {
             $this->messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s %s'), "getSupermasterInfoFromIp", "No or no valid ipv4 or ipv6 address given."));
@@ -199,7 +200,7 @@ class SupermasterManager implements SupermasterManagerInterface
         if ($this->isApiBackend()) {
             $allSupermasters = $this->getSupermasters();
             foreach ($allSupermasters as $sm) {
-                if ($sm['master_ip'] === $master_ip) {
+                if ($sm['master_ip'] === $master_ip && ($ns_name === null || $sm['ns_name'] === $ns_name)) {
                     return $sm;
                 }
             }
@@ -212,9 +213,13 @@ class SupermasterManager implements SupermasterManagerInterface
         $stmt = $this->db->prepare("SELECT s.ip, s.nameserver, s.account, u.fullname
                                      FROM $supermasters_table s
                                      LEFT JOIN users u ON $accountMatch
-                                     WHERE s.ip = :master_ip");
-        $stmt->execute([':master_ip' => $master_ip]);
+                                     WHERE s.ip = :master_ip" . ($ns_name !== null ? " AND s.nameserver = :ns_name" : ""));
+        $stmt->execute($ns_name !== null ? [':master_ip' => $master_ip, ':ns_name' => $ns_name] : [':master_ip' => $master_ip]);
         $result = $stmt->fetch();
+
+        if (!$result) {
+            return array();
+        }
 
         return array(
             "master_ip" => $result["ip"],

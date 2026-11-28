@@ -67,10 +67,11 @@ interface SupermasterManagerInterface
      * Retrieve supermaster details from supermaster IP address
      *
      * @param string $master_ip Supermaster IP address
+     * @param string|null $ns_name Nameserver to match as well, as (ip, nameserver) is the key
      *
      * @return array array of supermaster details
      */
-    public function getSupermasterInfoFromIp(string $master_ip): array;
+    public function getSupermasterInfoFromIp(string $master_ip, ?string $ns_name = null): array;
 
     /**
      * Check if Supermaster IP address exists
