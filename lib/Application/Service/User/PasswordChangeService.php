@@ -63,6 +63,25 @@ readonly class PasswordChangeService
         return $user === null ? [false, (string)$error] : [true, ''];
     }
 
+    /**
+     * Same proof as confirmCurrentPassword() for a named account instead of the session's,
+     * for callers with no session (API keys).
+     *
+     * @return array{0: bool, 1: string} success flag and, on failure, the message to show
+     */
+    public function confirmPasswordOfUser(int $userId, #[\SensitiveParameter] string $password): array
+    {
+        $username = $this->userRepository->getUserById($userId)['username'] ?? null;
+        $user = is_string($username) ? $this->userRepository->findByUsername($username) : null;
+        if ($user === null || $user->getId() !== $userId) {
+            return [false, _(self::ERROR_MESSAGES['user_not_found'])];
+        }
+
+        [$verified, $error] = $this->verifyAccount($user, $username, $password);
+
+        return $verified ? [true, ''] : [false, (string)$error];
+    }
+
     public function changePassword(#[\SensitiveParameter] string $oldPassword, #[\SensitiveParameter] string $newPassword): array
     {
         [$user, $error] = $this->reauthenticate($oldPassword);
@@ -93,24 +112,35 @@ readonly class PasswordChangeService
             return [null, _(self::ERROR_MESSAGES['user_not_found'])];
         }
 
+        [$verified, $error] = $this->verifyAccount($user, $username, $password);
+
+        return $verified ? [$user, null] : [null, $error];
+    }
+
+    /**
+     * @return array{0: bool, 1: ?string} whether the password is right, else the message to show
+     */
+    private function verifyAccount(User $user, string $username, #[\SensitiveParameter] string $password): array
+    {
+        $userId = $user->getId();
         if ($user->isLdapUser()) {
-            return [null, _(self::ERROR_MESSAGES['ldap_user'])];
+            return [false, _(self::ERROR_MESSAGES['ldap_user'])];
         }
 
         // Counted apart from login, and before the check so parallel guesses cannot all read an empty counter
         $stage = LoginAttemptService::STAGE_REAUTH;
         if ($this->loginAttempts?->isAccountLocked($username, $this->clientIp, $stage, $userId)) {
-            return [null, _('Too many failed attempts. Please try again later.')];
+            return [false, _('Too many failed attempts. Please try again later.')];
         }
         if ($this->loginAttempts !== null && !$this->loginAttempts->reserveAttempt($username, $this->clientIp, $stage, $userId)) {
-            return [null, _('Too many failed attempts. Please try again later.')];
+            return [false, _('Too many failed attempts. Please try again later.')];
         }
 
         if (!$this->authService->verifyPassword($password, $user->getPassword())) {
-            return [null, _(self::ERROR_MESSAGES['invalid_password'])];
+            return [false, _(self::ERROR_MESSAGES['invalid_password'])];
         }
         $this->loginAttempts?->recordAttempt($username, $this->clientIp, true, $stage, $userId);
 
-        return [$user, null];
+        return [true, null];
     }
 }

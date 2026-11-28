@@ -158,6 +158,33 @@ class PasswordChangeServiceTest extends TestCase
         $this->assertTrue($right);
     }
 
+    /** An API key has no session: the account comes from the id and is counted on the same stage */
+    public function testConfirmingAnAccountByIdCountsOnTheReauthStageWithoutASession(): void
+    {
+        $this->users->method('getUserById')->with(self::USER_ID)->willReturn(['id' => self::USER_ID, 'username' => 'victim']);
+        $attempts = $this->createMock(LoginAttemptService::class);
+        $attempts->expects($this->exactly(2))->method('reserveAttempt')
+            ->with('victim', '203.0.113.5', LoginAttemptService::STAGE_REAUTH, self::USER_ID)
+            ->willReturn(true);
+        $attempts->expects($this->once())->method('recordAttempt')
+            ->with('victim', '203.0.113.5', true, LoginAttemptService::STAGE_REAUTH, self::USER_ID);
+
+        [$wrong] = $this->service([], false, $attempts)->confirmPasswordOfUser(self::USER_ID, 'guess');
+        [$right] = $this->service([], true, $attempts)->confirmPasswordOfUser(self::USER_ID, 'old');
+
+        $this->assertFalse($wrong);
+        $this->assertTrue($right);
+    }
+
+    public function testConfirmingAnUnknownAccountByIdFails(): void
+    {
+        $this->users->method('getUserById')->willReturn(null);
+
+        [$confirmed] = $this->service([])->confirmPasswordOfUser(self::USER_ID, 'old');
+
+        $this->assertFalse($confirmed);
+    }
+
     /** @param array<string, mixed> $session */
     private function service(array $session, bool $passwordMatches = true, ?LoginAttemptService $attempts = null): PasswordChangeService
     {

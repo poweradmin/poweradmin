@@ -168,6 +168,14 @@ abstract class PublicApiController extends AbstractApiController
         }
     }
 
+    /**
+     * True when the request authenticated with an API key rather than Basic credentials.
+     */
+    protected function authenticatedByApiKey(): bool
+    {
+        return $this->apiKeyScope !== null;
+    }
+
     private function isCrossSiteBrowserRequest(): bool
     {
         $site = $this->request->headers->get('Sec-Fetch-Site');

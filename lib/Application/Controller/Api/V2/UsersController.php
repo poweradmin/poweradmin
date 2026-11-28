@@ -26,8 +26,11 @@ use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Http\ListPaging;
 use Poweradmin\Application\Http\ListSort;
 use Poweradmin\Application\Service\User\GroupMembershipService;
+use Poweradmin\Application\Service\Auth\UserAuthenticationService;
+use Poweradmin\Application\Service\User\PasswordChangeService;
 use Poweradmin\Application\Service\User\UserCommandFactory;
 use Poweradmin\Application\Service\Zone\ZoneLimitInput;
+use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Model\Pagination;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserGroup;
@@ -65,6 +68,7 @@ class UsersController extends PublicApiController
     private UserLookupInterface $userRepository;
     private UserGroupLookupInterface $groupRepository;
     private GroupMembershipService $membershipService;
+    private ?PasswordChangeService $passwordChangeService = null;
 
     public function __construct(array $request, array $pathParameters = [])
     {
@@ -729,6 +733,12 @@ class UsersController extends PublicApiController
                     description: 'Whether the user should use LDAP authentication. Must be explicitly included when setting to false - omitting leaves the current value unchanged.',
                     type: 'boolean',
                     example: false
+                ),
+                new OA\Property(
+                    property: 'current_password',
+                    description: 'The caller\'s current password. Required when an API key changes its own password, email or username; Basic auth and other users\' accounts do not need it.',
+                    type: 'string',
+                    format: 'password'
                 )
             ]
         )
@@ -770,7 +780,7 @@ class UsersController extends PublicApiController
     )]
     #[OA\Response(
         response: 403,
-        description: 'Forbidden - no permission to edit this user, or max_zones was supplied without user_is_ueberuser',
+        description: 'Forbidden - no permission to edit this user, max_zones was supplied without user_is_ueberuser, or current_password is missing or wrong when an API key changes its own password, email or username',
         content: new OA\JsonContent(
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: false),
@@ -868,6 +878,10 @@ class UsersController extends PublicApiController
                 && !$this->apiPermissionService->canEditUserPassword($currentUserId, $targetUserId)
             ) {
                 return $this->returnApiError('You do not have permission to change this user\'s sign-in method', 403);
+            }
+
+            if ($currentUser !== null && ($proofGate = $this->requireOwnCredentialProof($currentUserId, $targetUserId, $currentUser, $input)) !== null) {
+                return $proofGate;
             }
 
             $zoneLimit = $this->readZoneLimit($currentUserId, $input);
@@ -1196,6 +1210,53 @@ class UsersController extends PublicApiController
         } catch (\Throwable $e) {
             return $this->handleException($e, 'UsersController::assignPermissionTemplate', 'Failed to assign permission template');
         }
+    }
+
+    /**
+     * An API key holder changing their own password, email or username must prove the
+     * current password, as the web form does. Basic auth already carried it.
+     *
+     * @param array<string, mixed> $stored
+     * @param array<string, mixed> $input
+     */
+    private function requireOwnCredentialProof(int $callerId, int $targetUserId, array $stored, array $input): ?JsonResponse
+    {
+        if ($callerId !== $targetUserId || !$this->authenticatedByApiKey()) {
+            return null;
+        }
+
+        $identityChange = SelfEditFieldGuard::changesSignInIdentity($stored, $input);
+        $method = AuthMethod::fromDb($stored['auth_method'] ?? null);
+        if ($identityChange && ($method === AuthMethod::LDAP || $method === AuthMethod::REMOTE_USER)) {
+            return $this->returnApiError('Authentication settings can only be changed by an administrator', 403);
+        }
+        if (!$method->allowsLocalPassword()) {
+            return null;
+        }
+
+        if (!$identityChange && !UserCommandFactory::passwordGiven($input)) {
+            return null;
+        }
+
+        $current = $input['current_password'] ?? null;
+        if (!is_string($current) || $current === '') {
+            return $this->returnApiError('current_password is required to change your own password, email or username', 403);
+        }
+
+        [$confirmed, $message] = $this->passwordChangeService()->confirmPasswordOfUser($callerId, $current);
+
+        return $confirmed ? null : $this->returnApiError($message, 403);
+    }
+
+    private function passwordChangeService(): PasswordChangeService
+    {
+        return $this->passwordChangeService ??= new PasswordChangeService(
+            $this->services()->userRepository(),
+            UserAuthenticationService::fromConfig($this->config),
+            $this->getUserContextService(),
+            $this->services()->loginAttemptService(),
+            $this->services()->clientContext()->ip
+        );
     }
 
     /**
