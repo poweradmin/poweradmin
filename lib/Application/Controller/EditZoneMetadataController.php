@@ -126,7 +126,13 @@ class EditZoneMetadataController extends BaseController
 
         if ($this->isPost()) {
             $this->validateCsrfToken();
-            $submittedMetadata = $this->normalizeSubmittedMetadata($this->request->getPostParam('metadata', []));
+            $rawMetadata = $this->request->getPostParam('metadata', []);
+            if (!is_array($rawMetadata)) {
+                $this->setMessage('zone_metadata', 'error', _('Failed to update zone metadata.'));
+                $this->renderPage($zoneId, $zone, $this->loadMetadata($zoneId, $zone['name']), $canEditMetadata);
+                return;
+            }
+            $submittedMetadata = $this->normalizeSubmittedMetadata($rawMetadata);
 
             // Cheap in-memory checks first; loadMetadata() costs two PowerDNS API calls
             // in API-backend mode, so it is passed lazily and skipped for ueberusers.
@@ -372,6 +378,14 @@ class EditZoneMetadataController extends BaseController
         $rows = [];
 
         foreach ($submittedMetadata as $row) {
+            if (!is_array($row)) {
+                continue;
+            }
+            foreach (['kind_key', 'custom_kind', 'content'] as $field) {
+                if (isset($row[$field]) && !is_scalar($row[$field])) {
+                    continue 2;
+                }
+            }
             $kind = $this->resolveSubmittedKind($row);
             $content = trim((string) ($row['content'] ?? ''));
 

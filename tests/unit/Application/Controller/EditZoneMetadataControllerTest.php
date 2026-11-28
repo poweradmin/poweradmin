@@ -330,6 +330,21 @@ class EditZoneMetadataControllerTest extends TestCase
         $this->assertSame([], $errors);
     }
 
+    public function testNormalizeSubmittedMetadataSkipsRowsOfTheWrongShape(): void
+    {
+        $controller = $this->createControllerWithConfig([]);
+
+        $rows = $this->invokePrivateMethod($controller, 'normalizeSubmittedMetadata', [[
+            'junk',
+            7,
+            ['kind_key' => ['x'], 'content' => '1'],
+            ['kind_key' => 'x-note', 'content' => ['y']],
+            ['kind_key' => 'x-note', 'content' => 'ok'],
+        ]]);
+
+        $this->assertSame([['kind' => 'X-NOTE', 'content' => 'ok']], $rows);
+    }
+
     private function createControllerWithConfig(array $overrides): EditZoneMetadataController
     {
         $controller = $this->controllerReflection->newInstanceWithoutConstructor();
