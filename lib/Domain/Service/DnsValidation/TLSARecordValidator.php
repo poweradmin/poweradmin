@@ -108,6 +108,13 @@ class TLSARecordValidator implements DnsRecordValidatorInterface
             return ValidationResult::failure(_('Invalid characters in hostname.'));
         }
 
+        // Underscore labels pass the hostname check; only malformed labels are refused here.
+        $hostnameResult = $this->hostnameValidator->validate($name, true);
+        if (!$hostnameResult->isValid()) {
+            return $hostnameResult;
+        }
+        $name = $hostnameResult->getData()['hostname'];
+
         // Initialize warnings array
         $warnings = [];
 
@@ -162,14 +169,6 @@ class TLSARecordValidator implements DnsRecordValidatorInterface
                 $warnings[] = _('The local part of an email address is hashed with SHA-256 and placed before _smimecert.<domain>');
             }
         } else {
-            // For non-service names, use regular hostname validation
-            $hostnameResult = $this->hostnameValidator->validate($name, true);
-            if (!$hostnameResult->isValid()) {
-                return $hostnameResult;
-            }
-            $hostnameData = $hostnameResult->getData();
-            $name = $hostnameData['hostname'];
-
             // Warning for non-standard TLSA record name format
             $warnings[] = _('TLSA records should typically be placed at "_port._protocol.hostname" (e.g., "_443._tcp.www.example.com").');
         }
