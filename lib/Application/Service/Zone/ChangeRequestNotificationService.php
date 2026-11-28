@@ -26,7 +26,6 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\UserNotificationRecipientInterface;
 use Poweradmin\Domain\Model\ZoneChangeRequest;
 use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
-use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Port\ChangeRequestNotifierInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
@@ -132,7 +131,7 @@ class ChangeRequestNotificationService implements ChangeRequestNotifierInterface
         try {
             $zoneName = $this->resolveZoneName($zoneId, $zoneName);
             $reviewers = $this->findReviewers($zoneId, $requesterId);
-            $soaContact = $this->soaContact($zoneId, $reviewers);
+            $soaContact = $this->soaContact($zoneId, $zoneName, $reviewers);
             if ($soaContact !== null) {
                 $reviewers[] = $soaContact;
             }
@@ -309,7 +308,7 @@ class ChangeRequestNotificationService implements ChangeRequestNotifierInterface
      * @param list<array{id: int, username: string, fullname: string, email: string}> $reviewers
      * @return array{id: int, username: string, fullname: string, email: string}|null
      */
-    private function soaContact(int $zoneId, array $reviewers): ?array
+    private function soaContact(int $zoneId, string $zoneName, array $reviewers): ?array
     {
         if ($this->soaRecords === null || !$this->config->get('notifications', 'change_request_soa_contact', false)) {
             return null;
@@ -324,9 +323,9 @@ class ChangeRequestNotificationService implements ChangeRequestNotifierInterface
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             return null;
         }
-        // The hostmaster is whatever the zone data says, so a zone owner could aim mail at any third party
-        if (!$this->domainIsHosted($parts[2])) {
-            $this->logger->info("SOA contact of zone $zoneId not mailed: its domain '{$parts[2]}' is not hosted here");
+        // The RNAME is zone data the owner controls, so only the zone's own domain may receive mail
+        if (!$this->domainIsWithinZone($parts[2], $zoneName)) {
+            $this->logger->info("SOA contact of zone $zoneId not mailed: its domain '{$parts[2]}' is outside the zone");
             return null;
         }
         foreach ($reviewers as $reviewer) {
@@ -339,13 +338,14 @@ class ChangeRequestNotificationService implements ChangeRequestNotifierInterface
     }
 
     /**
-     * Whether the name is a zone this instance hosts or sits under one.
+     * Whether the domain is the zone itself or a subdomain of it.
      */
-    private function domainIsHosted(string $domain): bool
+    private function domainIsWithinZone(string $domain, string $zoneName): bool
     {
-        $name = strtolower(rtrim($domain, '.'));
+        $domain = strtolower(rtrim($domain, '.'));
+        $zone = strtolower(rtrim($zoneName, '.'));
 
-        return $this->domainRepository->findZoneIdsByNames([$name, ...DnsHelper::ancestorNames($name), '.']) !== [];
+        return $zone !== '' && ($domain === $zone || str_ends_with($domain, '.' . $zone));
     }
 
     private function findReviewers(int $zoneId, int $requesterId): array

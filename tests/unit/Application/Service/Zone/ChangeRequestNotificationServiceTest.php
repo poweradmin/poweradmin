@@ -146,9 +146,9 @@ class ChangeRequestNotificationServiceTest extends PermissionServiceTestCase
 
         $domainRepository = $this->createMock(DomainRepositoryInterface::class);
         $domainRepository->method('getDomainNameById')->willReturn(self::ZONE_NAME);
-        // This instance hosts example.com, which every SOA contact below sits under unless a test says otherwise
+        // Other tenants' zones are hosted here too, so a contact in them must be refused by the zone rule itself
         $domainRepository->method('findZoneIdsByNames')->willReturnCallback(
-            static fn(array $names): array => array_intersect_key(['example.com' => 1], array_flip($names))
+            static fn(array $names): array => array_intersect_key(['example.com' => 1, 'other.test' => 2, 'notexample.com' => 3], array_flip($names))
         );
 
         return new ChangeRequestNotificationService(
@@ -247,7 +247,7 @@ class ChangeRequestNotificationServiceTest extends PermissionServiceTestCase
         $this->assertCount(3, $this->sent);
     }
 
-    public function testASoaContactOutsideTheHostedZonesIsNotMailed(): void
+    public function testASoaContactOutsideTheZoneIsNotMailed(): void
     {
         $soa = 'ns1.example.com. hostmaster.outsider.test. 2026092001 10800 3600 604800 3600';
 
@@ -255,7 +255,23 @@ class ChangeRequestNotificationServiceTest extends PermissionServiceTestCase
         $this->assertNotContains('hostmaster@outsider.test', array_column($this->sent, 'to'));
     }
 
-    public function testASoaContactUnderAHostedZoneIsMailed(): void
+    public function testASoaContactInAnotherTenantsDomainIsNotMailed(): void
+    {
+        $soa = 'ns1.example.com. hostmaster.other.test. 2026092001 10800 3600 604800 3600';
+
+        $this->assertTrue($this->fileRequest($this->makeService(soaRecord: $soa, mailSoaContact: true)));
+        $this->assertNotContains('hostmaster@other.test', array_column($this->sent, 'to'));
+    }
+
+    public function testASoaContactOnASuffixLookalikeIsNotMailed(): void
+    {
+        $soa = 'ns1.example.com. hostmaster.notexample.com. 2026092001 10800 3600 604800 3600';
+
+        $this->assertTrue($this->fileRequest($this->makeService(soaRecord: $soa, mailSoaContact: true)));
+        $this->assertNotContains('hostmaster@notexample.com', array_column($this->sent, 'to'));
+    }
+
+    public function testASoaContactUnderTheZoneIsMailed(): void
     {
         $soa = 'ns1.example.com. hostmaster.mail.example.com. 2026092001 10800 3600 604800 3600';
 
