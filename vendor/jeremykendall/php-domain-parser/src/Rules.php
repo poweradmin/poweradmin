@@ -45,7 +45,6 @@ final class Rules implements PublicSuffixList
      *
      * @param null|resource $context
      *
-     * @throws UnableToLoadResource If the rules can not be loaded from the path
      * @throws UnableToLoadPublicSuffixList If the rules contain in the resource are invalid
      */
     public static function fromPath(string $path, $context = null): self
@@ -144,7 +143,7 @@ final class Rules implements PublicSuffixList
         }
 
         if ($isDomain && [] !== $ruleParts) {
-            $list[$rule] = self::addRule($list[$rule], $ruleParts);
+            $list[$rule] = self::addRule($list[$rule], $ruleParts); /* @phpstan-ignore-line */
         }
 
         return $list;
@@ -255,9 +254,10 @@ final class Rules implements PublicSuffixList
     {
         $rules = $this->rules[$section];
         $labelCount = 0;
+        $matchedCount = 0;
         foreach ($domain->toAscii() as $label) {
             //match exception rule
-            if (isset($rules[$label]['!'])) {
+            if (isset($rules[$label]['!'])) { /* @phpstan-ignore-line */
                 return $labelCount;
             }
 
@@ -270,39 +270,17 @@ final class Rules implements PublicSuffixList
 
             //no match found
             if (!array_key_exists($label, $rules)) {
-                if (self::PRIVATE_DOMAINS !== $section) {
-                    return $labelCount;
-                }
-
-                // Suffix MATCHES default domain
-                if (array_key_exists(self::DOMAIN_RULE_MARKER, $rules)) {
-                    return $labelCount;
-                }
-
-                // Suffix MUST be fully matched else no suffix is found for private domain
-                if (self::hasRemainingRules($rules)) {
-                    return 0;
-                }
-
-                return $labelCount;
+                return self::PRIVATE_DOMAINS === $section ? $matchedCount : $labelCount;
             }
 
             ++$labelCount;
             /** @var array<array-key, mixed> $rules */
             $rules = $rules[$label];
-        }
-
-        return $labelCount;
-    }
-
-    private static function hasRemainingRules(array $rules): bool
-    {
-        foreach ($rules as $rule) {
-            if ([] !== $rule) {
-                return true;
+            if ([] === $rules || array_key_exists(self::DOMAIN_RULE_MARKER, $rules)) {
+                $matchedCount = $labelCount;
             }
         }
 
-        return false;
+        return self::PRIVATE_DOMAINS === $section ? $matchedCount : $labelCount;
     }
 }
