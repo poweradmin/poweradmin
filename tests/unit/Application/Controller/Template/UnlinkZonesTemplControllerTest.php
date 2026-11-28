@@ -177,4 +177,28 @@ class UnlinkZonesTemplControllerTest extends SeamControllerTestCase
             $this->assertSame('Template not found.', $halt->target);
         }
     }
+
+    public function testAScalarZoneIdsFieldIsOneSelection(): void
+    {
+        $this->templates->expects($this->once())->method('getZonesByIds')->with([self::OWN_ZONE])
+            ->willReturn([['id' => self::OWN_ZONE, 'name' => 'example.com']]);
+        $this->post(['zone_ids' => (string)self::OWN_ZONE, 'template_id' => '3']);
+
+        (new UnlinkZonesTemplController($this->requestData(), true, $this->environment($this->configure())))->run();
+
+        $this->assertSame([self::OWN_ZONE], $this->renderedParams()['zone_ids']);
+    }
+
+    public function testNestedZoneIdsAreNotASelection(): void
+    {
+        $this->templates->expects($this->never())->method('getZonesByIds');
+        $this->post(['zone_ids' => [[self::OWN_ZONE]], 'template_id' => '3']);
+
+        try {
+            (new UnlinkZonesTemplController($this->requestData(), true, $this->environment($this->configure())))->run();
+            $this->fail('Expected the request to end in an error page.');
+        } catch (RequestHalted $halt) {
+            $this->assertSame('No zones selected.', $halt->target);
+        }
+    }
 }

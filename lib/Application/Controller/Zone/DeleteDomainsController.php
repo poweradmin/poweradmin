@@ -36,8 +36,8 @@ class DeleteDomainsController extends BaseController
 {
     public function run(): void
     {
-        $zone_ids = $this->httpRequest->getPostParam('zone_id');
-        if (!$zone_ids) {
+        $zone_ids = $this->selectedZoneIds($this->httpRequest->getPostParam('zone_id'));
+        if ($zone_ids === []) {
             $referrer = $_SERVER['HTTP_REFERER'] ?? null;
             $return_page = 'list_forward_zones';
 
@@ -63,6 +63,18 @@ class DeleteDomainsController extends BaseController
         }
 
         $this->showDomains($zone_ids);
+    }
+
+    /**
+     * The submitted ids as unique positive integers; anything else a crafted post sends is dropped.
+     *
+     * @return list<int>
+     */
+    private function selectedZoneIds(mixed $submitted): array
+    {
+        $ids = array_map(static fn($id): int => is_scalar($id) ? (int)$id : 0, (array)$submitted);
+
+        return array_values(array_unique(array_filter($ids, static fn(int $id): bool => $id > 0)));
     }
 
     private function verifyDeletePermission($zone_ids): void

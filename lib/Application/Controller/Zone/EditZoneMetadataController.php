@@ -104,7 +104,12 @@ class EditZoneMetadataController extends BaseController
         }
 
         if ($this->isPost()) {
-            $submittedMetadata = $this->normalizeSubmittedMetadata($this->httpRequest->getPostParam('metadata', []));
+            $postedMetadata = $this->httpRequest->getPostParam('metadata', []);
+            if (!is_array($postedMetadata)) {
+                $this->showError(_('Invalid or unexpected input given.'));
+                return;
+            }
+            $submittedMetadata = $this->normalizeSubmittedMetadata($postedMetadata);
 
             $result = $this->metadataService()->replaceAll($zoneId, $zone->name, $submittedMetadata, (int)$this->getCurrentUserId());
             if (!$result->isOk()) {
@@ -159,14 +164,17 @@ class EditZoneMetadataController extends BaseController
      * Empty rows are ignored and partially filled rows are dropped so the editor can
      * preserve a simple add/remove-row workflow without producing invalid writes.
      *
-     * @param array<int, array<string, mixed>> $submittedMetadata
+     * @param array<array-key, mixed> $submittedMetadata Rows as posted, so not necessarily arrays
      * @return array<int, array{kind: string, content: string}>
      */
     private function normalizeSubmittedMetadata(array $submittedMetadata): array
     {
         $rows = [];
         foreach ($submittedMetadata as $row) {
-            $rows[] = ['kind' => $this->resolveSubmittedKind($row), 'content' => $row['content'] ?? ''];
+            if (!is_array($row)) {
+                continue;
+            }
+            $rows[] = ['kind' => $this->resolveSubmittedKind($row), 'content' => is_string($row['content'] ?? null) ? $row['content'] : ''];
         }
 
         return ZoneMetadataService::normalizeRows($rows);
@@ -179,9 +187,9 @@ class EditZoneMetadataController extends BaseController
      */
     private function resolveSubmittedKind(array $row): string
     {
-        $selectedKind = strtoupper(trim((string) ($row['kind_key'] ?? '')));
+        $selectedKind = strtoupper(trim(is_string($row['kind_key'] ?? null) ? $row['kind_key'] : ''));
         if ($selectedKind === self::CUSTOM_KIND) {
-            $selectedKind = strtoupper(trim((string) ($row['custom_kind'] ?? '')));
+            $selectedKind = strtoupper(trim(is_string($row['custom_kind'] ?? null) ? $row['custom_kind'] : ''));
         }
 
         return $selectedKind;

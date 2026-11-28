@@ -40,7 +40,8 @@ class UnlinkZonesTemplController extends BaseController
         $this->checkCondition(!($perm_godlike || $perm_zone_edit || $perm_zone_meta_edit), _('You do not have permission to unlink zones from templates.'));
 
         if ($this->isPost()) {
-            $zone_ids = $this->httpRequest->getPostParam('zone_ids', []);
+            // A scalar or nested value is not a list of ids
+            $zone_ids = array_values(array_filter((array)$this->httpRequest->getPostParam('zone_ids', []), 'is_scalar'));
             $template_id = filter_var($this->httpRequest->getPostParam('template_id'), FILTER_VALIDATE_INT);
 
             if (empty($zone_ids)) {

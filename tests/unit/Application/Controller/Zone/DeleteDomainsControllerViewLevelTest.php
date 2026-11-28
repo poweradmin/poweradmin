@@ -145,4 +145,60 @@ class DeleteDomainsControllerViewLevelTest extends SeamControllerTestCase
         }
         $this->assertSame([], $this->messagesFor('list_reverse_zones'));
     }
+
+    public function testDuplicateIdsAreDeletedOnceAndReportNoFailure(): void
+    {
+        $this->post(['zone_id' => ['12', '12', '13'], 'confirm' => '1']);
+        $controller = new DeleteDomainsController($this->requestData(), true, $this->environment($this->configure()));
+
+        try {
+            $controller->run();
+            $this->fail('Expected the request to end in a redirect.');
+        } catch (RequestHalted $halt) {
+            $this->assertSame('/zones/reverse', $halt->target);
+        }
+
+        $this->assertSame([['success', 'Zones have been deleted successfully.']], $this->messagesFor('list_reverse_zones'));
+    }
+
+    /** @return array<string, array{mixed}> */
+    public static function unusableSelections(): array
+    {
+        return [
+            'nested array' => [[['12']]],
+            'zero' => [['0']],
+            'word' => ['abc'],
+            'empty list' => [[]],
+        ];
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('unusableSelections')]
+    public function testAnUnusableSelectionIsTreatedAsNoZoneSelected(mixed $selection): void
+    {
+        $this->post(['zone_id' => $selection, 'confirm' => '1']);
+        $controller = new DeleteDomainsController($this->requestData(), true, $this->environment($this->configure()));
+
+        try {
+            $controller->run();
+            $this->fail('Expected the request to end in a redirect.');
+        } catch (RequestHalted $halt) {
+            $this->assertSame('/zones/forward', $halt->target);
+        }
+
+        $this->assertSame([['error', 'No zone selected for deletion.']], $this->messagesFor('list_forward_zones'));
+    }
+
+    public function testAScalarZoneIdIsTreatedAsASingleSelection(): void
+    {
+        $this->audit->expects($this->once())->method('logZoneDelete')->with('2.0.192.in-addr.arpa', 'MASTER');
+        $this->post(['zone_id' => '12', 'confirm' => '1']);
+        $controller = new DeleteDomainsController($this->requestData(), true, $this->environment($this->configure()));
+
+        try {
+            $controller->run();
+            $this->fail('Expected the request to end in a redirect.');
+        } catch (RequestHalted $halt) {
+            $this->assertSame('/zones/reverse', $halt->target);
+        }
+    }
 }

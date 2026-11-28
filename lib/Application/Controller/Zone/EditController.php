@@ -506,7 +506,7 @@ class EditController extends BaseController
             if ($this->refuseZoneChangeUnderReview($zone_id)) {
                 return;
             }
-            $this->reportZoneWrite('edit', $domainManager->changeZoneSlaveMaster($zone_id, $this->httpRequest->getPostParam('new_master', '')), _('Slave master has been changed successfully.'));
+            $this->reportZoneWrite('edit', $domainManager->changeZoneSlaveMaster($zone_id, $this->httpRequest->getPostString('new_master')), _('Slave master has been changed successfully.'));
         }
 
         if ($this->httpRequest->getPostParam('retrieve_zone') !== null) {
