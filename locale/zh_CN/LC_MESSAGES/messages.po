@@ -6110,11 +6110,12 @@ msgstr "请记住，RRSIG 记录必须在过期日期之前重新生成，以维
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:112
 msgid ""
-"The local-part hash in SMIMEA records should be a 64-character SHA-256 hex "
-"hash. The format should be: SHA256(local-part)._smimecert.domain.tld"
+"The local-part hash in SMIMEA records should be a 56-character hex hash "
+"(SHA-256 truncated to 28 octets). The format should be: hash(local-"
+"part)._smimecert.domain.tld"
 msgstr ""
-"SMIMEA 记录中的本地部分哈希应该是 64 字符的 SHA-256 十六进制哈希。格式应为："
-"SHA256(local-part)._smimecert.domain.tld"
+"SMIMEA 记录中的本地部分哈希应该是 56 字符的十六进制哈希（SHA-256 截断为 28 个"
+"八位字节）。格式应为：hash(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:116
 #, php-format

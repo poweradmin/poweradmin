@@ -6673,11 +6673,13 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:112
 msgid ""
-"The local-part hash in SMIMEA records should be a 64-character SHA-256 hex "
-"hash. The format should be: SHA256(local-part)._smimecert.domain.tld"
+"The local-part hash in SMIMEA records should be a 56-character hex hash "
+"(SHA-256 truncated to 28 octets). The format should be: hash(local-"
+"part)._smimecert.domain.tld"
 msgstr ""
-"Hash lokální části v SMIMEA záznamech by měl být 64-znakový SHA-256 hex "
-"hash. Formát by měl být: SHA256(local-part)._smimecert.domain.tld"
+"Hash lokální části v SMIMEA záznamech by měl být 56znakový hex hash (SHA-256 "
+"zkrácený na 28 oktetů). Formát by měl být: hash(local-"
+"part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:116
 #, php-format

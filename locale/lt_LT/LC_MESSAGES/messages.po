@@ -6725,11 +6725,13 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:112
 msgid ""
-"The local-part hash in SMIMEA records should be a 64-character SHA-256 hex "
-"hash. The format should be: SHA256(local-part)._smimecert.domain.tld"
+"The local-part hash in SMIMEA records should be a 56-character hex hash "
+"(SHA-256 truncated to 28 octets). The format should be: hash(local-"
+"part)._smimecert.domain.tld"
 msgstr ""
-"Vietinės dalies hash SMIMEA įrašuose turėtų būti 64 simbolių SHA-256 hex "
-"hash. Formatas turėtų būti: SHA256(vietinė-dalis)._smimecert.domain.tld"
+"Vietinės dalies hash SMIMEA įrašuose turėtų būti 56 simbolių hex hash "
+"(SHA-256, sutrumpintas iki 28 oktetų). Formatas turėtų būti: hash(local-"
+"part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:116
 #, php-format

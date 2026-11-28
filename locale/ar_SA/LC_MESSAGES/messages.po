@@ -6576,11 +6576,13 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:112
 msgid ""
-"The local-part hash in SMIMEA records should be a 64-character SHA-256 hex "
-"hash. The format should be: SHA256(local-part)._smimecert.domain.tld"
+"The local-part hash in SMIMEA records should be a 56-character hex hash "
+"(SHA-256 truncated to 28 octets). The format should be: hash(local-"
+"part)._smimecert.domain.tld"
 msgstr ""
-"يجب أن تكون بصمة الجزء المحلي في سجلات SMIMEA بصمة SHA-256 ست عشرية من 64 "
-"حرفاً. ويجب أن يكون التنسيق: SHA256(local-part)._smimecert.domain.tld"
+"يجب أن تكون بصمة الجزء المحلي في سجلات SMIMEA بصمة ست عشرية من 56 حرفاً "
+"(SHA-256 مقتطعة إلى 28 بايت). ويجب أن يكون التنسيق: hash(local-"
+"part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:116
 #, php-format

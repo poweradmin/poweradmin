@@ -6958,12 +6958,14 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:112
 msgid ""
-"The local-part hash in SMIMEA records should be a 64-character SHA-256 hex "
-"hash. The format should be: SHA256(local-part)._smimecert.domain.tld"
+"The local-part hash in SMIMEA records should be a 56-character hex hash "
+"(SHA-256 truncated to 28 octets). The format should be: hash(local-"
+"part)._smimecert.domain.tld"
 msgstr ""
 "Ο κατακερματισμός του τοπικού τμήματος στις εγγραφές SMIMEA θα πρέπει να "
-"είναι ένας δεκαεξαδικός κατακερματισμός SHA-256 64 χαρακτήρων. Η μορφή θα "
-"πρέπει να είναι: SHA256(local-part)._smimecert.domain.tld"
+"είναι ένας δεκαεξαδικός κατακερματισμός 56 χαρακτήρων (SHA-256 περικομμένος "
+"σε 28 οκτάδες). Η μορφή θα πρέπει να είναι: hash(local-"
+"part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:116
 #, php-format

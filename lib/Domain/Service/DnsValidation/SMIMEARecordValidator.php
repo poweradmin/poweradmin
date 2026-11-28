@@ -107,15 +107,15 @@ class SMIMEARecordValidator implements DnsRecordValidatorInterface
         }
 
         // SMIMEA records are typically of the form: <hash-of-localpart>._smimecert.<domain>
-        // The local-part hash is the SHA-256 hash (hex encoded) of the local part of the email address
+        // The local-part hash is the SHA2-256 hash of the local part truncated to 28 octets (RFC 8162), hex encoded
         if (strpos($name, '._smimecert.') !== false) {
             // This is the SMIMEA format, let's validate the hash portion
             $parts = explode('._smimecert.', $name, 2);
             $localPartHash = $parts[0];
 
-            // Validate that the local part hash is properly formed (64 hex characters for SHA-256)
-            if (!preg_match('/^[0-9a-fA-F]{64}$/', $localPartHash)) {
-                $warnings[] = _('The local-part hash in SMIMEA records should be a 64-character SHA-256 hex hash. The format should be: SHA256(local-part)._smimecert.domain.tld');
+            // Validate that the local part hash is properly formed (56 hex characters: 28 octets)
+            if (!preg_match('/^[0-9a-fA-F]{56}$/', $localPartHash)) {
+                $warnings[] = _('The local-part hash in SMIMEA records should be a 56-character hex hash (SHA-256 truncated to 28 octets). The format should be: hash(local-part)._smimecert.domain.tld');
             }
 
             // Add information about the format

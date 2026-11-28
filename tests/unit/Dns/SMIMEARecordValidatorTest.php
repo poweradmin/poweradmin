@@ -313,4 +313,24 @@ class SMIMEARecordValidatorTest extends TestCase
         $this->assertTrue($result->isValid());
         $this->assertSame($name, $result->getData()['name']);
     }
+
+    public function testNoHashWarningForFiftySixHexLabel()
+    {
+        $name = substr(hash('sha256', 'user'), 0, 56) . '._smimecert.example.com';
+        $result = $this->validator->validate('3 1 1 a0b9b16969687adf0323d15048fb4fa4c354c4e01594e8956522cfe3566cae74', $name, 0, 3600, 86400);
+
+        $this->assertTrue($result->isValid());
+        foreach ($result->getWarnings() as $warning) {
+            $this->assertStringNotContainsString('56-character', $warning);
+        }
+    }
+
+    public function testWarnsWhenHashLabelIsNotFiftySixHex()
+    {
+        $name = str_repeat('a', 40) . '._smimecert.example.com';
+        $result = $this->validator->validate('3 1 1 a0b9b16969687adf0323d15048fb4fa4c354c4e01594e8956522cfe3566cae74', $name, 0, 3600, 86400);
+
+        $this->assertTrue($result->isValid());
+        $this->assertStringContainsString('56-character', implode("\n", $result->getWarnings()));
+    }
 }
