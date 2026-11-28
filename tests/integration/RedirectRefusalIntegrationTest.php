@@ -91,6 +91,9 @@ class RedirectRefusalIntegrationTest extends TestCase
                 $this->createMock(PDO::class)
             );
             $provider = (new ReflectionMethod($service, 'createProvider'))->invoke($service, 'test');
+            // A hanging IdP must not hold a PHP worker without limit
+            $this->assertSame(10, $provider->getHttpClient()->getConfig('timeout'));
+            $this->assertSame(5, $provider->getHttpClient()->getConfig('connect_timeout'));
             // Keep the client's redirect setting, add a timeout so a followed redirect fails fast
             $provider->setHttpClient(new \GuzzleHttp\Client([
                 'allow_redirects' => $provider->getHttpClient()->getConfig('allow_redirects'),

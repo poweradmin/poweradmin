@@ -50,6 +50,8 @@ class OidcService extends LoggingService
     // uses response_mode=form_post, since the session cookie is SameSite=Lax;
     // __Host- stops a sibling host planting one
     private const FLOW_COOKIE_NAME = '__Host-oidc_flow';
+    private const IDP_REQUEST_TIMEOUT = 10;
+    private const IDP_CONNECT_TIMEOUT = 5;
     private const FLOW_COOKIE_TTL = 300;
 
     private ConfigurationManager $configManager;
@@ -497,8 +499,12 @@ class OidcService extends LoggingService
         }
 
         // A 307 or 308 would re-send the token request, client secret included, to any Location.
-        // The provider's own client would take timeout and proxy from $options, so pass them on.
-        $httpClient = new \GuzzleHttp\Client(['allow_redirects' => false] + array_intersect_key($options, ['timeout' => true, 'proxy' => true]));
+        // Anyone can start a login, so a hanging IdP must not hold a PHP worker without limit.
+        $httpClient = new \GuzzleHttp\Client([
+            'allow_redirects' => false,
+            'timeout' => self::IDP_REQUEST_TIMEOUT,
+            'connect_timeout' => self::IDP_CONNECT_TIMEOUT,
+        ] + array_intersect_key($options, ['proxy' => true]));
 
         return new GenericProvider($options, ['httpClient' => $httpClient]);
     }
