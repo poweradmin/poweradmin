@@ -6875,9 +6875,13 @@ msgstr "See kirje on konfliktis olemasoleva CNAME-ga."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:118
 msgid ""
-"The local-part hash in SMIMEA records should be a 64-character SHA-256 hex "
-"hash. The format should be: SHA256(local-part)._smimecert.domain.tld"
-msgstr "SMIMEA local-part 64 märgi SHA-256."
+"The local-part hash in SMIMEA records should be a 56-character hex hash "
+"(SHA-256 truncated to 28 octets). The format should be: "
+"hash(local-part)._smimecert.domain.tld"
+msgstr ""
+"SMIMEA-kirjetes peaks local-part räsi olema 56 märgi pikkune "
+"kuueteistkümnendsüsteemis räsi (SHA-256, lühendatud 28 oktetini). Vorming "
+"peaks olema: hash(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
 #, php-format

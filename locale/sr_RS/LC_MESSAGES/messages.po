@@ -6895,9 +6895,13 @@ msgstr "Овај запис је у сукобу са постојећим CNAME
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:118
 msgid ""
-"The local-part hash in SMIMEA records should be a 64-character SHA-256 hex "
-"hash. The format should be: SHA256(local-part)._smimecert.domain.tld"
-msgstr "SMIMEA local-part треба да буде 64-знак SHA-256 хекс хеш."
+"The local-part hash in SMIMEA records should be a 56-character hex hash "
+"(SHA-256 truncated to 28 octets). The format should be: "
+"hash(local-part)._smimecert.domain.tld"
+msgstr ""
+"Хеш локалног дела у SMIMEA записима треба да буде хекс хеш од 56 знакова "
+"(SHA-256 скраћен на 28 октета). Формат треба да буде: "
+"hash(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
 #, php-format

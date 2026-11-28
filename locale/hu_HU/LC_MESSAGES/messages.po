@@ -6776,9 +6776,13 @@ msgstr "CNAME konfliktus."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:118
 msgid ""
-"The local-part hash in SMIMEA records should be a 64-character SHA-256 hex "
-"hash. The format should be: SHA256(local-part)._smimecert.domain.tld"
-msgstr "SMIMEA local-part SHA-256 64 char."
+"The local-part hash in SMIMEA records should be a 56-character hex hash "
+"(SHA-256 truncated to 28 octets). The format should be: "
+"hash(local-part)._smimecert.domain.tld"
+msgstr ""
+"Az SMIMEA rekordokban a helyi rész (local-part) hash értéke 56 karakteres "
+"hexadecimális hash legyen (28 oktetre csonkolt SHA-256). A formátum a "
+"következő: hash(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
 #, php-format
