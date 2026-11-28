@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -91,13 +91,16 @@ class DeleteRecordController extends BaseController
 
         // Get zone ID from record first
         $zid = $dnsRecord->getZoneIdFromRecordId($record_id);
+        $userId = $this->userContextService->getLoggedInUserId();
         if ($zid == null) {
-            $this->showError(_('Invalid record ID.'));
+            // Only a user who may edit every zone learns that the id matches no record
+            $this->showError($this->permissionService->getEditPermissionLevel($userId) === 'all'
+                ? _('Invalid record ID.')
+                : _('You do not have permission to delete records in this zone.'));
             return;
         }
 
         // Early permission check - validate zone access before proceeding
-        $userId = $this->userContextService->getLoggedInUserId();
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zid);
 
         // Check zone-specific edit permission (includes group permissions)
