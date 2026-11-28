@@ -1,12 +1,15 @@
 # SAML PHP Toolkit Compatible with PHP 8.X
 
-[![php-saml 4.x-dev package](https://github.com/SAML-Toolkits/php-saml/actions/workflows/php-package.yml/badge.svg?branch=4.x-dev)](https://github.com/SAML-Toolkits/php-saml/actions/workflows/php-package.yml) [![Coverage Status](https://coveralls.io/repos/github/SAML-Toolkits/php-saml/badge.svg?branch=4.x-dev)](https://coveralls.io/github/SAML-Toolkits/php-saml?branch=4.x-dev) ![Packagist Dependency Version (specify version)](https://img.shields.io/packagist/dependency-v/onelogin/php-saml/php?version=4.0.0) [![License](https://poser.pugx.org/onelogin/php-saml/license.png)](https://packagist.org/packages/onelogin/php-saml) ![Packagist Downloads](https://img.shields.io/packagist/dm/onelogin/php-saml) ![Packagist Downloads](https://img.shields.io/packagist/dt/onelogin/php-saml?label=Total%20downloads)
+[![php-saml 4.x-dev package](https://github.com/SAML-Toolkits/php-saml/actions/workflows/php-package.yml/badge.svg?branch=4.x-dev)](https://github.com/SAML-Toolkits/php-saml/actions/workflows/php-package.yml) [![Coverage Status](https://coveralls.io/repos/github/SAML-Toolkits/php-saml/badge.svg?branch=4)](https://coveralls.io/github/SAML-Toolkits/php-saml?branch=4) ![Packagist Dependency Version (specify version)](https://img.shields.io/packagist/dependency-v/onelogin/php-saml/php?version=4.0.0) [![License](https://poser.pugx.org/onelogin/php-saml/license.png)](https://packagist.org/packages/onelogin/php-saml) ![Packagist Downloads](https://img.shields.io/packagist/dm/onelogin/php-saml) ![Packagist Downloads](https://img.shields.io/packagist/dt/onelogin/php-saml?label=Total%20downloads)
 
 Add SAML support to your PHP software using this library.
 
 
 Warning
 -------
+
+Version 4.5.0 includes several security improvements.
+Update to this version if you keep using the 4.x branch.
 
 Version 4.4.0 updates xmlseclibs to 4.0.1 due several vulnerabilities discovered. xmlseclibs 4.X uses phpseclib.
 
@@ -1186,7 +1189,7 @@ if (isset($_SESSION['samlUserdata'])) {   // If there is user data we print it.
 php-saml toolkit uses a bunch of methods in OneLogin\Saml2\Utils that try to guess the URL where the SAML messages are processed.
 
 * `getSelfHost` Returns the current host.
-* `getSelfPort` Return the port number used for the request
+* `getSelfPort` Return the port number used for the request, as an integer (`null` if it is not known or it is not a valid port number). `setSelfPort` accepts an integer or a string with an integer.
 * `isHTTPS` Checks if the protocol is https or http.
 * `getSelfURLhost` Returns the protocol + the current host + the port (if different than common ports).
 * `getSelfURL` Returns the URL of the current host + current view + query.
@@ -1507,6 +1510,22 @@ Auxiliary class that contains several methods to retrieve and process IdP metada
 
 The class does not validate in any way the URL that is introduced on methods like parseRemoteXML in order to retrieve the remove XML. Usually is the same administrator that handles the Service Provider the ones that set the URL that should belong to a trusted third-party IdP.
 But there are other scenarios, like a SAAS app where the administrator of the app delegates on other administrators. In such case, extra protection should be taken in order to validate such URL inputs and avoid attacks like SSRF.
+
+`parseRemoteXML` retrieves the metadata with curl: only http and https URLs, up to 5 redirections, 10 seconds to connect and 120 seconds for the whole request. Its last parameter, `$curlOptions`, is an array of extra curl options that are applied after those, so they override them:
+
+```php
+$idpInfo = IdPMetadataParser::parseRemoteXML(
+    'https://idp.example.com/metadata',
+    validatePeer: true,
+    curlOptions: array(
+        CURLOPT_CONNECTTIMEOUT => 5,
+        CURLOPT_TIMEOUT => 120,
+        CURLOPT_PROXY => 'http://proxy.example.com:3128',
+    )
+);
+```
+
+An Exception is raised if one of the options is not valid. Take into account that these options can also remove the protections that the method sets (for example the allowed protocols at `CURLOPT_PROTOCOLS`), so never build them from untrusted input.
 
 For more info, look at the source code; each method is documented and details
 about what it does and how to use it are provided. Make sure to also check the doc folder where
