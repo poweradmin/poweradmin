@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -72,7 +72,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class NAPTRRecordValidator implements DnsRecordValidatorInterface
@@ -461,7 +461,7 @@ class NAPTRRecordValidator implements DnsRecordValidatorInterface
      */
     private function validateQuotedString(string $value): ValidationResult
     {
-        if (preg_match('/^".*"$/', $value) === 1) {
+        if (preg_match('/^".*"$/', $value) === 1 && StringValidator::hasValidQuotedEscapes(substr($value, 1, -1))) {
             return ValidationResult::success(true);
         }
         return ValidationResult::failure(_('Value must be enclosed in double quotes.'));

@@ -42,7 +42,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class TXTRecordValidator implements DnsRecordValidatorInterface
@@ -184,8 +184,7 @@ class TXTRecordValidator implements DnsRecordValidatorInterface
             $subContent = substr($content, 1, -1);
 
             // Check for unescaped quotes
-            $pattern = '/(?<!\\\\)"/';
-            if (preg_match($pattern, $subContent)) {
+            if (!StringValidator::hasValidQuotedEscapes($subContent)) {
                 return ValidationResult::failure(_('Backslashes must precede all quotes (") in TXT content'));
             }
 
@@ -207,8 +206,7 @@ class TXTRecordValidator implements DnsRecordValidatorInterface
                 $unquoted = substr($stringPart, 1, -1);
 
                 // Check for unescaped quotes
-                $pattern = '/(?<!\\\\)"/';
-                if (preg_match($pattern, $unquoted)) {
+                if (!StringValidator::hasValidQuotedEscapes($unquoted)) {
                     return ValidationResult::failure(_('Backslashes must precede all quotes (") in TXT content'));
                 }
 
@@ -252,8 +250,8 @@ class TXTRecordValidator implements DnsRecordValidatorInterface
             return false;
         }
 
-        // Split by space but respect quoted content
-        preg_match_all('/"([^"\\\\]|\\\\.)*"/', $content, $matches);
+        // The format check above allows no interior quotes, so split on plain quote pairs
+        preg_match_all('/"[^"]*"/', $content, $matches);
 
         if (empty($matches[0])) {
             return false;

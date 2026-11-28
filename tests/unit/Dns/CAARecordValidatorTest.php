@@ -283,4 +283,18 @@ class CAARecordValidatorTest extends TestCase
         $data = $result->getData();
         $this->assertEquals(86400, $data['ttl']);
     }
+
+    public function testQuotedParityRefusesEscapedClosingQuote()
+    {
+        $result = $this->validator->validate('0 iodef "mailto:a@example.com\\"', 'example.com', 0, 3600, 86400);
+
+        $this->assertFalse($result->isValid());
+    }
+
+    public function testQuotedParityRefusesInteriorBareQuote()
+    {
+        $result = $this->validator->validate('0 iodef "mailto:a"b@example.com"', 'example.com', 0, 3600, 86400);
+
+        $this->assertFalse($result->isValid());
+    }
 }

@@ -598,4 +598,53 @@ class TXTRecordValidatorTest extends TestCase
         $data = $result->getData();
         $this->assertEquals($content, $data['content']);
     }
+
+    public function testQuotedParityRefusesEscapedClosingQuote()
+    {
+        $result = $this->validator->validate('"abc\\"', 'txt.example.com', '', 3600, 86400);
+
+        $this->assertFalse($result->isValid());
+    }
+
+    public function testQuotedParityAcceptsEscapedBackslashBeforeClosingQuote()
+    {
+        $result = $this->validator->validate('"a\\\\"', 'txt.example.com', '', 3600, 86400);
+
+        $this->assertTrue($result->isValid());
+    }
+
+    public function testQuotedParityAcceptsEscapedInteriorQuote()
+    {
+        $result = $this->validator->validate('"a\\"b"', 'txt.example.com', '', 3600, 86400);
+
+        $this->assertTrue($result->isValid());
+    }
+
+    public function testQuotedParityRefusesInteriorBareQuote()
+    {
+        $result = $this->validator->validate('"a"b"', 'txt.example.com', '', 3600, 86400);
+
+        $this->assertFalse($result->isValid());
+    }
+
+    public function testQuotedParityRefusesBareQuoteAfterEvenBackslashRun()
+    {
+        $result = $this->validator->validate('"a\\\\"b"', 'txt.example.com', '', 3600, 86400);
+
+        $this->assertFalse($result->isValid());
+    }
+
+    public function testQuotedParityRefusesMultiStringWithEscapedClosingQuote()
+    {
+        $result = $this->validator->validate('"a\\" "b"', 'txt.example.com', '', 3600, 86400);
+
+        $this->assertFalse($result->isValid());
+    }
+
+    public function testQuotedParityAcceptsMultiString()
+    {
+        $result = $this->validator->validate('"a" "b"', 'txt.example.com', '', 3600, 86400);
+
+        $this->assertTrue($result->isValid());
+    }
 }

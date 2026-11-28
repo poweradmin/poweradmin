@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,11 +29,28 @@ use Poweradmin\Domain\Service\Validation\ValidationResult;
  *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class StringValidator
 {
+    /**
+     * Check the inside of a quoted DNS string the way PowerDNS reads it
+     *
+     * A quote is escaped only after an odd run of backslashes, so an interior bare quote
+     * or content ending in an odd run of backslashes (escaping the closing quote) fails.
+     *
+     * @param string $inner The string without its enclosing quotes
+     */
+    public static function hasValidQuotedEscapes(string $inner): bool
+    {
+        if (preg_match('/(?<!\\\\)(?:\\\\\\\\)*"/', $inner)) {
+            return false;
+        }
+
+        return (strlen($inner) - strlen(rtrim($inner, '\\'))) % 2 === 0;
+    }
+
     /**
      * Test if string is printable
      *

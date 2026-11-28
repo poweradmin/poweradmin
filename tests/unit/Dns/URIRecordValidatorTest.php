@@ -232,4 +232,18 @@ class URIRecordValidatorTest extends TestCase
         $this->assertTrue($result->isValid());
         $this->assertSame(65535, $result->getData()['prio']);
     }
+
+    public function testQuotedParityRefusesEscapedClosingQuote()
+    {
+        $result = $this->validator->validate('10 1 "https://example.com/\\"', 'uri.example.com', 0, 3600, 86400);
+
+        $this->assertFalse($result->isValid());
+    }
+
+    public function testQuotedParityRefusesInteriorBareQuote()
+    {
+        $result = $this->validator->validate('10 1 "https://exa"mple.com/"', 'uri.example.com', 0, 3600, 86400);
+
+        $this->assertFalse($result->isValid());
+    }
 }
