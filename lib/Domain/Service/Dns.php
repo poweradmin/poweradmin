@@ -208,6 +208,9 @@ class Dns
                 if (!self::is_valid_printable($name)) {
                     return false;
                 }
+                if (!$this->is_valid_hostname_fqdn($name, '1')) {
+                    return false;
+                }
                 if (!self::is_valid_printable($content)) {
                     return false;
                 }
@@ -317,6 +320,10 @@ class Dns
                     $error = new ErrorMessage(_('Unknown record type.'));
                     $errorPresenter = new ErrorPresenter();
                     $errorPresenter->present($error);
+                    return false;
+                }
+
+                if (!$this->is_valid_hostname_fqdn($name, '1')) {
                     return false;
                 }
 
@@ -583,13 +590,36 @@ class Dns
             $subContent = $content;
         }
 
-        $pattern = '/(?<!\\\\)"/';
-
-        if (preg_match($pattern, $subContent)) {
+        if (!self::has_only_escaped_quotes($subContent)) {
             $error = new ErrorMessage(_('Backslashes must precede all quotes (") in TXT content'));
             $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
             return false;
+        }
+
+        return true;
+    }
+
+    /** True when no quote is bare and the text does not end in a lone backslash
+     *
+     * A quote is escaped only after an odd run of backslashes.
+     *
+     * @param string $content Text between the outer quotes
+     *
+     * @return bool
+     */
+    private static function has_only_escaped_quotes(string $content): bool
+    {
+        $length = strlen($content);
+        for ($i = 0; $i < $length; $i++) {
+            if ($content[$i] === '\\') {
+                if ($i + 1 >= $length) {
+                    return false;
+                }
+                $i++;
+            } elseif ($content[$i] === '"') {
+                return false;
+            }
         }
 
         return true;
