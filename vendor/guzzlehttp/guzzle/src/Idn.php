@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace GuzzleHttp;
 
 use GuzzleHttp\Exception\InvalidArgumentException;
+use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Message\UriInterface;
 
 /**
@@ -36,6 +37,24 @@ final class Idn
         throw new InvalidArgumentException('idn_conversion must be true, false, null, or an integer IDNA_* bitmask');
     }
 
+    public static function createUri(
+        UriFactoryInterface $uriFactory,
+        #[\SensitiveParameter]
+        string $uri,
+        ?int $options
+    ): UriInterface {
+        // psr7 would also convert a percent-encoded host, which convertUri() leaves alone.
+        if ($options !== null && $uriFactory instanceof Psr7\HttpFactory && \preg_match('~\A(?:[^:/?#]+:)?(?://)?(?:[^/?#]*@)?+[^/?#]*%[89A-Fa-f][0-9A-Fa-f]~', $uri) === 0) {
+            try {
+                return Psr7\Idna::uriFor($uri, $options);
+            } catch (\InvalidArgumentException|\RuntimeException $e) {
+                // convertUri() converts some hosts that psr7 refuses.
+            }
+        }
+
+        return $uriFactory->createUri($uri);
+    }
+
     /**
      * @throws InvalidArgumentException
      */
@@ -65,8 +84,17 @@ final class Idn
                 throw new InvalidArgumentException($errorMessage);
             }
             if ($uri->getHost() !== $asciiHost) {
+                // The conversion can map a character to a URI delimiter.
+                if (!Psr7\Rfc3986::isValidHost($asciiHost)) {
+                    throw new InvalidArgumentException('IDN conversion failed');
+                }
+
                 // Replace URI only if the ASCII version is different
-                $uri = $uri->withHost($asciiHost);
+                try {
+                    $uri = $uri->withHost($asciiHost);
+                } catch (\InvalidArgumentException $e) {
+                    throw new InvalidArgumentException('IDN conversion failed', 0, $e);
+                }
             }
         }
 
@@ -79,7 +107,17 @@ final class Idn
     private static function idnToAsci(string $domain, int $options, ?array &$info = [])
     {
         if (\function_exists('idn_to_ascii') && \defined('INTL_IDNA_VARIANT_UTS46')) {
-            return \idn_to_ascii($domain, $options, \INTL_IDNA_VARIANT_UTS46, $info);
+            // ICU can take quadratic time, and no valid name needs more bytes.
+            if (\strlen($domain) > 4096) {
+                return false;
+            }
+
+            try {
+                return \idn_to_ascii($domain, $options, \INTL_IDNA_VARIANT_UTS46, $info);
+            } catch (\IntlException $e) {
+                // With intl.use_exceptions, a label too long to encode throws.
+                return false;
+            }
         }
 
         throw new \Error('ext-idn or symfony/polyfill-intl-idn not loaded or too old');

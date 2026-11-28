@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of php-saml.
  *
@@ -16,7 +17,6 @@ namespace OneLogin\Saml2;
 use RobRichards\XMLSecLibs\XMLSecurityKey;
 use RobRichards\XMLSecLibs\XMLSecurityDSig;
 use RobRichards\XMLSecLibs\XMLSecEnc;
-
 use DOMDocument;
 use DOMElement;
 use DOMNodeList;
@@ -32,8 +32,27 @@ use Throwable;
  */
 class Utils
 {
-    const RESPONSE_SIGNATURE_XPATH = "/samlp:Response/ds:Signature";
-    const ASSERTION_SIGNATURE_XPATH = "/samlp:Response/saml:Assertion/ds:Signature";
+    public const RESPONSE_SIGNATURE_XPATH = "/samlp:Response/ds:Signature";
+    public const ASSERTION_SIGNATURE_XPATH = "/samlp:Response/saml:Assertion/ds:Signature";
+
+    /**
+     * Transforms accepted on a received Signature Reference. SAML only needs
+     * enveloped-signature plus canonicalization (XPath/XSLT are rejected).
+     */
+    public const ALLOWED_SIGNATURE_TRANSFORMS = array(
+        'http://www.w3.org/2000/09/xmldsig#enveloped-signature',
+        XMLSecurityDSig::EXC_C14N,
+        XMLSecurityDSig::EXC_C14N_COMMENTS,
+        XMLSecurityDSig::C14N,
+        XMLSecurityDSig::C14N_COMMENTS
+    );
+
+    public const ALLOWED_CANONICALIZATION_METHODS = array(
+        XMLSecurityDSig::EXC_C14N,
+        XMLSecurityDSig::EXC_C14N_COMMENTS,
+        XMLSecurityDSig::C14N,
+        XMLSecurityDSig::C14N_COMMENTS
+    );
 
     /**
      * @var bool Control if the `Forwarded-For-*` headers are used
@@ -56,7 +75,7 @@ class Utils
     private static $_protocolRegex = '@^https?://@i';
 
     /**
-     * @var int|null
+     * @var int|string|null The value set by setSelfPort (getSelfPort normalizes it to an integer)
      */
     private static $_port;
 
@@ -81,7 +100,7 @@ class Utils
         assert($dom instanceof DOMDocument);
         assert(is_string($xml));
 
-        $res = $dom->loadXML($xml);
+        $res = $dom->loadXML($xml, LIBXML_NONET);
 
         foreach ($dom->childNodes as $child) {
             if ($child->nodeType === XML_DOCUMENT_TYPE_NODE) {
@@ -123,7 +142,7 @@ class Utils
         if ($xml instanceof DOMDocument) {
             $dom = $xml;
         } else {
-            $dom = new DOMDocument;
+            $dom = new DOMDocument();
             $dom = self::loadXML($dom, $xml);
             if (!$dom) {
                 return 'unloaded_xml';
@@ -205,7 +224,7 @@ class Utils
     public static function formatCert($x509cert, $heads = true)
     {
         if (is_null($x509cert)) {
-          return;
+            return;
         }
 
         if (strpos($x509cert, '-----BEGIN CERTIFICATE-----') !== false) {
@@ -232,7 +251,7 @@ class Utils
     public static function formatPrivateKey($key, $heads = true)
     {
         if (is_null($key)) {
-          return;
+            return;
         }
 
         $key = str_replace(array("\x0D", "\r", "\n"), "", $key);
@@ -244,7 +263,7 @@ class Utils
                 if ($heads) {
                     $key = "-----BEGIN PRIVATE KEY-----\n".chunk_split($key, 64, "\n")."-----END PRIVATE KEY-----\n";
                 }
-            } else if (strpos($key, '-----BEGIN RSA PRIVATE KEY-----') !== false) {
+            } elseif (strpos($key, '-----BEGIN RSA PRIVATE KEY-----') !== false) {
                 $key = Utils::getStringBetween($key, '-----BEGIN RSA PRIVATE KEY-----', '-----END RSA PRIVATE KEY-----');
                 $key = str_replace(' ', '', $key);
 
@@ -334,7 +353,7 @@ class Utils
         foreach ($parameters as $name => $value) {
             if ($value === null) {
                 $param = urlencode($name);
-            } else if (is_array($value)) {
+            } elseif (is_array($value)) {
                 $param = "";
                 foreach ($value as $val) {
                     $param .= urlencode($name) . "[]=" . urlencode($val). '&';
@@ -362,9 +381,9 @@ class Utils
         exit();
     }
 
-     /**
-     * @param $protocolRegex string
-     */
+    /**
+    * @param $protocolRegex string
+    */
     public static function setProtocolRegex($protocolRegex)
     {
         if (!empty($protocolRegex)) {
@@ -379,23 +398,29 @@ class Utils
      */
     public static function setBaseURL($baseurl)
     {
+        if ($baseurl === true) {
+            return;
+        }
+
         if (!empty($baseurl)) {
             $baseurlpath = '/';
             $matches = array();
             if (preg_match('#^https?://([^/]*)/?(.*)#i', $baseurl, $matches)) {
                 if (strpos($baseurl, 'https://') === false) {
                     self::setSelfProtocol('http');
-                    $port = '80';
+                    $port = 80;
                 } else {
                     self::setSelfProtocol('https');
-                    $port = '443';
+                    $port = 443;
                 }
 
                 $currentHost = $matches[1];
                 if (false !== strpos($currentHost, ':')) {
                     list($currentHost, $possiblePort) = explode(':', $matches[1], 2);
-                    if (is_numeric($possiblePort)) {
-                        $port = $possiblePort;
+                    // A port that is not valid is ignored: the default one of the protocol is used
+                    $validPort = self::normalizePort($possiblePort);
+                    if ($validPort !== null) {
+                        $port = $validPort;
                     }
                 }
 
@@ -408,10 +433,10 @@ class Utils
                 self::setBaseURLPath($baseurlpath);
             }
         } else {
-                self::$_host = null;
-                self::$_protocol = null;
-                self::$_port = null;
-                self::$_baseurlpath = null;
+            self::$_host = null;
+            self::$_protocol = null;
+            self::$_port = null;
+            self::$_baseurlpath = null;
         }
     }
 
@@ -451,7 +476,7 @@ class Utils
 
         $portnumber = self::getSelfPort();
 
-        if (isset($portnumber) && ($portnumber !== '80') && ($portnumber !== '443')) {
+        if (isset($portnumber) && ($portnumber !== 80) && ($portnumber !== 443)) {
             $port = ':' . $portnumber;
         }
 
@@ -473,7 +498,7 @@ class Utils
     {
         if (empty($baseurlpath)) {
             self::$_baseurlpath = null;
-        } else if ($baseurlpath === '/') {
+        } elseif ($baseurlpath === '/') {
             self::$_baseurlpath = '/';
         } else {
             self::$_baseurlpath = '/' . trim($baseurlpath, '/') . '/';
@@ -496,7 +521,7 @@ class Utils
         if (self::$_host) {
             $currentHost = self::$_host;
         } elseif (self::getProxyVars() && array_key_exists('HTTP_X_FORWARDED_HOST', $_SERVER)) {
-            $currentHost = explode(',', $_SERVER['HTTP_X_FORWARDED_HOST'])[0];
+            $currentHost = trim(explode(',', $_SERVER['HTTP_X_FORWARDED_HOST'])[0]);
         } elseif (array_key_exists('HTTP_HOST', $_SERVER)) {
             $currentHost = $_SERVER['HTTP_HOST'];
         } elseif (array_key_exists('SERVER_NAME', $_SERVER)) {
@@ -512,7 +537,7 @@ class Utils
     }
 
     /**
-     * @param int $port The port number to use when constructing URLs
+     * @param int|string|null $port The port number to use when constructing URLs (an integer, or a string with an integer)
      */
     public static function setSelfPort($port)
     {
@@ -520,7 +545,8 @@ class Utils
     }
 
     /**
-     * @param string $protocol The protocol to identify as using, usually http or https
+     * @param string|bool|array $protocol The protocol to identify as using, usually http or https
+     *                                    (true is https, and the first value is used if it is an array)
      */
     public static function setSelfProtocol($protocol)
     {
@@ -535,13 +561,30 @@ class Utils
         $protocol = 'http';
         if (self::$_protocol) {
             $protocol = self::$_protocol;
-        } elseif (self::getSelfPort() == 443) {
+        } elseif (self::getSelfPort() === 443) {
             $protocol = 'https';
         } elseif (self::getProxyVars() && isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
             $protocol = $_SERVER['HTTP_X_FORWARDED_PROTO'];
         } elseif (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
             $protocol = 'https';
         }
+
+        // The values of a header (as PSR-7 returns them): the first one is the protocol
+        if (is_array($protocol)) {
+            $protocol = reset($protocol);
+        }
+
+        if ($protocol === true) {
+            $protocol = 'https';
+        }
+        if (!is_string($protocol)) {
+            $protocol = 'http';
+        }
+
+        // The header of a chain of proxies lists the protocol of each one ('https,http'): the first
+        // one is the protocol (as the first host is the host of X-Forwarded-Host)
+        $protocol = trim(explode(',', $protocol, 2)[0]);
+
         return $protocol;
     }
 
@@ -563,16 +606,26 @@ class Utils
     }
 
     /**
-     * @return null|string The port number used for the request
+     * Returns the port number used for the request. It is the first one that is available of the one
+     * set by setSelfPort, X-Forwarded-Port (if the proxy vars are enabled), SERVER_PORT or the port
+     * of the host header. The values that come from $_SERVER are strings, but the port is always
+     * returned as an integer.
+     *
+     * @return null|int The port number used for the request, null if it is not known or if the value
+     *                  that was read is not a port number (an integer from 1 to 65535)
      */
     public static function getSelfPort()
     {
         $portnumber = null;
         if (self::$_port) {
             $portnumber = self::$_port;
-        } else if (self::getProxyVars() && isset($_SERVER["HTTP_X_FORWARDED_PORT"])) {
+        } elseif (self::getProxyVars() && isset($_SERVER["HTTP_X_FORWARDED_PORT"])) {
             $portnumber = $_SERVER["HTTP_X_FORWARDED_PORT"];
-        } else if (isset($_SERVER["SERVER_PORT"])) {
+            // The header of a chain of proxies lists the port of each one ('8443, 80'): the first one is the port
+            if (is_string($portnumber)) {
+                $portnumber = explode(',', $portnumber, 2)[0];
+            }
+        } elseif (isset($_SERVER["SERVER_PORT"])) {
             $portnumber = $_SERVER["SERVER_PORT"];
         } else {
             $currentHost = self::getRawHost();
@@ -580,12 +633,26 @@ class Utils
             // strip the port
             if (false !== strpos($currentHost, ':')) {
                 list($currentHost, $port) = explode(':', $currentHost, 2);
-                if (is_numeric($port)) {
-                    $portnumber = $port;
-                }
+                $portnumber = $port;
             }
         }
-        return $portnumber;
+        return self::normalizePort($portnumber);
+    }
+
+    /**
+     * @param mixed $port A port number, as an integer or as a string
+     *
+     * @return null|int The port number as an integer, null if the value is not a port number (an integer from 1 to 65535)
+     */
+    private static function normalizePort($port)
+    {
+        if (!is_int($port) && !is_string($port)) {
+            return null;
+        }
+
+        $port = filter_var($port, FILTER_VALIDATE_INT, array('options' => array('min_range' => 1, 'max_range' => 65535)));
+
+        return $port === false ? null : $port;
     }
 
     /**
@@ -735,10 +802,31 @@ class Utils
             return '';
         }
 
-        $index = strpos($_SERVER['QUERY_STRING'], $name.'=');
-        $substring = substr($_SERVER['QUERY_STRING'], $index + strlen($name) + 1);
-        $end = strpos($substring, '&');
-        return $end ? substr($substring, 0, strpos($substring, '&')) : $substring;
+        foreach (explode('&', $_SERVER['QUERY_STRING']) as $parameter) {
+            $parts = explode('=', $parameter, 2);
+            if ($parts[0] === $name) {
+                return isset($parts[1]) ? $parts[1] : '';
+            }
+        }
+        return '';
+    }
+
+    /**
+     * Returns the name that PHP gives at $_GET to a field of the query
+     * string: the name is URL-decoded, its leading spaces are dropped and
+     * it ends at a NUL byte or at the '[' of an array.
+     *
+     * So " SAMLRequest", "%53AMLRequest", "SAMLRequest%00x" and
+     * "SAMLRequest[]" are all the SAMLRequest parameter for PHP.
+     *
+     * @param string $rawName Name of the field, as it was sent
+     *
+     * @return string
+     */
+    private static function getParsedQueryParamName($rawName)
+    {
+        $name = ltrim(urldecode($rawName), ' ');
+        return substr($name, 0, strcspn($name, "\0["));
     }
 
     /**
@@ -779,7 +867,7 @@ class Utils
     public static function parseSAML2Time($time)
     {
         if (empty($time)) {
-          return null;
+            return null;
         }
 
         $matches = array();
@@ -1095,7 +1183,7 @@ class Utils
 
         if (!empty($cert)) {
             // RSA-1.5 key transport is rejected by default by xmlseclibs 4 receivers
-            $seckey = new XMLSecurityKey(XMLSecurityKey::RSA_OAEP_MGF1P, array('type'=>'public'));
+            $seckey = new XMLSecurityKey(XMLSecurityKey::RSA_OAEP_MGF1P, array('type' => 'public'));
             $seckey->loadKey($cert);
 
             $enc = new XMLSecEnc();
@@ -1161,7 +1249,7 @@ class Utils
             if ($subCodeEntry->length == 1) {
                 $status['msg'] = $subCodeEntry->item(0)->getAttribute('Value');
             }
-        } else if ($messageEntry->length == 1) {
+        } elseif ($messageEntry->length == 1) {
             $msg = $messageEntry->item(0)->textContent;
             $status['msg'] = $msg;
         }
@@ -1184,7 +1272,6 @@ class Utils
      */
     public static function decryptElement(DOMElement $encryptedData, XMLSecurityKey $inputKey, $formatOutput = true, $allowRSA15KeyTransport = false, $allowCBCEncryption = true)
     {
-
         $enc = self::createDecryptionContext($allowRSA15KeyTransport, $allowCBCEncryption);
 
         $enc->setNode($encryptedData);
@@ -1281,7 +1368,8 @@ class Utils
                 $newDoc->formatOutput = true;
             }
             $newDoc = self::loadXML($newDoc, $xml);
-            if (!$newDoc || $newDoc->firstChild->firstChild === null) {
+            // The decrypted content must be an element (not text, a comment...)
+            if (!$newDoc || !($newDoc->firstChild->firstChild instanceof DOMElement)) {
                 throw new Exception('Invalid decrypted element');
             }
         } catch (Throwable $e) {
@@ -1297,17 +1385,17 @@ class Utils
         return $newDoc->firstChild->firstChild;
     }
 
-     /**
-      * Converts a XMLSecurityKey to the correct algorithm.
-      *
-      * @param XMLSecurityKey $key       The key.
-      * @param string         $algorithm The desired algorithm.
-      * @param string         $type      Public or private key, defaults to public.
-      *
-      * @return XMLSecurityKey The new key.
-      *
-      * @throws Exception
-      */
+    /**
+     * Converts a XMLSecurityKey to the correct algorithm.
+     *
+     * @param XMLSecurityKey $key       The key.
+     * @param string         $algorithm The desired algorithm.
+     * @param string         $type      Public or private key, defaults to public.
+     *
+     * @return XMLSecurityKey The new key.
+     *
+     * @throws Exception
+     */
     public static function castKey(XMLSecurityKey $key, $algorithm, $type = 'public')
     {
         assert(is_string($algorithm));
@@ -1326,7 +1414,7 @@ class Utils
         if (!is_string($key->key) || $key->key === '') {
             throw new Exception('Unable to get key details from XMLSecurityKey.');
         }
-        $newKey = new XMLSecurityKey($algorithm, array('type'=>$type));
+        $newKey = new XMLSecurityKey($algorithm, array('type' => $type));
         $cert = $key->getX509Certificate();
         if ($cert !== null) {
             $newKey->loadKey($cert, false, true);
@@ -1439,7 +1527,7 @@ class Utils
     {
         if ($xml instanceof DOMDocument) {
             $dom = clone $xml;
-        } else if ($xml instanceof DOMElement) {
+        } elseif ($xml instanceof DOMElement) {
             $dom = clone $xml->ownerDocument;
         } else {
             $dom = new DOMDocument();
@@ -1469,6 +1557,8 @@ class Utils
         if (!Utils::isSupportedSigningAlgorithm($objKey->type)) {
             throw new Exception('Unsupported signing algorithm.');
         }
+
+        self::validateSignatureStructure($objDSig);
 
         $objXMLSecDSig->canonicalizeSignedInfo();
 
@@ -1535,6 +1625,90 @@ class Utils
     }
 
     /**
+     * Checks that a received ds:Signature only uses what SAML needs before
+     * xmlseclibs processes it: it evaluates Reference transforms (XPath
+     * included) before any cryptographic check, accepts a DOCTYPE, picks
+     * the first node when a Reference URI matches several and follows
+     * RetrievalMethod/EncryptedKey references of the KeyInfo without a depth
+     * limit (the KeyInfo is not covered by the signature).
+     *
+     * @param DOMElement $signatureNode The ds:Signature element
+     *
+     * @throws Exception
+     */
+    public static function validateSignatureStructure(DOMElement $signatureNode)
+    {
+        $dom = $signatureNode->ownerDocument;
+        if ($dom->doctype !== null) {
+            throw new Exception('Detected use of DOCTYPE/ENTITY in XML, disabled to prevent XXE/XEE attacks');
+        }
+
+        $xpath = new DOMXPath($dom);
+        $xpath->registerNamespace('ds', Constants::NS_DS);
+
+        $signedInfo = $xpath->query('./ds:SignedInfo', $signatureNode);
+        if ($signedInfo->length != 1 || $xpath->query('./ds:SignatureValue', $signatureNode)->length != 1) {
+            throw new Exception('Invalid Signature structure');
+        }
+        $signedInfo = $signedInfo->item(0);
+
+        // Matched by local name, as xmlseclibs does
+        $keyReferences = $xpath->query('./ds:KeyInfo/*[local-name()="RetrievalMethod" or local-name()="EncryptedKey"]', $signatureNode);
+        if ($keyReferences->length > 0) {
+            throw new Exception('Unsupported KeyInfo in the Signature');
+        }
+
+        $canonicalizationMethod = $xpath->query('./ds:CanonicalizationMethod', $signedInfo);
+        if ($canonicalizationMethod->length != 1
+            || !in_array($canonicalizationMethod->item(0)->getAttribute('Algorithm'), self::ALLOWED_CANONICALIZATION_METHODS, true)
+        ) {
+            throw new Exception('Unsupported CanonicalizationMethod in the Signature');
+        }
+
+        $signatureMethod = $xpath->query('./ds:SignatureMethod', $signedInfo);
+        if ($signatureMethod->length != 1
+            || !self::isSupportedSigningAlgorithm($signatureMethod->item(0)->getAttribute('Algorithm'))
+        ) {
+            throw new Exception('Unsupported signing algorithm.');
+        }
+
+        $reference = $xpath->query('./ds:Reference', $signedInfo);
+        if ($reference->length != 1) {
+            throw new Exception('Unexpected number of Reference nodes found for signature');
+        }
+        $reference = $reference->item(0);
+        if ($xpath->query('./ds:DigestMethod', $reference)->length != 1
+            || $xpath->query('./ds:DigestValue', $reference)->length != 1
+            || $xpath->query('./ds:Transforms', $reference)->length > 1
+        ) {
+            throw new Exception('Invalid Reference structure in the Signature');
+        }
+        foreach ($xpath->query('./ds:Transforms/ds:Transform', $reference) as $transform) {
+            if (!in_array($transform->getAttribute('Algorithm'), self::ALLOWED_SIGNATURE_TRANSFORMS, true)) {
+                throw new Exception('Unsupported Transform in the Signature');
+            }
+        }
+
+        $uri = $reference->getAttribute('URI');
+        if ($uri !== '') {
+            if (strlen($uri) < 2 || $uri[0] !== '#') {
+                throw new Exception('Reference URI must point to an element of the same document');
+            }
+
+            $id = substr($uri, 1);
+            $matches = 0;
+            foreach ($xpath->query('//@ID | //@Id') as $attr) {
+                if ($attr->value === $id) {
+                    $matches++;
+                }
+            }
+            if ($matches != 1) {
+                throw new Exception('Reference URI identifies multiple nodes');
+            }
+        }
+    }
+
+    /**
      * Creates an XMLSecEnc instance configured for decryption.
      *
      * @param bool $allowRSA15KeyTransport Allow RSA-1.5 key transport (legacy interop).
@@ -1582,19 +1756,37 @@ class Utils
                 );
             }
             $keys = ["SAMLRequest", "SAMLResponse", "RelayState", "SigAlg", "Signature"];
+            $queryKeys = array();
+            foreach (explode('&', $_SERVER['QUERY_STRING']) as $parameter) {
+                $parts = explode('=', $parameter, 2);
+                $queryKeys[] = self::getParsedQueryParamName($parts[0]);
+            }
+            $queryKeyCounts = array_count_values($queryKeys);
             foreach ($keys as $key) {
-                if (substr_count($_SERVER['QUERY_STRING'], $key) > 1) {
+                if (isset($queryKeyCounts[$key]) && $queryKeyCounts[$key] > 1) {
                     throw new Error(
                         "Duplicate parameter in query string",
                         Error::INVALID_PARAMETER
                     );
                 }
             }
-            if (substr_count($_SERVER['QUERY_STRING'], "SAMLRequest") > 0 && substr_count($_SERVER['QUERY_STRING'], "SAMLResponse") > 0) {
+            if (isset($queryKeyCounts['SAMLRequest']) && isset($queryKeyCounts['SAMLResponse'])) {
                 throw new Error(
                     "Both SAMLRequest and SAMLResponse provided",
                     Error::INVALID_PARAMETER
                 );
+            }
+
+            // The signature is verified over the fields as they were sent,
+            // but the message is processed from the parsed ones: reject the
+            // message if they do not hold the same value
+            foreach (array($messageType, 'RelayState', 'SigAlg') as $key) {
+                if (isset($getData[$key]) && urldecode(Utils::extractOriginalQueryParam($key)) !== $getData[$key]) {
+                    throw new Error(
+                        "The ".$key." parameter does not match the one of the query string",
+                        Error::INVALID_PARAMETER
+                    );
+                }
             }
 
             $signedQuery = $messageType.'='.Utils::extractOriginalQueryParam($messageType);

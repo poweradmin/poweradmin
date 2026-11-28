@@ -111,6 +111,9 @@ final class Utils
      * Throws `TimeoutException` when PHP-style timeout metadata can be detected
      * after a source read or destination write cannot make progress.
      *
+     * When a source read times out, the bytes copied before it remain in the
+     * destination.
+     *
      * @param StreamInterface $source Stream to read from
      * @param StreamInterface $dest   Stream to write to
      * @param int             $maxLen Maximum number of bytes to read. Pass -1
@@ -182,6 +185,9 @@ final class Utils
      *
      * Throws `TimeoutException` when PHP-style timeout metadata can be detected
      * after a stream read cannot make progress.
+     *
+     * The bytes read before a timeout are discarded, so calling this method
+     * again does not return them.
      *
      * @param StreamInterface $stream Stream to read
      * @param int             $maxLen Maximum number of bytes to read. Pass -1
@@ -311,6 +317,11 @@ final class Utils
             if ($host !== '') {
                 Uri::assertValidHost($host);
 
+                // A Uri has already raised the deprecation for its own host.
+                if (!$uri instanceof Uri) {
+                    Uri::deprecateNonAsciiHost($host);
+                }
+
                 if (isset($changes['set_headers']) && is_array($changes['set_headers'])) {
                     foreach (array_keys($changes['set_headers']) as $header) {
                         if (self::asciiToLower((string) $header) === 'host') {
@@ -359,6 +370,11 @@ final class Utils
         if (!$hasHost && $uri->getHost() !== '') {
             $host = $uri->getHost();
             Uri::assertValidHost($host);
+
+            // A Uri has already raised the deprecation for its own host.
+            if (!$uri instanceof Uri) {
+                Uri::deprecateNonAsciiHost($host);
+            }
 
             if (($port = $uri->getPort()) !== null) {
                 $host .= ':'.$port;
@@ -494,6 +510,9 @@ final class Utils
      * Throws `TimeoutException` when PHP-style timeout metadata can be detected
      * after a stream read cannot make progress.
      *
+     * The bytes read before a timeout are discarded, so calling this method
+     * again does not return them.
+     *
      * @param StreamInterface $stream    Stream to read from
      * @param int|null        $maxLength Maximum buffer length
      */
@@ -523,12 +542,24 @@ final class Utils
      * when one is present, so neither the username nor the password survives
      * into logs and diagnostics. A URI without userinfo is returned
      * unchanged.
+     *
+     * @deprecated Utils::redactUserInfo() will be removed in
+     *             guzzlehttp/psr7:4.0. Use UriRedactor::redactUserInfo()
+     *             instead.
      */
     public static function redactUserInfo(
         #[\SensitiveParameter]
         UriInterface $uri
     ): UriInterface {
-        return $uri->getUserInfo() === '' ? $uri : $uri->withUserInfo('***');
+        \trigger_deprecation(
+            'guzzlehttp/psr7',
+            '3.4',
+            '%s() is deprecated and will be removed in 4.0. Use %s::redactUserInfo() instead.',
+            __METHOD__,
+            UriRedactor::class
+        );
+
+        return UriRedactor::redactUserInfo($uri);
     }
 
     /**
@@ -548,39 +579,22 @@ final class Utils
      *
      * @param string $subject Text that may embed the URI
      * @param string $uri     Raw URI whose userinfo is redacted in the text
+     *
+     * @deprecated Utils::redactUserInfoInString() will be removed in
+     *             guzzlehttp/psr7:4.0. Use
+     *             UriRedactor::redactUserInfoInString() instead.
      */
     public static function redactUserInfoInString(string $subject, string $uri): string
     {
-        if (\strpos($uri, '@') === false) {
-            return $subject;
-        }
+        \trigger_deprecation(
+            'guzzlehttp/psr7',
+            '3.4',
+            '%s() is deprecated and will be removed in 4.0. Use %s::redactUserInfoInString() instead.',
+            __METHOD__,
+            UriRedactor::class
+        );
 
-        $schemePosition = \strpos($uri, '://');
-        $remainder = $schemePosition === false ? $uri : \substr($uri, $schemePosition + 3);
-
-        if (\parse_url($schemePosition === false ? 'http://'.$uri : $uri) === false) {
-            // Raw '/', '?', or '#' separators may sit inside the credentials
-            // of a URI that defeats parse_url(), so the redaction cannot stop
-            // at the apparent authority.
-            $atPosition = \strrpos($remainder, '@');
-
-            if ($atPosition === false || $atPosition === 0) {
-                return $subject;
-            }
-
-            return \str_replace(\substr($remainder, 0, $atPosition).'@', '***@', $subject);
-        }
-
-        $authority = \substr($remainder, 0, \strcspn($remainder, '/?#'));
-        $atPosition = \strrpos($authority, '@');
-
-        if ($atPosition === false || $atPosition === 0) {
-            // A parseable URI with '@' only past its authority, or with an
-            // empty userinfo, carries no credentials to redact.
-            return $subject;
-        }
-
-        return \str_replace(\substr($authority, 0, $atPosition).'@', '***@', $subject);
+        return UriRedactor::redactUserInfoInString($subject, $uri);
     }
 
     /**
@@ -590,26 +604,24 @@ final class Utils
      * fragment are removed. The scheme, host, port, and path are preserved.
      * The returned string is diagnostic-escaped and the formatter never
      * throws.
+     *
+     * @deprecated Utils::redactUriForMessage() will be removed in
+     *             guzzlehttp/psr7:4.0. Use UriRedactor::redactUriForMessage()
+     *             instead.
      */
     public static function redactUriForMessage(
         #[\SensitiveParameter]
         UriInterface $uri
     ): string {
-        try {
-            $raw = (string) $uri;
-        } catch (\Throwable $e) {
-            return '[unavailable URI]';
-        }
+        \trigger_deprecation(
+            'guzzlehttp/psr7',
+            '3.4',
+            '%s() is deprecated and will be removed in 4.0. Use %s::redactUriForMessage() instead.',
+            __METHOD__,
+            UriRedactor::class
+        );
 
-        try {
-            if ($uri->getUserInfo() !== '') {
-                $uri = $uri->withUserInfo('***');
-            }
-
-            return DiagnosticValue::escape((string) $uri->withQuery('')->withFragment(''));
-        } catch (\Throwable $e) {
-            return self::redactUriStringForMessage($raw);
-        }
+        return UriRedactor::redactUriForMessage($uri);
     }
 
     /**
@@ -619,18 +631,24 @@ final class Utils
      * fragment are removed. The scheme, host, port, and path are preserved
      * where their boundaries can be determined safely. The returned string is
      * diagnostic-escaped and the formatter never throws.
+     *
+     * @deprecated Utils::redactUriStringForMessage() will be removed in
+     *             guzzlehttp/psr7:4.0. Use
+     *             UriRedactor::redactUriStringForMessage() instead.
      */
     public static function redactUriStringForMessage(
         #[\SensitiveParameter]
         string $uri
     ): string {
-        try {
-            $uri = self::redactUserInfoInString($uri, $uri);
+        \trigger_deprecation(
+            'guzzlehttp/psr7',
+            '3.4',
+            '%s() is deprecated and will be removed in 4.0. Use %s::redactUriStringForMessage() instead.',
+            __METHOD__,
+            UriRedactor::class
+        );
 
-            return DiagnosticValue::escape(\substr($uri, 0, \strcspn($uri, '?#')));
-        } catch (\Throwable $e) {
-            return '[unavailable URI]';
-        }
+        return UriRedactor::redactUriStringForMessage($uri);
     }
 
     /**
@@ -761,6 +779,9 @@ final class Utils
      *
      * When `fopen()` fails, PHP normally raises a warning. This function adds
      * an error handler that checks for errors and throws an exception instead.
+     * Deprecations, and errors silenced inside the call with the `@` operator,
+     * are not failures and are passed on to the previously installed error
+     * handler.
      *
      * @param string $filename File to open
      * @param string $mode     Mode used to open the file
@@ -772,26 +793,26 @@ final class Utils
     public static function tryFopen(string $filename, string $mode)
     {
         $ex = null;
-        set_error_handler(static function (int $errno, string $errstr) use ($filename, $mode, &$ex): bool {
-            $ex = new \RuntimeException(sprintf('Unable to open %s using mode %s: %s', DiagnosticValue::escape($filename), DiagnosticValue::escape($mode), DiagnosticValue::escape($errstr)));
+        $scope = new ErrorScope(\E_ALL & ~\E_DEPRECATED & ~\E_USER_DEPRECATED, false);
+        $handle = $scope->run(static function () use ($filename, $mode, &$ex) {
+            try {
+                return fopen($filename, $mode);
+            } catch (\Throwable $e) {
+                $ex = new \RuntimeException(sprintf('Unable to open %s using mode %s: %s', DiagnosticValue::escape($filename), DiagnosticValue::escape($mode), $e->getMessage()), 0, $e);
+            }
 
-            return true;
+            return false;
         });
 
-        try {
-            /** @var resource $handle */
-            $handle = fopen($filename, $mode);
-        } catch (\Throwable $e) {
-            $ex = new \RuntimeException(sprintf('Unable to open %s using mode %s: %s', DiagnosticValue::escape($filename), DiagnosticValue::escape($mode), $e->getMessage()), 0, $e);
+        if ($ex === null && $scope->getError() !== null) {
+            $ex = new \RuntimeException(sprintf('Unable to open %s using mode %s: %s', DiagnosticValue::escape($filename), DiagnosticValue::escape($mode), DiagnosticValue::escape($scope->getError())));
         }
 
-        restore_error_handler();
-
         if ($ex) {
-            /** @var \RuntimeException $ex */
             throw $ex;
         }
 
+        /** @var resource $handle */
         return $handle;
     }
 
@@ -800,10 +821,15 @@ final class Utils
      *
      * When `stream_get_contents()` fails, PHP normally raises a warning. This
      * function adds an error handler that checks for errors and throws an
-     * exception instead.
+     * exception instead. Deprecations, and errors silenced inside the call with
+     * the `@` operator, are not failures and are passed on to the previously
+     * installed error handler.
      *
      * Throws `TimeoutException` when PHP-style timeout metadata can be detected
      * after a stream read cannot make progress.
+     *
+     * The bytes read before a timeout are discarded, so calling this method
+     * again does not return them.
      *
      * @param resource $stream
      *
@@ -812,38 +838,42 @@ final class Utils
     public static function tryGetContents($stream): string
     {
         $ex = null;
-        set_error_handler(static function (int $errno, string $errstr) use (&$ex): bool {
-            $ex = new \RuntimeException(sprintf('Unable to read stream contents: %s', DiagnosticValue::escape($errstr)));
+        $scope = new ErrorScope(\E_ALL & ~\E_DEPRECATED & ~\E_USER_DEPRECATED, false);
+        $contents = $scope->run(static function () use ($stream, &$ex) {
+            try {
+                /** @var string|false $contents */
+                $contents = stream_get_contents($stream);
 
-            return true;
+                if ($contents === false) {
+                    $ex = StreamTimeout::isResourceReadTimedOut($stream)
+                        ? new TimeoutException('Unable to read stream contents: timed out')
+                        : new \RuntimeException('Unable to read stream contents');
+                } elseif (StreamTimeout::isResourceReadTimedOut($stream)) {
+                    $ex = new TimeoutException('Unable to read stream contents: timed out');
+                }
+
+                return $contents;
+            } catch (TimeoutException $e) {
+                $ex = $e;
+            } catch (\Throwable $e) {
+                $ex = StreamTimeout::isResourceReadTimedOut($stream)
+                    ? new TimeoutException('Unable to read stream contents: timed out', 0, $e)
+                    : new \RuntimeException(sprintf('Unable to read stream contents: %s', $e->getMessage()), 0, $e);
+            }
+
+            return false;
         });
 
-        try {
-            /** @var string|false $contents */
-            $contents = stream_get_contents($stream);
-
-            if ($contents === false) {
-                $ex = StreamTimeout::isResourceReadTimedOut($stream)
-                    ? new TimeoutException('Unable to read stream contents: timed out')
-                    : new \RuntimeException('Unable to read stream contents');
-            } elseif (StreamTimeout::isResourceReadTimedOut($stream)) {
-                $ex = new TimeoutException('Unable to read stream contents: timed out');
-            }
-        } catch (TimeoutException $e) {
-            $ex = $e;
-        } catch (\Throwable $e) {
-            $ex = StreamTimeout::isResourceReadTimedOut($stream)
-                ? new TimeoutException('Unable to read stream contents: timed out', 0, $e)
-                : new \RuntimeException(sprintf('Unable to read stream contents: %s', $e->getMessage()), 0, $e);
+        if ($ex === null && $scope->getError() !== null) {
+            $ex = new \RuntimeException(sprintf('Unable to read stream contents: %s', DiagnosticValue::escape($scope->getError())));
         }
-
-        restore_error_handler();
 
         if ($ex) {
             /** @var \RuntimeException $ex */
             throw $ex;
         }
 
+        /** @var string $contents */
         return $contents;
     }
 

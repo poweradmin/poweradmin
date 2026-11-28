@@ -22,6 +22,9 @@ Throws `GuzzleHttp\Psr7\Exception\TimeoutException` when PHP-style timeout
 metadata can be detected after a source read or destination write cannot make
 progress.
 
+When a source read times out, the bytes copied before it remain in the
+destination.
+
 ## `GuzzleHttp\Psr7\Utils::copyToString`
 
 `public static function copyToString(StreamInterface $stream, int $maxLen = -1): string`
@@ -31,6 +34,9 @@ been read.
 
 Throws `GuzzleHttp\Psr7\Exception\TimeoutException` when PHP-style timeout
 metadata can be detected after a stream read cannot make progress.
+
+The bytes read before a timeout are discarded, so calling this method again does
+not return them.
 
 ## `GuzzleHttp\Psr7\Utils::hash`
 
@@ -52,6 +58,9 @@ Read a line from the stream up to the maximum allowed buffer length.
 
 Throws `GuzzleHttp\Psr7\Exception\TimeoutException` when PHP-style timeout
 metadata can be detected after a stream read cannot make progress.
+
+The bytes read before a timeout are discarded, so calling this method again does
+not return them.
 
 ## `GuzzleHttp\Psr7\Utils::streamFor`
 
@@ -113,7 +122,9 @@ $stream = GuzzleHttp\Psr7\Utils::streamFor($generator(100));
 Safely opens a PHP stream resource using a filename.
 
 When `fopen()` fails, PHP normally raises a warning. This function adds an error
-handler that checks for errors and throws an exception instead.
+handler that checks for errors and throws an exception instead. Deprecations,
+and errors silenced inside the call with the `@` operator, are not failures and
+are passed on to the previously installed error handler.
 
 ## `GuzzleHttp\Psr7\Utils::tryGetContents`
 
@@ -123,9 +134,14 @@ Safely gets the contents of a given stream.
 
 When `stream_get_contents()` fails, PHP normally raises a warning. This function
 adds an error handler that checks for errors and throws an exception instead.
+Deprecations, and errors silenced inside the call with the `@` operator, are not
+failures and are passed on to the previously installed error handler.
 
 Throws `GuzzleHttp\Psr7\Exception\TimeoutException` when PHP-style timeout
-metadata can be detected after the stream read cannot make progress.
+metadata can be detected after a stream read cannot make progress.
+
+The bytes read before a timeout are discarded, so calling this method again does
+not return them.
 
 ## Related
 

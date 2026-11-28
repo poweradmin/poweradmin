@@ -69,7 +69,7 @@ class Uri implements UriInterface, \JsonSerializable
         if ($uri !== '') {
             $parts = UriParser::parse($uri);
             if ($parts === false) {
-                throw new MalformedUriException(\sprintf('Unable to parse URI: %s', Utils::redactUriStringForMessage($uri)));
+                throw new MalformedUriException(\sprintf('Unable to parse URI: %s', UriRedactor::redactUriStringForMessage($uri)));
             }
             try {
                 $this->applyParts($parts);
@@ -77,6 +77,14 @@ class Uri implements UriInterface, \JsonSerializable
                 throw $e;
             } catch (\InvalidArgumentException $e) {
                 throw new MalformedUriException($e->getMessage(), 0, $e);
+            }
+
+            if ($this->scheme === '' && $this->host !== '' && !str_starts_with($uri, '//')) {
+                \trigger_deprecation(
+                    'guzzlehttp/psr7',
+                    '3.6',
+                    'Passing a URI string that starts with a host and port, such as "example.com:8080", is deprecated; guzzlehttp/psr7 4.0 rejects it. Start the string with a scheme or with "//".'
+                );
             }
         }
     }
@@ -353,6 +361,22 @@ class Uri implements UriInterface, \JsonSerializable
     {
         if (!Rfc3986::isValidHost($host)) {
             throw new \InvalidArgumentException(sprintf('Invalid host: %s', DiagnosticValue::escape($host)));
+        }
+    }
+
+    /**
+     * @internal
+     */
+    public static function deprecateNonAsciiHost(string $host): void
+    {
+        if (preg_match('/[\x80-\xFF]|%[89A-Fa-f][0-9A-Fa-f]/', $host) === 1) {
+            \trigger_deprecation(
+                'guzzlehttp/psr7',
+                '3.6',
+                'Passing a URI host with non-ASCII data, raw or percent-encoded, is deprecated; guzzlehttp/psr7 4.0 requires URI hosts to be ASCII. Convert internationalized hosts with %s::toAscii() or %s::uriFor() first.',
+                Idna::class,
+                Idna::class
+            );
         }
     }
 
@@ -648,6 +672,7 @@ class Uri implements UriInterface, \JsonSerializable
             throw new \RuntimeException('Unable to normalize URI host percent-encoding: '.\preg_last_error_msg());
         }
         self::assertValidHost($filtered);
+        self::deprecateNonAsciiHost($filtered);
 
         if (str_starts_with($filtered, '[') && !str_starts_with($filtered, '[v')) {
             // assertValidHost() accepted this bracketed value with the same

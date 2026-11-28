@@ -252,6 +252,14 @@ $uri = (new Uri())->withScheme('0');
 $uri = (new Uri())->withScheme('https');
 ```
 
+A URI string whose scheme contains a plus sign, such as
+`svn+ssh://example.com/path`, is now parsed with that scheme, including one with
+no authority such as `C++:intro`, which now has the scheme `c++`. In 2.x, both
+were parsed as relative paths with no scheme and no host. The rest of the string
+is held to the rules that apply after any other scheme, so a string whose
+authority is empty or is not a valid host, such as `git+file:///srv/repo.git` or
+`http+unix://%2Fvar%2Frun%2Fdocker.sock/info`, is now rejected.
+
 The stricter validation also applies when a request is created or modified from
 a custom `UriInterface` implementation and its host is used to generate or
 update a `Host` header.
@@ -591,6 +599,15 @@ The `StreamWrapper::stream_read()` callback no longer declares a native return
 type so read failures can return `false`. The `StreamWrapper::stream_tell()`
 callback no longer declares a native return type so post-seek position lookup
 failures can make `fseek()` fail.
+
+`Utils::tryFopen()` and `Utils::tryGetContents()` no longer fail when a
+deprecation is raised during the call, or when code inside the call silences an
+error with the `@` operator. Those errors are passed on to the previously
+installed error handler instead. In 2.x, any PHP error raised while the file was
+opened or the stream was read made the call throw, even when a userland stream
+wrapper or stream filter raised it and the operation itself succeeded. This also
+applies to `Stream::getContents()`, `Stream::__toString()`, and
+`LazyOpenStream`, which use these helpers.
 
 #### Stream Mode Capabilities
 
