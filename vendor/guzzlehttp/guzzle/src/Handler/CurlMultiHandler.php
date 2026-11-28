@@ -33,6 +33,7 @@ final class CurlMultiHandler
     private const KNOWN_CONSTRUCTOR_OPTIONS = [
         'handle_factory' => true,
         'max_host_connections' => true,
+        'max_idle_handles' => true,
         'max_total_connections' => true,
         'multiplex' => true,
         'options' => true,
@@ -162,6 +163,8 @@ final class CurlMultiHandler
      * - select_timeout: Optional timeout (in seconds) to block before timing
      *   out while selecting curl handles. Defaults to 1 second.
      * - max_host_connections: Optional maximum concurrent connections per host.
+     * - max_idle_handles: Optional maximum number of idle cURL easy handles.
+     *   Zero disables retention; null or omission keeps the default of 50.
      * - max_total_connections: Optional maximum concurrent connections overall.
      * - multiplex: Optional Multiplexing::NONE to disallow multiplexing on
      *   this handler's multi handle. The eager, wait, and required modes are
@@ -237,7 +240,16 @@ final class CurlMultiHandler
             }
         }
 
+        $maxIdleHandles = $options['max_idle_handles'] ?? 50;
+        if (!\is_int($maxIdleHandles) || $maxIdleHandles < 0) {
+            throw new InvalidArgumentException('max_idle_handles must be a non-negative integer.');
+        }
+
         if (\array_key_exists('handle_factory', $options) && $options['handle_factory'] !== null) {
+            if (isset($options['max_idle_handles'])) {
+                throw new InvalidArgumentException('The "max_idle_handles" CurlMultiHandler option cannot be combined with a custom "handle_factory". Configure idle handle retention on the factory instead.');
+            }
+
             $this->shareHandleState = null;
             $this->factory = $options['handle_factory'];
             $this->ownsFactory = false;
@@ -247,8 +259,8 @@ final class CurlMultiHandler
                 : null;
 
             $this->factory = $this->shareHandleState !== null
-                ? new CurlFactory(50, $this->shareHandleState->mode, $this->shareHandleState)
-                : new CurlFactory(50);
+                ? new CurlFactory($maxIdleHandles, $this->shareHandleState->mode, $this->shareHandleState)
+                : new CurlFactory($maxIdleHandles);
 
             $this->ownsFactory = true;
         }
@@ -306,12 +318,21 @@ final class CurlMultiHandler
         /** @var Promise<ResponseInterface, mixed> $promise */
         $promise = new Promise(
             function () use ($id, $waitToken, $easy, &$promise): void {
+                if ($this->closed) {
+                    // A destructor closes without rejecting what it drops.
+                    throw new HandlerClosedException('The cURL multi handler was closed before the transfer completed.', $easy->request);
+                }
+
                 // Waiting cannot drive native cURL while a callback has the
                 // multi handle busy; fail the wait promptly instead of
                 // self-deadlocking.
-                $stalled = $this->multiExecDepth > 0
-                    ? $this->failNestedWait($id, $waitToken)
-                    : $this->executeUntil($id, $waitToken);
+                try {
+                    $stalled = $this->multiExecDepth > 0
+                        ? $this->failNestedWait($id, $waitToken)
+                        : $this->executeUntil($id, $waitToken);
+                } catch (\Throwable $e) {
+                    throw $this->discardInterruptedRequest($id, $waitToken, $e);
+                }
 
                 // Settling can be queued, and guzzlehttp/promises drains the
                 // queue before deciding a wait function achieved nothing.
@@ -319,7 +340,7 @@ final class CurlMultiHandler
 
                 // Never null: assigned below before any wait can invoke this.
                 /** @var Promise<ResponseInterface, mixed> $promise */
-                if ($easy->deferredSettled || !P\Is::pending($promise)) {
+                if ($easy->deferredSettled || !P\State::isPending($promise)) {
                     return;
                 }
 
@@ -773,7 +794,7 @@ final class CurlMultiHandler
                         $this->addHandleToMulti($id, $entry['easy']);
                     } catch (\Throwable $e) {
                         $rejection = $this->discardPendingRequest($id, $entry, $e);
-                        if (P\Is::pending($entry['deferred'])) {
+                        if (P\State::isPending($entry['deferred'])) {
                             $entry['deferred']->reject($rejection);
                         }
                     }
@@ -1028,7 +1049,7 @@ final class CurlMultiHandler
                 'attached' => !empty($entry['attached']),
             ];
 
-            if ($explicit && P\Is::pending($entry['deferred'])) {
+            if ($explicit && P\State::isPending($entry['deferred'])) {
                 $this->captureFailure($failure, function () use ($entry): void {
                     $entry['deferred']->reject(new HandlerClosedException('The cURL multi handler was closed before the transfer completed.', $entry['easy']->request));
                 });
@@ -1097,7 +1118,7 @@ final class CurlMultiHandler
                 });
             }
 
-            if ($reject && P\Is::pending($entry['deferred'])) {
+            if ($reject && P\State::isPending($entry['deferred'])) {
                 $this->captureFailure($failure, function () use ($entry): void {
                     $entry['deferred']->reject(new HandlerClosedException('The cURL multi handler was closed before the transfer completed.', $entry['easy']->request));
                 });
@@ -1249,7 +1270,7 @@ final class CurlMultiHandler
                 // throw. User code may have settled it directly; a settled
                 // promise must not abort the rest of the snapshot.
                 $rejection = $this->discardPendingRequest($id, $entry, $e);
-                if (P\Is::pending($entry['deferred'])) {
+                if (P\State::isPending($entry['deferred'])) {
                     $entry['deferred']->reject($rejection);
                 }
             }
@@ -1289,6 +1310,20 @@ final class CurlMultiHandler
         $entry['deferred']->reject($failure);
 
         return $stalled;
+    }
+
+    /**
+     * Cancels a request whose wait threw, since that rejects its promise.
+     */
+    private function discardInterruptedRequest(int $id, object $waitToken, \Throwable $failure): \Throwable
+    {
+        try {
+            $this->cancel($id, $waitToken);
+        } catch (\Throwable $e) {
+            // Preserve the original failure.
+        }
+
+        return $failure;
     }
 
     private function disposeEasyHandle(
@@ -1394,7 +1429,7 @@ final class CurlMultiHandler
         if ($displaced !== null) {
             // Never silently discard a tracked entry; settle it first.
             unset($this->handles[$id], $this->delays[$id], $this->deferredAdds[$id]);
-            if (P\Is::pending($displaced['deferred'])) {
+            if (P\State::isPending($displaced['deferred'])) {
                 $message = \sprintf('cURL multi handler transfer %d was displaced by another request that reused its native cURL handle ID.', $id);
                 $response = $displaced['easy']->response;
                 $failure = $response !== null
@@ -1538,7 +1573,7 @@ final class CurlMultiHandler
                 try {
                     $result = CurlFactory::finish($this, $entry['easy'], $this->factory);
                 } catch (\Throwable $e) {
-                    if (P\Is::pending($entry['deferred'])) {
+                    if (P\State::isPending($entry['deferred'])) {
                         $entry['easy']->deferredSettled = true;
                         $entry['deferred']->reject($e);
                     }
@@ -1546,7 +1581,7 @@ final class CurlMultiHandler
                     continue;
                 }
 
-                if (P\Is::pending($entry['deferred'])) {
+                if (P\State::isPending($entry['deferred'])) {
                     $entry['easy']->deferredSettled = true;
                     $entry['deferred']->resolve($result);
                 }
@@ -1606,9 +1641,6 @@ final class CurlMultiHandler
         $this->assertOpen();
 
         $multiHandle = \curl_multi_init();
-        if (false === $multiHandle) {
-            throw new \RuntimeException('Can not initialize curl multi handle.');
-        }
 
         try {
             foreach ($this->options as $option => $value) {

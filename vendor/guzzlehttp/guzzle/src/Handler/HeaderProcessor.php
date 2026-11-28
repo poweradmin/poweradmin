@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace GuzzleHttp\Handler;
 
 use GuzzleHttp\Psr7;
-use GuzzleHttp\Utils;
 
 /**
  * @internal
@@ -73,7 +72,25 @@ final class HeaderProcessor
             }
         }
 
-        return [$version, (int) $status, $reason, Utils::headersFromLines($headers)];
+        return [$version, (int) $status, $reason, self::headersFromLines($headers)];
+    }
+
+    /**
+     * Parses an array of header lines into an associative array of headers.
+     *
+     * @param iterable $lines Header lines array of strings in the following
+     *                        format: "Name: Value"
+     */
+    public static function headersFromLines(iterable $lines): array
+    {
+        $headers = [];
+
+        foreach ($lines as $line) {
+            $parts = \explode(':', $line, 2);
+            $headers[\trim($parts[0], " \n\r\t\0\x0B")][] = isset($parts[1]) ? \trim($parts[1], " \n\r\t\0\x0B") : null;
+        }
+
+        return $headers;
     }
 
     public static function isStatusLineCandidate(string $line): bool
@@ -164,7 +181,9 @@ final class HeaderProcessor
      * @param array<string, string[]> $headers
      *
      * @throws \RuntimeException when Content-Length is malformed, conflicting,
-     *                           or combined with Transfer-Encoding
+     *                           or combined with Transfer-Encoding, or when a
+     *                           transfer coding is unsupported or follows
+     *                           chunked on the same field line
      */
     public static function validateResponseFraming(
         string $method,
@@ -175,7 +194,7 @@ final class HeaderProcessor
             return null;
         }
 
-        $normalizedKeys = Utils::normalizeHeaderKeys($headers);
+        $normalizedKeys = self::normalizeHeaderKeys($headers);
         $contentLength = self::removeHeader('Content-Length', $headers);
 
         try {
@@ -188,7 +207,56 @@ final class HeaderProcessor
             throw new \RuntimeException('A response must not contain both Content-Length and Transfer-Encoding');
         }
 
+        self::parseTransferEncoding($headers);
+
         return $length;
+    }
+
+    /**
+     * Returns whether the response uses the chunked transfer coding.
+     *
+     * Guzzle never asks for a transfer coding, so like libcurl 8.14 and newer
+     * it accepts only identity and chunked, with nothing but chunked after
+     * chunked on the same field line. Empty list elements are ignored.
+     *
+     * @param array<string, string[]> $headers
+     *
+     * @throws \RuntimeException when a coding is unsupported or follows chunked
+     *                           on the same field line
+     */
+    public static function parseTransferEncoding(array $headers): bool
+    {
+        $chunked = false;
+
+        foreach ($headers as $name => $values) {
+            if (!Psr7\Utils::caselessEquals((string) $name, 'Transfer-Encoding')) {
+                continue;
+            }
+
+            foreach ($values as $value) {
+                $afterChunked = false;
+                foreach (\explode(',', $value) as $coding) {
+                    $coding = \trim($coding, " \t");
+                    if ($coding === '') {
+                        continue;
+                    }
+
+                    if (Psr7\Utils::caselessEquals($coding, 'chunked')) {
+                        $chunked = true;
+                        $afterChunked = true;
+                    } elseif ($afterChunked) {
+                        throw new \RuntimeException('Invalid Transfer-Encoding response header: chunked is not the final transfer coding');
+                    } elseif (!Psr7\Utils::caselessEquals($coding, 'identity')) {
+                        throw new \RuntimeException(\sprintf(
+                            'Invalid Transfer-Encoding response header: unsupported transfer coding "%s"',
+                            Psr7\DiagnosticValue::escape($coding)
+                        ));
+                    }
+                }
+            }
+        }
+
+        return $chunked;
     }
 
     /**
@@ -211,6 +279,20 @@ final class HeaderProcessor
         }
 
         return $values;
+    }
+
+    /**
+     * Creates an associative array of lowercase header names to the actual
+     * header casing.
+     */
+    public static function normalizeHeaderKeys(array $headers): array
+    {
+        $result = [];
+        foreach (\array_keys($headers) as $key) {
+            $result[Psr7\Utils::asciiToLower((string) $key)] = $key;
+        }
+
+        return $result;
     }
 
     /**

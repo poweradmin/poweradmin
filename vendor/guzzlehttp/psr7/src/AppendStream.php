@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace GuzzleHttp\Psr7;
 
+use GuzzleHttp\Psr7\Exception\TimeoutException;
 use Psr\Http\Message\StreamInterface;
 
 /**
@@ -149,6 +150,8 @@ final class AppendStream implements StreamInterface
             throw new \RuntimeException('This AppendStream is not seekable');
         } elseif ($whence !== SEEK_SET) {
             throw new \RuntimeException('The AppendStream can only seek with SEEK_SET');
+        } elseif ($offset < 0) {
+            throw new \RuntimeException('The AppendStream cannot seek to a negative offset');
         }
 
         $this->pos = $this->current = 0;
@@ -174,6 +177,9 @@ final class AppendStream implements StreamInterface
 
     /**
      * Reads from all of the appended streams until the length is met or EOF.
+     *
+     * A timeout after some bytes were read returns those bytes, and the next
+     * read waits on the same stream again.
      */
     public function read(int $length): string
     {
@@ -200,7 +206,15 @@ final class AppendStream implements StreamInterface
                 ++$this->current;
             }
 
-            $result = StreamTimeout::read($this->streams[$this->current], $remaining, 'Unable to read from stream: timed out');
+            try {
+                $result = StreamTimeout::read($this->streams[$this->current], $remaining, 'Unable to read from stream: timed out');
+            } catch (TimeoutException $e) {
+                if ($buffer === '') {
+                    throw $e;
+                }
+
+                break;
+            }
 
             if ($result === '') {
                 $progressToNext = true;

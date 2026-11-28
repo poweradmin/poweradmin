@@ -27,47 +27,76 @@ final class InflateStream implements StreamInterface
 
     private ?StreamInterface $source;
 
+    private ?ReadFailureCapturingStream $capturingSource;
+
     public function __construct(StreamInterface $stream)
     {
         $this->source = $stream;
-        $resource = StreamWrapper::getResource($stream);
-        // Specify window=15+32, so zlib will use header detection to both gzip (with header) and zlib data
-        // See https://www.zlib.net/manual.html#Advanced definition of inflateInit2
-        // "Add 32 to windowBits to enable zlib and gzip decoding with automatic header detection"
-        // Default window size is 15.
-        stream_filter_append($resource, 'zlib.inflate', STREAM_FILTER_READ, ['window' => 15 + 32]);
-        $this->stream = $stream->isSeekable() ? new Stream($resource) : new NoSeekStream(new Stream($resource));
+        $this->capturingSource = new ReadFailureCapturingStream($stream);
+        $inflated = self::inflate($this->capturingSource);
+        $this->stream = $stream->isSeekable() ? $inflated : new NoSeekStream($inflated);
+    }
+
+    public function eof(): bool
+    {
+        return ($this->capturingSource === null || !$this->capturingSource->hasReadFailure()) && $this->stream->eof();
+    }
+
+    public function seek(int $offset, int $whence = SEEK_SET): void
+    {
+        $this->stream->seek($offset, $whence);
+
+        if ($offset === 0 && $whence === SEEK_SET && $this->capturingSource !== null) {
+            $this->capturingSource->takeReadFailure();
+            $this->stream = self::inflate($this->capturingSource);
+        }
     }
 
     public function read(int $length): string
     {
-        if ($length <= 0 || $this->source === null) {
+        if ($length <= 0 || $this->source === null || $this->capturingSource === null) {
             return $this->stream->read($length);
         }
 
-        try {
-            $data = $this->stream->read($length);
-        } catch (TimeoutException $e) {
-            throw $e;
-        } catch (\RuntimeException $e) {
-            if (StreamTimeout::isReadTimedOut($this->source)) {
-                throw new TimeoutException('Unable to read from stream: timed out', 0, $e);
+        // A source failure that follows decoded bytes is reported by the next read.
+        $failure = $this->capturingSource->takeReadFailure();
+
+        if ($failure === null) {
+            try {
+                $data = $this->stream->read($length);
+            } catch (TimeoutException $e) {
+                throw $e;
+            } catch (\RuntimeException $e) {
+                if (StreamTimeout::isReadTimedOut($this->source)) {
+                    throw new TimeoutException('Unable to read from stream: timed out', 0, $e);
+                }
+
+                throw $e;
             }
 
-            throw $e;
+            if ($data !== '') {
+                return $data;
+            }
+
+            $failure = $this->capturingSource->takeReadFailure();
         }
 
-        if ($data === '' && StreamTimeout::isReadTimedOut($this->source)) {
-            throw new TimeoutException('Unable to read from stream: timed out');
+        if ($failure instanceof TimeoutException || StreamTimeout::isReadTimedOut($this->source)) {
+            throw new TimeoutException('Unable to read from stream: timed out', 0, $failure);
         }
 
-        return $data;
+        if ($failure !== null) {
+            throw new \RuntimeException('Unable to read from stream', 0, $failure);
+        }
+
+        return '';
     }
 
     public function close(): void
     {
         $source = $this->source;
         $this->source = null;
+        $this->capturingSource = null;
 
         $exception = null;
 
@@ -95,7 +124,23 @@ final class InflateStream implements StreamInterface
     public function detach()
     {
         $this->source = null;
+        if ($this->capturingSource !== null) {
+            $this->capturingSource->stopCapturing();
+            $this->capturingSource = null;
+        }
 
         return $this->stream->detach();
+    }
+
+    private static function inflate(StreamInterface $stream): Stream
+    {
+        $resource = StreamWrapper::getResource($stream);
+        // Specify window=15+32, so zlib will use header detection to both gzip (with header) and zlib data
+        // See https://www.zlib.net/manual.html#Advanced definition of inflateInit2
+        // "Add 32 to windowBits to enable zlib and gzip decoding with automatic header detection"
+        // Default window size is 15.
+        stream_filter_append($resource, 'zlib.inflate', STREAM_FILTER_READ, ['window' => 15 + 32]);
+
+        return new Stream($resource);
     }
 }

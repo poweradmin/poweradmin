@@ -116,6 +116,13 @@ $client->request('GET', 'https://example.com');
 The convenience methods such as `$client->get()`, `$client->post()`, and their
 async variants continue to use uppercase standard methods.
 
+#### Request Method Validation
+
+The built-in cURL and stream handlers reject a request whose method is not an
+HTTP token, whichever PSR-7 implementation created the request. Guzzle 7
+handlers reject only a method that contains a carriage return, line feed, or NUL
+byte.
+
 #### Auth Request Option Changes
 
 Digest authentication is no longer implemented with cURL `CURLOPT_HTTPAUTH` and
@@ -378,10 +385,12 @@ and is used when an explicitly closed `CurlMultiHandler` rejects transfers that
 are still pending, including delayed transfers. Existing Guzzle 7.x code should
 not normally see this exception just by upgrading. Guzzle 7.x did not have this
 exception or a public cURL handler `close()` method, and destructor cleanup did
-not reject pending promises. If you add deterministic cleanup with
-`CurlMultiHandler::close()`, wait for or cancel outstanding transfers first, or
-handle `HandlerClosedException` or `TransferException` for pending promises you
-may still observe.
+not reject pending promises. Waiting on such a promise afterwards rejects it
+with `RequestException` in Guzzle 7.x and with `HandlerClosedException` in
+Guzzle 8. If you add deterministic cleanup with `CurlMultiHandler::close()`,
+wait for or cancel outstanding transfers first, or handle
+`HandlerClosedException` or `TransferException` for pending promises you may
+still observe.
 
 When updating catch blocks for Guzzle 8.0, catch the more specific no-response
 and response-aware failures before `RequestException`:
@@ -447,11 +456,14 @@ surfaced as a response.
 The built-in cURL and stream handlers now reject a response subject to body
 framing when its `Content-Length` is malformed, conflicting, or present with
 `Transfer-Encoding`. Equivalent decimal duplicates remain valid, including
-leading zeros. Framing failures detected from a complete header block occur
-before `on_headers` sees that response or any of its body bytes are delivered,
-and raise `ResponseTransferException`. A transport that rejects the block first
-can instead report its existing transfer failure. When a handler needs the
-length as a PHP integer, a valid value above `PHP_INT_MAX` raises plain
+leading zeros. Like libcurl 8.14 and newer, both handlers also reject a
+`Transfer-Encoding` that names a coding other than `chunked` or `identity`, or
+names `chunked` before another coding on the same header line. Framing failures
+detected from a complete header block occur before `on_headers` sees that
+response or any of its body bytes are delivered, and raise
+`ResponseTransferException`. A transport that rejects the block first can
+instead report its existing transfer failure. When a handler needs the length as
+a PHP integer, a valid value above `PHP_INT_MAX` raises plain
 `ResponseException` with the underlying `OverflowException` available through
 `getPrevious()`. The stream handler does not impose this platform limit on
 `stream => true` responses. Framing validation does not apply to responses to
@@ -462,15 +474,24 @@ The stream handler also raises `ResponseTransferException` after draining a
 non-streamed response when a valid, positive `Content-Length` declares more
 bytes than it receives. For decoded gzip and deflate, the length applies to
 encoded bytes before decompression, and the original values remain in
-`x-encoded-content-length`. Valid `stream => true` responses remain lazy after
-header validation.
+`x-encoded-content-length`. It raises the same exception when a chunked body
+ends before its last chunk or has malformed chunk framing, or when a decoded
+gzip or deflate body has data after the compressed stream; reading such a body
+with `stream => true` throws a `\RuntimeException` once the bytes before the
+fault have been returned. Valid `stream => true` responses remain lazy after
+header validation, but end at a valid `Content-Length` that fits in a PHP
+integer, and a read that reaches the end of the connection first throws a
+`\RuntimeException`. A `Content-Length` of `0` gives an empty body; Guzzle 7
+read such a body until the connection closed.
 
 For chunked responses through the stream handler, the transport resource's
 `wrapper_data` can now retain the original `Transfer-Encoding`. This is visible
 on streamed bodies and to custom stream factories. On PHP 8.1.20+, 8.2.7+, and
 8.3+, `progress` also counts raw chunk framing coalesced with the response
 headers. Later socket reads were already counted before decoding. Guzzle's
-response continues to expose the decoded body without that consumed header.
+response continues to expose the decoded body without that consumed header. A
+streamed chunked body detached after it has been partly read is a Guzzle stream
+resource that keeps decoding it, rather than the transport resource.
 
 The deprecated `RequestException::wrapException()` method was removed. Create a
 `RequestException` directly for request failures where Guzzle does not expose a
@@ -995,6 +1016,10 @@ connection coalescing, or cURL share handles. Use first-class Guzzle request
 options for those settings. Allowed raw cURL header-list options, such as
 `CURLOPT_PROXYHEADER`, now accept only strings or stringable objects as entries.
 
+From Guzzle 8.6, raw `CURLOPT_SSL_OPTIONS` is accepted on libcurl 7.83.1 or
+newer and rejected with a `RequestException` on older libcurl. Guzzle 7 passes
+it through on every libcurl version.
+
 The cURL handlers also reject stream-only `stream_context` options, but accept
 `read_timeout` without effect. The stream handler rejects cURL-only options it
 cannot honor, but accepts `connect_timeout` without effect. These timeout options
@@ -1193,10 +1218,12 @@ Cookies parsed from normal `Set-Cookie` headers continue to be normalized by
 
 #### SetCookie Max-Age Precedence
 
-`SetCookie` now follows RFC cookie precedence when both `Max-Age` and `Expires`
-are present. A valid `Max-Age` value controls the effective expiration time,
-including `Max-Age=0` expiring the cookie immediately, even when `Expires` is a
-future date.
+`SetCookie::fromString()` now follows RFC cookie precedence when a `Set-Cookie`
+header carries both `Max-Age` and `Expires`. A valid `Max-Age` value controls
+the effective expiration time, including `Max-Age=0` expiring the cookie
+immediately, even when `Expires` is a future date. Cookies built from an array
+keep a supplied `Expires`, as in Guzzle 7, so persisted cookies do not restart
+their lifetime when a jar is loaded.
 
 #### Cookie Max-Age Parsing
 

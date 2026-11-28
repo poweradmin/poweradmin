@@ -9,6 +9,9 @@ use GuzzleHttp\Handler\CurlHandler;
 use GuzzleHttp\Handler\CurlMultiHandler;
 use GuzzleHttp\Handler\CurlShareHandleState;
 use GuzzleHttp\Handler\CurlVersion;
+use GuzzleHttp\Handler\DebugResource;
+use GuzzleHttp\Handler\HeaderProcessor;
+use GuzzleHttp\Handler\Protocols;
 use GuzzleHttp\Handler\Proxy;
 use GuzzleHttp\Handler\StreamHandler;
 use GuzzleHttp\Handler\StreamTlsSessionCache;
@@ -18,6 +21,11 @@ use Psr\Http\Message\ResponseInterface;
 
 final class Utils
 {
+    /**
+     * @var (callable(array<string, mixed>, callable(): callable): callable)|null
+     */
+    private static $defaultHandlerFactory;
+
     private function __construct()
     {
     }
@@ -27,17 +35,20 @@ final class Utils
      *
      * @param iterable $lines Header lines array of strings in the following
      *                        format: "Name: Value"
+     *
+     * @deprecated Utils::headersFromLines() will be removed in
+     *             guzzlehttp/guzzle:9.0.
      */
     public static function headersFromLines(iterable $lines): array
     {
-        $headers = [];
+        \trigger_deprecation(
+            'guzzlehttp/guzzle',
+            '8.5',
+            '%s() is deprecated and will be removed in 9.0.',
+            __METHOD__
+        );
 
-        foreach ($lines as $line) {
-            $parts = \explode(':', $line, 2);
-            $headers[\trim($parts[0], " \n\r\t\0\x0B")][] = isset($parts[1]) ? \trim($parts[1], " \n\r\t\0\x0B") : null;
-        }
-
-        return $headers;
+        return HeaderProcessor::headersFromLines($lines);
     }
 
     /**
@@ -46,17 +57,39 @@ final class Utils
      * @param mixed $value Optional value
      *
      * @return resource
+     *
+     * @deprecated Utils::debugResource() will be removed in
+     *             guzzlehttp/guzzle:9.0.
      */
     public static function debugResource($value = null)
     {
-        if (\is_resource($value)) {
-            return $value;
-        }
-        if (\defined('STDOUT')) {
-            return \STDOUT;
-        }
+        \trigger_deprecation(
+            'guzzlehttp/guzzle',
+            '8.5',
+            '%s() is deprecated and will be removed in 9.0.',
+            __METHOD__
+        );
 
-        return Psr7\Utils::tryFopen('php://output', 'w');
+        return DebugResource::from($value);
+    }
+
+    /**
+     * Sets a factory that creates the default handler in place of the built-in
+     * selection.
+     *
+     * The factory receives the handler options and a callable that returns the
+     * handler Guzzle would have chosen. It is consulted each time a default
+     * handler is chosen, after the handler options have been checked for type
+     * and value. Passing null restores the built-in selection.
+     *
+     * The factory is process-wide, so set it from application bootstrap code,
+     * not from a library.
+     *
+     * @param (callable(array<string, mixed>, callable(): callable): callable)|null $factory
+     */
+    public static function setDefaultHandlerFactory(?callable $factory): void
+    {
+        self::$defaultHandlerFactory = $factory;
     }
 
     /**
@@ -64,7 +97,10 @@ final class Utils
      *
      * The returned handler is not wrapped by any default middlewares.
      *
-     * @param array{transport_sharing?: mixed, max_host_connections?: mixed, max_total_connections?: mixed, multiplex?: mixed} $handlerOptions Handler constructor options.
+     * A factory set with setDefaultHandlerFactory() creates the handler in
+     * place of the built-in selection.
+     *
+     * @param array{transport_sharing?: mixed, max_host_connections?: mixed, max_idle_handles?: mixed, max_total_connections?: mixed, multiplex?: mixed} $handlerOptions Handler constructor options.
      *
      * @return callable(RequestInterface, array<array-key, mixed>): PromiseInterface<ResponseInterface, mixed> Returns the best handler for the given system.
      *
@@ -76,6 +112,27 @@ final class Utils
         $sharingRequired = self::isTransportSharingRequired($sharingMode);
         $connectionCapsRequired = self::hasConnectionCapOptions($handlerOptions);
 
+        $maxIdleHandles = $handlerOptions['max_idle_handles'] ?? null;
+        if ($maxIdleHandles !== null && (!\is_int($maxIdleHandles) || $maxIdleHandles < 0)) {
+            throw new InvalidArgumentException('max_idle_handles must be a non-negative integer.');
+        }
+
+        if (self::$defaultHandlerFactory === null) {
+            return self::chooseBuiltInHandler($sharingMode, $sharingRequired, $connectionCapsRequired, $handlerOptions);
+        }
+
+        return (self::$defaultHandlerFactory)($handlerOptions, static function () use ($sharingMode, $sharingRequired, $connectionCapsRequired, $handlerOptions): callable {
+            return self::chooseBuiltInHandler($sharingMode, $sharingRequired, $connectionCapsRequired, $handlerOptions);
+        });
+    }
+
+    /**
+     * @param array{max_host_connections?: mixed, max_idle_handles?: mixed, max_total_connections?: mixed, multiplex?: mixed} $handlerOptions
+     *
+     * @return callable(RequestInterface, array<array-key, mixed>): PromiseInterface<ResponseInterface, mixed>
+     */
+    private static function chooseBuiltInHandler(string $sharingMode, bool $sharingRequired, bool $connectionCapsRequired, array $handlerOptions): callable
+    {
         $sharedPoolCapsSupported = CurlVersion::supportsSharedPoolConnectionCaps();
 
         if ($connectionCapsRequired && !$sharedPoolCapsSupported && $sharingMode === TransportSharing::PERSISTENT_REQUIRE) {
@@ -136,7 +193,7 @@ final class Utils
     }
 
     /**
-     * @param array{max_host_connections?: mixed, max_total_connections?: mixed, multiplex?: mixed} $handlerOptions
+     * @param array{max_host_connections?: mixed, max_idle_handles?: mixed, max_total_connections?: mixed, multiplex?: mixed} $handlerOptions
      *
      * @return (callable(RequestInterface, array<array-key, mixed>): PromiseInterface<ResponseInterface, mixed>)|null
      */
@@ -159,6 +216,9 @@ final class Utils
         }
 
         $curlHandlerOptions = self::createCurlHandlerOptions($sharingMode);
+        if (isset($handlerOptions['max_idle_handles'])) {
+            $curlHandlerOptions['max_idle_handles'] = $handlerOptions['max_idle_handles'];
+        }
         $curlMultiHandlerOptions = $curlHandlerOptions + $connectionCapOptions;
         if (($handlerOptions['multiplex'] ?? null) === Multiplexing::NONE) {
             // Forwarded to the CurlMultiHandler only: CurlHandler and
@@ -245,24 +305,41 @@ final class Utils
 
     /**
      * Get the default User-Agent string to use with Guzzle.
+     *
+     * @deprecated Utils::defaultUserAgent() will be removed in
+     *             guzzlehttp/guzzle:9.0. Use ClientInterface::MAJOR_VERSION
+     *             to build the string instead.
      */
     public static function defaultUserAgent(): string
     {
+        \trigger_deprecation(
+            'guzzlehttp/guzzle',
+            '8.5',
+            '%s() is deprecated and will be removed in 9.0. Use %s::MAJOR_VERSION to build the string instead.',
+            __METHOD__,
+            ClientInterface::class
+        );
+
         return sprintf('GuzzleHttp/%d', ClientInterface::MAJOR_VERSION);
     }
 
     /**
      * Creates an associative array of lowercase header names to the actual
      * header casing.
+     *
+     * @deprecated Utils::normalizeHeaderKeys() will be removed in
+     *             guzzlehttp/guzzle:9.0.
      */
     public static function normalizeHeaderKeys(array $headers): array
     {
-        $result = [];
-        foreach (\array_keys($headers) as $key) {
-            $result[Psr7\Utils::asciiToLower((string) $key)] = $key;
-        }
+        \trigger_deprecation(
+            'guzzlehttp/guzzle',
+            '8.5',
+            '%s() is deprecated and will be removed in 9.0.',
+            __METHOD__
+        );
 
-        return $result;
+        return HeaderProcessor::normalizeHeaderKeys($headers);
     }
 
     /**
@@ -271,27 +348,19 @@ final class Utils
      * @return string[]
      *
      * @throws InvalidArgumentException
+     *
+     * @deprecated Utils::normalizeProtocols() will be removed in
+     *             guzzlehttp/guzzle:9.0.
      */
     public static function normalizeProtocols($protocols): array
     {
-        if (!\is_array($protocols) || $protocols === []) {
-            throw new InvalidArgumentException('protocols must be a non-empty array of "http" and/or "https"');
-        }
+        \trigger_deprecation(
+            'guzzlehttp/guzzle',
+            '8.5',
+            '%s() is deprecated and will be removed in 9.0.',
+            __METHOD__
+        );
 
-        $normalized = [];
-
-        foreach ($protocols as $protocol) {
-            if (!\is_string($protocol)) {
-                throw new InvalidArgumentException('protocols must contain only strings');
-            }
-
-            if ($protocol !== 'http' && $protocol !== 'https') {
-                throw new InvalidArgumentException('protocols may only contain "http" and "https"');
-            }
-
-            $normalized[$protocol] = true;
-        }
-
-        return \array_keys($normalized);
+        return Protocols::normalize($protocols);
     }
 }

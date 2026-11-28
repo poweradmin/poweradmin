@@ -19,8 +19,8 @@ composer require guzzlehttp/promises
 
 | Version | Status       | PHP Version  |
 |---------|--------------|--------------|
-| 3.0     | Latest       | >=7.4,<8.7   |
-| 2.5     | Maintenance  | >=7.2.5,<8.7 |
+| 3.2     | Latest       | >=7.4,<8.7   |
+| 2.6     | Maintenance  | >=7.2.5,<8.7 |
 | 1.5     | End of Life  | >=5.5,<8.3   |
 
 ## Quick Start
@@ -79,10 +79,9 @@ $response = $promise->wait();
 
 If you discover a security vulnerability within this package, please send an
 email to security@tidelift.com. All security vulnerabilities will be promptly
-addressed. Please do not disclose security-related issues publicly until a fix
-has been announced. Please see
-[Security Policy](https://github.com/guzzle/promises/security/policy) for more
-information.
+addressed by the security maintainers listed in the
+[Security Policy](https://github.com/guzzle/promises/security/policy). Please do
+not disclose security-related issues publicly until a fix has been announced.
 
 ## License
 
