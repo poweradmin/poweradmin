@@ -453,6 +453,16 @@ class EditZoneMetadataController extends BaseController
             // PowerDNS stores an unknown policy string without complaint and
             // then ignores it, so the vocabulary has to be enforced here.
             $options = MetadataDefinitions::getAllowedValues($kind, $this->getConfig());
+            if ($options !== null && MetadataDefinitions::getOfferedOptions($kind, $this->getConfig()) === []) {
+                // Every option is disabled by configuration: only a row already stored may be saved again
+                $options = array_values(array_map(
+                    static fn(array $old): string => trim((string)($old['content'] ?? '')),
+                    array_filter(
+                        $stored(),
+                        static fn(array $old): bool => strtoupper((string)($old['kind'] ?? '')) === strtoupper($kind)
+                    )
+                ));
+            }
             if ($options !== null && !in_array($row['content'], $options, true)) {
                 $errors[] = sprintf(_('Invalid value for %s. Allowed values: %s.'), $kind, implode(', ', $options));
             }

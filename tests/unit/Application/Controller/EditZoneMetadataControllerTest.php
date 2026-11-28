@@ -195,6 +195,31 @@ class EditZoneMetadataControllerTest extends TestCase
         $this->assertStringContainsString('SOA-EDIT-API', $errors[0]);
     }
 
+    public function testValidateMetadataRowsRefusesAHiddenKindValueThatIsNotStored(): void
+    {
+        $controller = $this->createControllerWithConfig(['dns' => ['soa_edit_api_options' => []]]);
+
+        $errors = $this->invokePrivateMethod($controller, 'validateMetadataRows', [
+            [['kind' => 'SOA-EDIT-API', 'content' => 'EPOCH']],
+            static fn(): array => [['kind' => 'SOA-EDIT-API', 'content' => 'DEFAULT']],
+        ]);
+
+        $this->assertCount(1, $errors);
+        $this->assertStringContainsString('SOA-EDIT-API', $errors[0]);
+    }
+
+    public function testValidateMetadataRowsKeepsAnIdenticalStoredRowOfAHiddenKind(): void
+    {
+        $controller = $this->createControllerWithConfig(['dns' => ['soa_edit_api_options' => []]]);
+
+        $errors = $this->invokePrivateMethod($controller, 'validateMetadataRows', [
+            [['kind' => 'SOA-EDIT-API', 'content' => 'EPOCH']],
+            static fn(): array => [['kind' => 'soa-edit-api', 'content' => 'EPOCH']],
+        ]);
+
+        $this->assertSame([], $errors);
+    }
+
     public function testValidateMetadataRowsAcceptsListedOptionAndFreeFormKinds(): void
     {
         $controller = $this->createControllerWithConfig([]);

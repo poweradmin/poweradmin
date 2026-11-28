@@ -122,6 +122,16 @@ class ZoneMetadataControllerTest extends TestCase
         $this->assertStatus(422, $this->invalidValueError($controller, 'SOA-EDIT-API', ['INCREASE']));
     }
 
+    public function testKindWithAllOptionsDisabledAcceptsOnlyAStoredValue(): void
+    {
+        $controller = $this->createController(null, ['dns' => ['soa_edit_api_options' => []]]);
+        $stored = static fn(): array => [['kind' => 'SOA-EDIT-API', 'content' => 'DEFAULT']];
+
+        $this->assertStatus(422, $this->invokePrivateMethod($controller, 'invalidValueError', ['SOA-EDIT-API', ['EPOCH'], $stored]));
+        $this->assertStatus(422, $this->invokePrivateMethod($controller, 'invalidValueError', ['SOA-EDIT-API', ['EPOCH']]));
+        $this->assertNull($this->invokePrivateMethod($controller, 'invalidValueError', ['SOA-EDIT-API', ['DEFAULT'], $stored]));
+    }
+
     public function testLoadMetadataListsZoneObjectKindsOnceAndIncludesSoaEdit(): void
     {
         $apiClient = $this->createMock(PowerdnsApiClient::class);

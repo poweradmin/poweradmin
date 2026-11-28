@@ -358,7 +358,7 @@ class ZoneMetadataController extends PublicApiController
                 return $this->returnApiError('Metadata kind ' . $kind . ' accepts only a single value', 400);
             }
 
-            if (($valueError = $this->invalidValueError($kind, $values)) !== null) {
+            if (($valueError = $this->invalidValueError($kind, $values, fn(): array => $this->loadMetadata($zoneId))) !== null) {
                 return $valueError;
             }
 
@@ -510,12 +510,23 @@ class ZoneMetadataController extends PublicApiController
      * every serial bump, so the check has to happen here.
      *
      * @param array<int, string> $values
+     * @param callable|null $loadStored Loads the stored rows, only when every option of the kind is disabled
      */
-    private function invalidValueError(string $kind, array $values): ?JsonResponse
+    private function invalidValueError(string $kind, array $values, ?callable $loadStored = null): ?JsonResponse
     {
         $options = MetadataDefinitions::getAllowedValues($kind, $this->config);
         if ($options === null) {
             return null;
+        }
+
+        if (MetadataDefinitions::getOfferedOptions($kind, $this->config) === []) {
+            // Every option is disabled by configuration: only a stored value may be written again
+            $options = [];
+            foreach ($loadStored === null ? [] : $loadStored() as $row) {
+                if (strtoupper((string)$row['kind']) === strtoupper($kind)) {
+                    $options[] = (string)$row['content'];
+                }
+            }
         }
 
         foreach ($values as $value) {
