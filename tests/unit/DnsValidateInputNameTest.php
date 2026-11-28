@@ -71,6 +71,15 @@ class DnsValidateInputNameTest extends TestCase
         $this->assertFalse($this->validate('-bad', 'SSHFP', '1 1 aabbccddeeff00112233445566778899aabbccdd'));
     }
 
+    public function testApexAtSignAndEmptyNameMapToTheZone(): void
+    {
+        $this->assertSame('example.com', $this->validatedName('@', 'A', '192.0.2.1'));
+        $this->assertSame('example.com', $this->validatedName('', 'A', '192.0.2.1'));
+        $this->assertSame('example.com', $this->validatedName('@', 'TXT', '"v=spf1 -all"'));
+        $this->assertSame('example.com', $this->validatedName('', 'TXT', '"v=spf1 -all"'));
+        $this->assertSame('www.example.com', $this->validatedName('www', 'A', '192.0.2.1'));
+    }
+
     public function testQuotedStringEscaping(): void
     {
         ob_start();
@@ -85,13 +94,24 @@ class DnsValidateInputNameTest extends TestCase
         }
     }
 
-    private function validate(string $name, string $type, string $content, int $prio = 0): bool
+    private function validatedName(string $name, string $type, string $content): string
+    {
+        $resolved = '';
+        $this->assertTrue($this->validate($name, $type, $content, 0, $resolved));
+
+        return $resolved;
+    }
+
+    private function validate(string $name, string $type, string $content, int $prio = 0, string &$resolved = ''): bool
     {
         $ttl = 3600;
 
         ob_start();
         try {
-            return $this->dns->validate_input(0, 1, $type, $content, $name, $prio, $ttl, 'hostmaster.example.com', 3600);
+            $ok = $this->dns->validate_input(0, 1, $type, $content, $name, $prio, $ttl, 'hostmaster.example.com', 3600);
+            $resolved = $name;
+
+            return $ok;
         } finally {
             ob_end_clean();
         }

@@ -92,6 +92,11 @@ class Dns
             return false;
         }
 
+        // The edit form shows the apex as '@'; map it back to the zone name below
+        if ($name === '@') {
+            $name = '';
+        }
+
         if (!DnsHelper::isWithinZone((string)$name, (string)$zone)) {
             if (isset($name) && $name != "") {
                 $name = $name . "." . $zone;
