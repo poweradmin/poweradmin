@@ -98,6 +98,7 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         try {
             // A later zone can be given this id again (SQLite reuses the highest rowid), and a scope left on it would cover that zone
             SharedZoneIds::pointApiKeyScopesAtNoZone($this->db, $domainId);
+            $this->releaseCatalogMembers($domainId);
             DbRecordCommentRepository::purgeForZone($this->db, $this->tableNameService->getTable(PdnsTable::COMMENTS), $recordsTable, $domainId);
             foreach (
                 [
@@ -123,6 +124,9 @@ class SqlDnsBackendProvider implements DnsBackendProvider
     {
         $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
+        // Read before the UPDATE, which changes the kind this depends on
+        $producerName = strtoupper($type) !== ZoneType::PRODUCER ? $this->producerName($domainId) : null;
+
         $params = [':type' => $type, ':id' => $domainId];
         $masterClause = '';
 
@@ -132,9 +136,47 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         }
 
         $stmt = $this->db->prepare("UPDATE $domainsTable SET type = :type{$masterClause} WHERE id = :id");
-        $stmt->execute($params);
+        $updated = $stmt->execute($params);
+        if ($updated && $producerName !== null) {
+            $this->clearCatalogOf($producerName);
+        }
 
-        return true;
+        return $updated;
+    }
+
+    /**
+     * Empties the catalog of every member when the zone is a producer, so a later zone
+     * reusing the name does not publish them. Only runs for producers, which exist only
+     * where the catalog column does.
+     */
+    private function releaseCatalogMembers(int $domainId): void
+    {
+        $producerName = $this->producerName($domainId);
+        if ($producerName !== null) {
+            $this->clearCatalogOf($producerName);
+        }
+    }
+
+    private function producerName(int $domainId): ?string
+    {
+        $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+
+        $stmt = $this->db->prepare("SELECT name, type FROM $domainsTable WHERE id = :id");
+        $stmt->execute([':id' => $domainId]);
+        $zone = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!is_array($zone) || strtoupper((string)$zone['type']) !== ZoneType::PRODUCER) {
+            return null;
+        }
+
+        return (string)$zone['name'];
+    }
+
+    private function clearCatalogOf(string $producerName): void
+    {
+        $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+
+        $stmt = $this->db->prepare("UPDATE $domainsTable SET catalog = '' WHERE LOWER(catalog) = :catalog");
+        $stmt->execute([':catalog' => PowerdnsApiClient::canonicalZoneName($producerName)]);
     }
 
     public function updateZoneMaster(int $domainId, string $masterIp): bool

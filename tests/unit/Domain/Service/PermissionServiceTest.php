@@ -211,6 +211,26 @@ class PermissionServiceTest extends TestCase
     }
 
     #[Test]
+    public function testCanViewZoneNeedsOwnershipForViewOwnOnly(): void
+    {
+        $this->userRepository->method('hasAdminPermission')->willReturnCallback(fn(int $id): bool => $id === 1);
+        $this->userRepository->method('getUserPermissions')->willReturnCallback(
+            fn(int $id): array => match ($id) {
+                2 => ['zone_content_view_others'],
+                3 => ['zone_content_view_own'],
+                default => [],
+            }
+        );
+        $this->userRepository->method('userOwnsZone')->willReturnCallback(fn(int $id, int $zone): bool => $zone === 10);
+
+        $this->assertTrue($this->service->canViewZone(1, 11));
+        $this->assertTrue($this->service->canViewZone(2, 11));
+        $this->assertTrue($this->service->canViewZone(3, 10));
+        $this->assertFalse($this->service->canViewZone(3, 11));
+        $this->assertFalse($this->service->canViewZone(4, 10));
+    }
+
+    #[Test]
     public function testGetViewPermissionLevelReturnsNoneWithoutPermissions(): void
     {
         $userId = 4;

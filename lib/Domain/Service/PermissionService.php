@@ -181,6 +181,17 @@ class PermissionService
     }
 
     /**
+     * Whether the user may open a zone: view_others (or admin), or view_own on a
+     * zone owned directly or via any group.
+     */
+    public function canViewZone(int $userId, int $domainId): bool
+    {
+        $level = $this->getViewPermissionLevel($userId);
+
+        return $level === 'all' || ($level === 'own' && $this->userOwnsZone($userId, $domainId));
+    }
+
+    /**
      * Get view permission level for a user on a specific zone (includes group permissions)
      *
      * @param \PDO $db Database connection

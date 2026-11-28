@@ -44,7 +44,7 @@ class DbZoneRepositoryDeleteZoneTest extends TestCase
         $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         foreach (
             [
-                "CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT, type TEXT)",
+                "CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT, type TEXT, catalog TEXT)",
                 "CREATE TABLE records (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, content TEXT)",
                 "CREATE TABLE comments (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, modified_at INTEGER, account TEXT, comment TEXT)",
                 "CREATE TABLE record_comment_links (record_id TEXT PRIMARY KEY, comment_id INTEGER UNIQUE)",
@@ -63,7 +63,7 @@ class DbZoneRepositoryDeleteZoneTest extends TestCase
                 "INSERT INTO log_zones VALUES (1, 'a', 1), (2, 'b', 2)",
                 "INSERT INTO log_changesets VALUES (1, 1), (2, 2)",
                 "INSERT INTO log_record_changes VALUES (1, 1), (2, 2)",
-                "INSERT INTO domains VALUES (1, 'example.com', 'MASTER'), (2, 'other.com', 'MASTER')",
+                "INSERT INTO domains VALUES (1, 'example.com', 'MASTER', NULL), (2, 'other.com', 'MASTER', NULL)",
                 "INSERT INTO records VALUES (10, 1, 'www.example.com', 'A', '192.0.2.1'), (20, 2, 'www.other.com', 'A', '192.0.2.2')",
                 "INSERT INTO zones VALUES (1, 1, 1), (2, 2, 1)",
             ] as $sql
@@ -143,5 +143,24 @@ class DbZoneRepositoryDeleteZoneTest extends TestCase
     private function rows(string $fromWhere): int
     {
         return (int)$this->db->query("SELECT COUNT(*) FROM $fromWhere")->fetchColumn();
+    }
+
+    public function testDeletingAProducerEmptiesTheCatalogOfItsMembers(): void
+    {
+        $this->db->exec("UPDATE domains SET type = 'PRODUCER' WHERE id = 1");
+        $this->db->exec("UPDATE domains SET catalog = 'example.com' WHERE id = 2");
+
+        $this->assertTrue($this->repository->deleteZone(1));
+
+        $this->assertSame('', (string)$this->db->query("SELECT catalog FROM domains WHERE id = 2")->fetchColumn());
+    }
+
+    public function testDeletingAnotherKindLeavesCatalogsAlone(): void
+    {
+        $this->db->exec("UPDATE domains SET catalog = 'example.com' WHERE id = 2");
+
+        $this->assertTrue($this->repository->deleteZone(1));
+
+        $this->assertSame('example.com', $this->db->query("SELECT catalog FROM domains WHERE id = 2")->fetchColumn());
     }
 }
