@@ -127,6 +127,44 @@ class ZoneMetadataServiceTest extends PermissionServiceTestCase
         $this->assertTrue($service->replaceKind(self::ZONE_ID, self::ZONE, 'SOA-EDIT-API', ['EPOCH'], self::ADMIN)->isOk());
     }
 
+    private function withEmptySoaEditApiOptions(): void
+    {
+        $this->config = $this->createMock(ConfigurationInterface::class);
+        $this->config->method('get')->willReturnCallback(
+            fn(string $group, string $key, mixed $default = null): mixed => $group === 'dns' && $key === 'soa_edit_api_options' ? [] : $default
+        );
+    }
+
+    public function testAHiddenKindRefusesANewValueOnTheEditorAndTheApiPath(): void
+    {
+        $this->withEmptySoaEditApiOptions();
+        $this->store->method('load')->willReturn([]);
+        $this->store->expects($this->never())->method('replaceAll');
+        $this->store->expects($this->never())->method('replaceKind');
+        $service = $this->sqlService();
+
+        $editor = $service->replaceAll(self::ZONE_ID, self::ZONE, [['kind' => 'SOA-EDIT-API', 'content' => 'INCREASE']], self::ADMIN);
+        $api = $service->replaceKind(self::ZONE_ID, self::ZONE, 'SOA-EDIT-API', ['INCREASE'], self::ADMIN);
+
+        $this->assertSame(ZoneMetadataOutcome::INVALID_VALUE, $editor->outcome);
+        $this->assertSame(ZoneMetadataOutcome::INVALID_VALUE, $api->outcome);
+    }
+
+    public function testAHiddenKindKeepsItsStoredValueButNotAChangedOrRepeatedOne(): void
+    {
+        $this->withEmptySoaEditApiOptions();
+        $this->store->method('load')->willReturn([['kind' => 'SOA-EDIT-API', 'content' => 'INCREASE']]);
+        $this->store->method('replaceAll')->willReturn(true);
+        $service = $this->sqlService();
+        $kept = ['kind' => 'SOA-EDIT-API', 'content' => 'INCREASE'];
+
+        $this->assertTrue($service->replaceAll(self::ZONE_ID, self::ZONE, [$kept], self::ADMIN)->isOk());
+        $this->assertSame(
+            ZoneMetadataOutcome::INVALID_VALUE,
+            $service->replaceAll(self::ZONE_ID, self::ZONE, [['kind' => 'SOA-EDIT-API', 'content' => 'EPOCH']], self::ADMIN)->outcome
+        );
+    }
+
     public function testASingleValueKindRefusesASecondRow(): void
     {
         $rows = [['kind' => 'SOA-EDIT', 'content' => 'INCEPTION-INCREMENT'], ['kind' => 'SOA-EDIT', 'content' => 'EPOCH']];

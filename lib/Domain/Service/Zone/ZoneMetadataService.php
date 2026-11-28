@@ -351,13 +351,14 @@ class ZoneMetadataService
     {
         $storedCounts = array_count_values(array_column($storedRows, 'kind'));
         // Submitted content arrives trimmed, so a stored long value is matched trimmed too
-        // Each stored copy of an over-long value allows one submitted copy, so it cannot be repeated
+        // Each stored copy of a value allows one submitted copy, so an over-long or hidden value cannot be repeated
         $storedLong = [];
         foreach ($storedRows as $stored) {
             $key = $stored['kind'] . "\0" . trim($stored['content']);
             $storedLong[$key] = ($storedLong[$key] ?? 0) + 1;
         }
         $longSeen = [];
+        $hiddenKept = [];
         $countsByKind = [];
         foreach ($rows as $row) {
             $kind = $row['kind'];
@@ -378,6 +379,19 @@ class ZoneMetadataService
                 if ($longSeen[$key] > ($storedLong[$key] ?? 0)) {
                     return new ZoneMetadataResult(ZoneMetadataOutcome::VALUE_TOO_LONG, $kind);
                 }
+            }
+
+            // A kind whose options the config narrowed to nothing is hidden: only a row
+            // that is already stored, once per stored copy, may be saved again.
+            if (MetadataDefinitions::getOfferedOptions($kind, $this->config) === []) {
+                $key = $kind . "\0" . $row['content'];
+                $hiddenKept[$key] = ($hiddenKept[$key] ?? 0) + 1;
+                if ($hiddenKept[$key] > ($storedLong[$key] ?? 0)) {
+                    $keptValues = array_column(array_filter($storedRows, static fn(array $stored): bool => $stored['kind'] === $kind), 'content');
+
+                    return new ZoneMetadataResult(ZoneMetadataOutcome::INVALID_VALUE, $kind, array_values($keptValues));
+                }
+                continue;
             }
 
             // PowerDNS stores an unknown policy string without complaint and then

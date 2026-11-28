@@ -490,9 +490,9 @@ class MetadataDefinitions
     /**
      * The values an editor may store for a kind, or null when any value goes.
      *
-     * A kind whose options config narrows to nothing is hidden from the UI but
-     * still accepts every PowerDNS value, so rows stored before the restriction
-     * keep saving.
+     * A kind whose options config narrows to nothing is hidden from the UI and
+     * falls back to every PowerDNS value here; ZoneMetadataService refuses new
+     * values for it before asking, so only rows stored before the restriction save.
      *
      * @return array<int, string>|null
      */
