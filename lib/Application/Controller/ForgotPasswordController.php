@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -176,7 +176,8 @@ class ForgotPasswordController extends BaseController
         // Check if user's authentication method allows password reset
         $canReset = $this->passwordResetService->canUserResetPassword($email);
         if (!$canReset['allowed']) {
-            $authMethod = strtoupper($canReset['auth_method'] ?? 'external');
+            // Respond exactly as for a normal request so the page does not reveal that
+            // the account exists or which backend it uses; no email is sent.
             $this->logger->info('Password reset blocked - user uses external authentication', [
                 'email' => $email,
                 'auth_method' => $canReset['auth_method'],
@@ -184,10 +185,7 @@ class ForgotPasswordController extends BaseController
                 'user_agent' => $userAgent,
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
-            $this->showPasswordResetForm(
-                "This account uses {$authMethod} authentication. Password reset is not available. " .
-                "Please contact your system administrator for assistance."
-            );
+            $this->showSuccessMessage();
             return;
         }
 
