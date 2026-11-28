@@ -52,6 +52,7 @@ class DnsRecordValidationServiceTest extends TestCase
 
         $this->validatorRegistry = $this->createMock(DnsValidatorRegistry::class);
         $this->validatorRegistry->method('isKnownType')->willReturn(true);
+        $this->validatorRegistry->method('isAllowedByTypeLists')->willReturn(true);
         $this->validatorRegistry->method('isTypeSupportedByServer')->willReturn(true);
         $this->dnsCommonValidator = $this->createMock(DnsCommonValidator::class);
         $this->domainRepository = $this->createMock(DomainRepositoryInterface::class);
@@ -666,10 +667,60 @@ class DnsRecordValidationServiceTest extends TestCase
     }
 
     #[Test]
+    public function testValidateRecordRefusesTypeOutsideTheConfiguredList(): void
+    {
+        $registry = $this->createMock(DnsValidatorRegistry::class);
+        $registry->method('isKnownType')->willReturn(true);
+        $registry->method('isAllowedByTypeLists')->with('LUA', 'example.com')->willReturn(false);
+        $registry->expects($this->never())->method('getValidator');
+        $this->domainRepository->method('getDomainNameById')->willReturn('example.com');
+
+        $service = new DnsRecordValidationService($registry, $this->dnsCommonValidator, $this->domainRepository, $this->dnsViolationValidator);
+        $result = $service->validateRecord(-1, 1, 'LUA', 'A "ifportup(443, {\'192.0.2.1\'})"', 'www.example.com', null, 3600, 'hostmaster@example.com', 86400);
+
+        $this->assertFalse($result->isValid());
+        $this->assertSame('Invalid record type.', $result->getFirstError());
+    }
+
+    #[Test]
+    public function testValidateRecordLetsAStoredUnlistedRecordKeepItsContent(): void
+    {
+        $registry = $this->createMock(DnsValidatorRegistry::class);
+        $registry->method('isKnownType')->willReturn(true);
+        $registry->method('isAllowedByTypeLists')->willReturn(false);
+        $registry->method('isTypeSupportedByServer')->willReturn(true);
+        $registry->expects($this->atLeastOnce())->method('getValidator');
+        $this->domainRepository->method('getDomainNameById')->willReturn('example.com');
+        // Stops the run right after the type gate, so the assertion sees which check refused
+        $this->dnsViolationValidator->method('validate')->willReturn(\Poweradmin\Domain\Service\Validation\ValidationResult::failure('past the type gate'));
+
+        $service = new DnsRecordValidationService($registry, $this->dnsCommonValidator, $this->domainRepository, $this->dnsViolationValidator);
+        $result = $service->validateRecord(7, 1, 'SRV', '10 5060 sip.example.com', '_sip._tcp.example.com', 0, 600, 'hostmaster@example.com', 86400, [], ['10 5060 sip.example.com']);
+
+        $this->assertSame('past the type gate', $result->getFirstError());
+    }
+
+    #[Test]
+    public function testValidateRecordRefusesNewContentForAStoredUnlistedRecord(): void
+    {
+        $registry = $this->createMock(DnsValidatorRegistry::class);
+        $registry->method('isKnownType')->willReturn(true);
+        $registry->method('isAllowedByTypeLists')->willReturn(false);
+        $registry->expects($this->never())->method('getValidator');
+        $this->domainRepository->method('getDomainNameById')->willReturn('example.com');
+
+        $service = new DnsRecordValidationService($registry, $this->dnsCommonValidator, $this->domainRepository, $this->dnsViolationValidator);
+        $result = $service->validateRecord(7, 1, 'LUA', 'A "ifportup(443, {\'192.0.2.9\'})"', 'www.example.com', 0, 600, 'hostmaster@example.com', 86400, [], ['A "ifportup(443, {\'192.0.2.1\'})"']);
+
+        $this->assertSame('Invalid record type.', $result->getFirstError());
+    }
+
+    #[Test]
     public function testValidateRecordRefusesTypeTheConnectedServerCannotLoad(): void
     {
         $registry = $this->createMock(DnsValidatorRegistry::class);
         $registry->method('isKnownType')->willReturn(true);
+        $registry->method('isAllowedByTypeLists')->willReturn(true);
         $registry->method('isTypeSupportedByServer')->with('WALLET')->willReturn(false);
         $registry->expects($this->never())->method('getValidator');
         $this->domainRepository->method('getDomainNameById')->willReturn('example.com');

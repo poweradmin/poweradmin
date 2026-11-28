@@ -54,9 +54,10 @@ interface TemplateRecordLinkRepositoryInterface
      * Delete the records a template application wrote to a zone, and their links.
      * SQL backends only: the records are removed from the PowerDNS table directly.
      *
+     * @param (callable(array<string, mixed>): bool)|null $keep Rows it returns true for stay, linked
      * @return array Rows (id, name, type, content, ttl, prio, disabled) of the removed records
      */
-    public function removeLinkedRecords(int $zoneId, int $templateId): array;
+    public function removeLinkedRecords(int $zoneId, int $templateId, ?callable $keep = null): array;
 
     /**
      * Delete the apex SOA records of a zone so the template's SOA can replace them.

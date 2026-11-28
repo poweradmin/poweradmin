@@ -57,10 +57,25 @@ interface RecordManagerInterface
      * @param bool $dryRun Run every check and stop before anything is written
      * @param array<int|string, string> $vacated Stored content by id of records the same write removes
      *                                           first (an RRset replace); they no longer conflict
+     * @param list<string> $storedContents Content of the same type the write puts back (an RRset replace);
+     *                                     keeping one passes the configured type lists
      *
      * @return RecordWriteResult The new record id, or the reason the write was refused
      */
-    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int $disabled = 0, bool $finalizeZone = true, ?array $comment = null, bool $dryRun = false, array $vacated = []): RecordWriteResult;
+    public function addRecordGetId(
+        int $zone_id,
+        string $name,
+        string $type,
+        string $content,
+        int $ttl,
+        mixed $prio,
+        int $disabled = 0,
+        bool $finalizeZone = true,
+        ?array $comment = null,
+        bool $dryRun = false,
+        array $vacated = [],
+        array $storedContents = []
+    ): RecordWriteResult;
 
     /**
      * Edit a record. An unchanged save is skipped entirely when

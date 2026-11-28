@@ -241,7 +241,7 @@ return [
         'custom_tlds' => [],                       // Whitelist of non-IANA TLDs allowed in hostnames and CNAME targets when strict_tld_check is on (e.g., ['lan', 'corp', 'dn42'])
 
         // Record Type Settings (added in 4.0.0)
-        // Set to null to use all default types, or provide an array of specific types to show
+        // Set to null to use all default types, or provide an array of the only types to show and accept on save
         // When editing zone templates, the system will automatically show the combined list
         // of both domain_record_types and reverse_record_types
 

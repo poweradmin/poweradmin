@@ -592,6 +592,73 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
         $this->assertTrue($this->manager()->updateZoneRecords(self::TTL, self::ZONE_ID, self::TEMPLATE_ID)->success);
     }
 
+    public function testTemplateRowsOfAnUnlistedTypeAreSkippedAndReported(): void
+    {
+        $all = $this->config->getAll();
+        $all['dns']['domain_record_types'] = ['A', 'NS'];
+        $this->config = new FakeConfiguration($all);
+        $this->seedZone(0);
+        $this->seedTemplateRecords([
+            ['www.[ZONE]', 'A', '192.0.2.10', 300, 0],
+            ['www.[ZONE]', 'LUA', 'A "ifportup(443, {\'192.0.2.1\'})"', 300, 0],
+        ]);
+        $this->backend = $this->sqlBackend();
+        $this->backend->method('getRecordsByZoneId')->willReturn([]);
+        $this->backend->method('recordExists')->willReturn(false);
+        $this->backend->expects($this->once())->method('addRecordGetId')
+            ->with(self::ZONE_ID, 'www.old.example', 'A', '192.0.2.10', 300, 0)->willReturn(501);
+
+        $result = $this->manager()->updateZoneRecords(self::TTL, self::ZONE_ID, self::TEMPLATE_ID);
+
+        $this->assertFalse($result->success);
+        $this->assertStringContainsString('not allowed in this zone: www.old.example LUA', (string) $result->message);
+    }
+
+    public function testReapplyKeepsAnEarlierTemplateRecordOfANowUnlistedType(): void
+    {
+        $all = $this->config->getAll();
+        $all['dns']['domain_record_types'] = ['A', 'NS'];
+        $this->config = new FakeConfiguration($all);
+        $lua = 'A "ifportup(443, {\'192.0.2.1\'})"';
+        $this->seedZone(self::TEMPLATE_ID);
+        $this->seedRecord(101, 'www.old.example', 'LUA', $lua, linkedTo: self::TEMPLATE_ID);
+        $this->seedRecord(102, 'old.example', 'A', '192.0.2.1', linkedTo: self::TEMPLATE_ID);
+        $this->seedTemplateRecords([
+            ['www.[ZONE]', 'LUA', $lua, 300, 0],
+            ['[ZONE]', 'A', '192.0.2.2', 300, 0],
+        ]);
+        $this->backend = $this->sqlBackend();
+        $this->backend->method('getRecordsByZoneId')->willReturn([]);
+        $this->backend->method('recordExists')->willReturnCallback(
+            fn(int $zoneId, string $name, string $type): bool => $type === 'LUA'
+        );
+        $this->backend->expects($this->once())->method('addRecordGetId')
+            ->with(self::ZONE_ID, 'old.example', 'A', '192.0.2.2', 300, 0)->willReturn(501);
+
+        $this->assertTrue($this->manager()->updateZoneRecords(self::TTL, self::ZONE_ID, self::TEMPLATE_ID)->success);
+        $this->assertSame([['id' => 101]], $this->rows('SELECT id FROM records ORDER BY id'));
+        $this->assertSame([['record_id' => 101], ['record_id' => 501]], $this->rows('SELECT record_id FROM records_zone_templ ORDER BY record_id'));
+    }
+
+    public function testReapplyReplacesTheApexNsEvenWhenNsIsNotListed(): void
+    {
+        $all = $this->config->getAll();
+        $all['dns']['domain_record_types'] = ['A'];
+        $this->config = new FakeConfiguration($all);
+        $this->seedZone(self::TEMPLATE_ID);
+        $this->seedRecord(101, 'old.example', 'NS', 'ns2.example', linkedTo: self::TEMPLATE_ID);
+        $this->seedTemplateRecords([['[ZONE]', 'NS', 'ns3.example', 300, 0]]);
+        $this->backend = $this->sqlBackend();
+        $this->backend->method('getRecordsByZoneId')->willReturn([]);
+        $this->backend->method('recordExists')->willReturn(false);
+        $this->backend->expects($this->once())->method('addRecordGetId')
+            ->with(self::ZONE_ID, 'old.example', 'NS', 'ns3.example', 300, 0)->willReturn(501);
+
+        $this->assertTrue($this->manager()->updateZoneRecords(self::TTL, self::ZONE_ID, self::TEMPLATE_ID)->success);
+        // The old apex NS goes, as the template's new one replaces it
+        $this->assertSame([], $this->rows('SELECT id FROM records'));
+    }
+
     public function testApiRefusalAndCnameConflictAreBothReported(): void
     {
         $this->seedZone(0);
@@ -732,7 +799,8 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
             new DbZoneTemplateSyncRepository($this->db, $this->config),
             new ZoneTemplatePlaceholders($this->config, new DomainParsingService(new PdpPublicSuffixList())),
             $this->changeLogger,
-            new NullLogger()
+            new NullLogger(),
+            $this->config
         );
 
         return new DomainManager(

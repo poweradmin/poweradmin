@@ -105,6 +105,49 @@ class DnsValidatorRegistryTest extends TestCase
         $this->assertFalse($this->registry->isKnownType(''));
     }
 
+    public function testTypeListsDoNotRestrictWhenUnset(): void
+    {
+        $this->assertTrue($this->registry->isAllowedByTypeLists(RecordType::LUA, 'example.com'));
+        $this->assertTrue($this->registry->isAllowedByTypeLists(RecordType::LUA, '2.0.192.in-addr.arpa'));
+        $this->assertTrue($this->registry->isAllowedByTypeLists(RecordType::LUA, null));
+    }
+
+    public function testTypeListsRefuseUnlistedTypesPerZoneKind(): void
+    {
+        $registry = new DnsValidatorRegistry(
+            new FakeConfiguration(['dns' => ['domain_record_types' => ['A', 'MX', 'NS'], 'reverse_record_types' => ['PTR', 'NS']]]),
+            $this->createMock(DnsBackendProviderInterface::class)
+        );
+
+        $this->assertTrue($registry->isAllowedByTypeLists(RecordType::MX, 'example.com'));
+        $this->assertFalse($registry->isAllowedByTypeLists(RecordType::LUA, 'example.com'));
+        $this->assertFalse($registry->isAllowedByTypeLists(RecordType::PTR, 'example.com'));
+        $this->assertTrue($registry->isAllowedByTypeLists(RecordType::PTR, '2.0.192.in-addr.arpa'));
+        $this->assertFalse($registry->isAllowedByTypeLists(RecordType::MX, '8.b.d.0.1.0.0.2.ip6.arpa'));
+        // SOA and DNSSEC types are added by the picker itself
+        $this->assertTrue($registry->isAllowedByTypeLists(RecordType::SOA, 'example.com'));
+        $this->assertTrue($registry->isAllowedByTypeLists(RecordType::DS, 'example.com'));
+        // A template may target either kind of zone
+        $this->assertTrue($registry->isAllowedByTypeLists(RecordType::MX, null));
+        $this->assertTrue($registry->isAllowedByTypeLists(RecordType::PTR, null));
+        $this->assertFalse($registry->isAllowedByTypeLists(RecordType::LUA, null));
+    }
+
+    public function testTypeListsLeaveAnUnsetKindUnrestrictedForZones(): void
+    {
+        $registry = new DnsValidatorRegistry(
+            new FakeConfiguration(['dns' => ['domain_record_types' => ['A']]]),
+            $this->createMock(DnsBackendProviderInterface::class)
+        );
+
+        $this->assertFalse($registry->isAllowedByTypeLists(RecordType::LUA, 'example.com'));
+        $this->assertTrue($registry->isAllowedByTypeLists(RecordType::LUA, '2.0.192.in-addr.arpa'));
+        // A template falls back to the default reverse types, which do not include LUA
+        $this->assertFalse($registry->isAllowedByTypeLists(RecordType::LUA, null));
+        $this->assertTrue($registry->isAllowedByTypeLists(RecordType::PTR, null));
+        $this->assertFalse($registry->isAllowedByTypeLists(RecordType::MX, null));
+    }
+
     public function testIsKnownTypeAcceptsTypesTheAdminConfigured(): void
     {
         $registry = new DnsValidatorRegistry(

@@ -130,7 +130,7 @@ class EditZoneTemplControllerUpdateZonesTest extends SeamControllerTestCase
         $this->applyToLinkedZones();
 
         $this->assertContains(
-            ['warning', '1 zone could not be updated. 1 zone was updated without the template records that conflict with a CNAME.'],
+            ['warning', '1 zone could not be updated. 1 zone was updated without some of the template records.'],
             $this->messagesFor('edit_zone_templ')
         );
         $system = $this->messagesFor('system');

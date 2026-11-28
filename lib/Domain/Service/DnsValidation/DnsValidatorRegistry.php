@@ -25,6 +25,7 @@ namespace Poweradmin\Domain\Service\DnsValidation;
 use Closure;
 use Poweradmin\Domain\Model\PdnsCapabilities;
 use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 
@@ -161,6 +162,58 @@ class DnsValidatorRegistry
         }
 
         return false;
+    }
+
+    /**
+     * Whether dns.domain_record_types / dns.reverse_record_types permit the type in a zone.
+     *
+     * An unset list does not restrict that kind of zone. SOA and the DNSSEC types stay allowed, as the
+     * type picker adds them itself. Without a zone name (a template) the type must fit either kind,
+     * where an unset list stands for that kind's default types, as in the template type picker.
+     */
+    public function isAllowedByTypeLists(string $recordType, ?string $zoneName): bool
+    {
+        return self::typeListsAllow($this->config, $recordType, $zoneName);
+    }
+
+    /**
+     * {@see isAllowedByTypeLists()} for callers that write without building the registry.
+     */
+    public static function typeListsAllow(ConfigurationInterface $config, string $recordType, ?string $zoneName): bool
+    {
+        $type = strtoupper($recordType);
+        if ($type === RecordType::SOA || in_array($type, RecordType::DNSSEC_TYPES, true)) {
+            return true;
+        }
+
+        $domain = self::configuredTypeList($config, 'domain_record_types');
+        $reverse = self::configuredTypeList($config, 'reverse_record_types');
+
+        if ($zoneName !== null) {
+            $list = DnsHelper::isReverseZoneName($zoneName) ? $reverse : $domain;
+            return $list === null || in_array($type, $list, true);
+        }
+
+        if ($domain === null && $reverse === null) {
+            return true;
+        }
+        $domain ??= array_merge(RecordType::DOMAIN_ZONE_COMMON_RECORDS, RecordType::LESS_COMMON_RECORDS);
+        $reverse ??= RecordType::REVERSE_ZONE_COMMON_RECORDS;
+
+        return in_array($type, $domain, true) || in_array($type, $reverse, true);
+    }
+
+    /**
+     * @return list<string>|null Uppercased types, or null when the list is unset
+     */
+    private static function configuredTypeList(ConfigurationInterface $config, string $key): ?array
+    {
+        $configured = $config->get('dns', $key);
+        if (!is_array($configured) || $configured === []) {
+            return null;
+        }
+
+        return array_values(array_map(static fn($t): string => strtoupper((string)$t), $configured));
     }
 
     /**

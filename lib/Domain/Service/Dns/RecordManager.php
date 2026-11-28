@@ -37,6 +37,7 @@ use Poweradmin\Domain\Port\ZoneCacheFlusherInterface;
 use Poweradmin\Domain\Port\ZoneRectifierInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
+use Poweradmin\Domain\Service\DnsValidation\NIDRecordValidator;
 use Poweradmin\Domain\Service\Validation\RecordField;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Port\RecordChangeWriterInterface;
@@ -205,6 +206,24 @@ class RecordManager implements RecordManagerInterface
      * Content equality as the duplicate checks see it: exact, domain names compared without
      * case as DNS does, the unquoted ech form, or the same AAAA address written another way.
      */
+    /**
+     * The stored content as it reaches validation after an unchanged save: raw, healed and
+     * formatted as the forms and API send it, and NID with its preference folded in.
+     *
+     * @param array<string, mixed> $stored
+     * @return list<string>
+     */
+    private function storedContentForms(string $type, array $stored): array
+    {
+        $content = (string)($stored['content'] ?? '');
+        $forms = [$content, $this->dnsFormatter->formatContent($type, DnsRecordValidationService::healStoredContent($content))];
+        if ($type === RecordType::NID) {
+            $forms[] = NIDRecordValidator::contentWithPreference($content, (int)($stored['prio'] ?? 0));
+        }
+
+        return array_values(array_unique($forms));
+    }
+
     public static function sameContent(string $type, string $content, string $stored): bool
     {
         if ($stored === $content) {
@@ -298,8 +317,20 @@ class RecordManager implements RecordManagerInterface
      *
      * @return RecordWriteResult Carries the new record id, or the reason it was refused
      */
-    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int $disabled = 0, bool $finalizeZone = true, ?array $comment = null, bool $dryRun = false, array $vacated = []): RecordWriteResult
-    {
+    public function addRecordGetId(
+        int $zone_id,
+        string $name,
+        string $type,
+        string $content,
+        int $ttl,
+        mixed $prio,
+        int $disabled = 0,
+        bool $finalizeZone = true,
+        ?array $comment = null,
+        bool $dryRun = false,
+        array $vacated = [],
+        array $storedContents = []
+    ): RecordWriteResult {
         $perm_edit = $this->editPermissionLevel();
 
         $user_is_zone_owner = $this->userIsZoneOwner($zone_id);
@@ -332,7 +363,8 @@ class RecordManager implements RecordManagerInterface
             $ttl,
             $dns_hostmaster,
             (int)$dns_ttl,
-            array_map('strval', array_keys($vacated))
+            array_map('strval', array_keys($vacated)),
+            $storedContents
         );
         if (!$validationResult->isValid()) {
             return RecordWriteResult::failure($validationResult->getFirstError(), Refusal::INVALID_INPUT, $validationResult->getField());
@@ -569,7 +601,9 @@ class RecordManager implements RecordManagerInterface
             (int)$record['prio'],
             (int)$record['ttl'],
             $dns_hostmaster,
-            (int)$dns_ttl
+            (int)$dns_ttl,
+            [],
+            strtoupper((string)$recordDetails['type']) === $record['type'] ? $this->storedContentForms($record['type'], $recordDetails) : []
         );
         if (!$validationResult->isValid()) {
             return RecordWriteResult::failure($validationResult->getFirstError(), Refusal::INVALID_INPUT, $validationResult->getField());

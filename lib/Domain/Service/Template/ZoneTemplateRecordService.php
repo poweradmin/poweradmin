@@ -89,7 +89,8 @@ class ZoneTemplateRecordService
             $content,
             $ttl,
             $prio,
-            (int)$this->config->get('dns', 'ttl', 3600)
+            (int)$this->config->get('dns', 'ttl', 3600),
+            $stored
         );
         if (!$result->isValid()) {
             return $result;

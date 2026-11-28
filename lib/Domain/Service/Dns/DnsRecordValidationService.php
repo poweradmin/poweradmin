@@ -60,6 +60,20 @@ class DnsRecordValidationService implements DnsRecordValidationServiceInterface
      * content a caller keeps unchanged. Bytes that are not UTF-8 are scrubbed, so an update
      * that leaves the content out (a TTL change, say) still saves a legacy record.
      */
+    /**
+     * @param list<string> $storedContents
+     */
+    private static function keepsStoredContent(string $type, string $content, array $storedContents): bool
+    {
+        foreach ($storedContents as $stored) {
+            if (RecordManager::sameContent($type, $content, (string)$stored)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public static function healStoredContent(string $content): string
     {
         return trim((string) preg_replace('/[\x00-\x1F\x7F-\x{9F}]+/u', ' ', mb_scrub($content, 'UTF-8')));
@@ -78,6 +92,7 @@ class DnsRecordValidationService implements DnsRecordValidationServiceInterface
      * @param string $dns_hostmaster DNS hostmaster email
      * @param int $dns_ttl Default TTL value
      * @param list<string> $vacatedIds Ids of records the same write removes first; they no longer conflict
+     * @param list<string> $storedContents Stored content of this type the write replaces; keeping one passes the type lists
      *
      * @return ValidationResult Returns ValidationResult with validated data or error messages
      */
@@ -91,7 +106,8 @@ class DnsRecordValidationService implements DnsRecordValidationServiceInterface
         ?int $ttl,
         string $dns_hostmaster,
         int $dns_ttl,
-        array $vacatedIds = []
+        array $vacatedIds = [],
+        array $storedContents = []
     ): ValidationResult {
         $zone = $this->domainRepository->getDomainNameById($zid);
         if (!$zone) {
@@ -99,6 +115,11 @@ class DnsRecordValidationService implements DnsRecordValidationServiceInterface
         }
 
         if (!$this->validatorRegistry->isKnownType($type)) {
+            return ValidationResult::failure(_('Invalid record type.'));
+        }
+        // The lists narrow the type picker, so a crafted save must not get past them; a stored
+        // record that keeps its content may still change TTL, priority or state after the list narrowed
+        if (!$this->validatorRegistry->isAllowedByTypeLists($type, $zone) && !self::keepsStoredContent($type, $content, $storedContents)) {
             return ValidationResult::failure(_('Invalid record type.'));
         }
         if (!$this->validatorRegistry->isTypeSupportedByServer($type)) {

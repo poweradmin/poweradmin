@@ -29,6 +29,7 @@ use Poweradmin\Domain\Repository\ZoneTemplateSyncRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RepositoryFactoryInterface;
@@ -463,6 +464,12 @@ final class DomainManager implements DomainManagerInterface
             // A template name without [ZONE] is relative to the zone, like a form entry
             $name = strtolower(DnsHelper::restoreZoneSuffix($this->placeholders->parseTemplateValue($r["name"], $domain), $domain));
             $recordType = $r["type"];
+            // A template saved before the admin narrowed the type lists must not write past them
+            $apexAnchor = $recordType === RecordType::SOA || ($recordType === RecordType::NS && DnsHelper::isZoneApex($name, $domain));
+            if (!$apexAnchor && !DnsValidatorRegistry::typeListsAllow($this->config, (string)$recordType, $domain)) {
+                $this->logger->warning('Skipped template record {name} {type}: the type is not in the configured record type list', ['name' => $name, 'type' => $recordType]);
+                continue;
+            }
             $content = $this->placeholders->parseTemplateValue($r["content"], $domain, $recordType);
             $ttl = $r["ttl"] ?: $dns_ttl;
             $prio = intval($r["prio"]);

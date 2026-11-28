@@ -44,6 +44,7 @@ use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\DnsFormatter;
+use Poweradmin\Domain\Service\Dns\DnsRecordValidationService;
 use Poweradmin\Domain\Service\Dns\DnsRecordValidationServiceInterface;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\RecordIdHelper;
@@ -143,7 +144,7 @@ class ZoneChangeRequestService
                 return $forbidden;
             }
             $row['content'] = $this->formatter->formatContent((string)$row['type'], (string)$row['content']);
-            $error = $this->validate($row['rid'], $submission->zoneId, $row);
+            $error = $this->validate($row['rid'], $submission->zoneId, $row, strtoupper((string)($before['type'] ?? '')) === $row['type'] ? self::storedContentForms($this->formatter, $row['type'], (string)($before['content'] ?? '')) : []);
             if ($error !== null) {
                 $errors[] = $error;
                 continue;
@@ -728,9 +729,10 @@ class ZoneChangeRequestService
      * On success the row's content is replaced with the validated form, which is what the save writes.
      *
      * @param array<string, mixed> $row
+     * @param list<string> $storedContents Stored content of the row's type it replaces
      * @return string|null The first validation error, or null when the row is valid
      */
-    private function validate(int|string $recordId, int $zoneId, array &$row): ?string
+    private function validate(int|string $recordId, int $zoneId, array &$row, array $storedContents = []): ?string
     {
         $result = $this->validator->validateRecord(
             $recordId,
@@ -741,18 +743,32 @@ class ZoneChangeRequestService
             (int)($row['prio'] ?? 0),
             (int)($row['ttl'] ?? 0),
             (string)$this->config->get('dns', 'hostmaster'),
-            (int)$this->config->get('dns', 'ttl')
+            (int)$this->config->get('dns', 'ttl'),
+            [],
+            $storedContents
         );
 
         if (!$result->isValid()) {
             return $result->getFirstError();
         }
         $data = $result->getData();
-        if (is_array($data) && isset($data['content'])) {
+        // A row that keeps its stored content stays as stored, so approval sees no content change
+        $keepsStored = array_filter($storedContents, fn(string $stored): bool => RecordManager::sameContent((string)$row['type'], (string)$row['content'], $stored)) !== [];
+        if (!$keepsStored && is_array($data) && isset($data['content'])) {
             $row['content'] = (string)$data['content'];
         }
 
         return null;
+    }
+
+    /**
+     * The stored content raw and in the healed, formatted form an unchanged row is validated in.
+     *
+     * @return list<string>
+     */
+    private static function storedContentForms(DnsFormatter $formatter, string $type, string $content): array
+    {
+        return array_values(array_unique([$content, $formatter->formatContent($type, DnsRecordValidationService::healStoredContent($content))]));
     }
 
     private function normalisedComment(?string $comment): ?string

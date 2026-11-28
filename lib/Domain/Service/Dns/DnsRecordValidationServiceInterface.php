@@ -42,6 +42,7 @@ interface DnsRecordValidationServiceInterface
      * @param string $dns_hostmaster DNS hostmaster email
      * @param int $dns_ttl Default TTL value
      * @param list<string> $vacatedIds Ids of records the same write removes first; they no longer conflict
+     * @param list<string> $storedContents Stored content of this type the write replaces; keeping one passes the type lists
      *
      * @return ValidationResult Returns ValidationResult with validated data or error messages
      */
@@ -55,6 +56,7 @@ interface DnsRecordValidationServiceInterface
         ?int $ttl,
         string $dns_hostmaster,
         int $dns_ttl,
-        array $vacatedIds = []
+        array $vacatedIds = [],
+        array $storedContents = []
     ): ValidationResult;
 }

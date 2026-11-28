@@ -87,7 +87,7 @@ final class DbTemplateRecordLinkRepository implements TemplateRecordLinkReposito
         $this->db->prepare("DELETE FROM records_zone_templ_api WHERE domain_id = :did")->execute([':did' => $zoneId]);
     }
 
-    public function removeLinkedRecords(int $zoneId, int $templateId): array
+    public function removeLinkedRecords(int $zoneId, int $templateId, ?callable $keep = null): array
     {
         $stmt = $this->db->prepare(
             "SELECT r.id, r.name, r.type, r.content, r.ttl, r.prio, r.disabled
@@ -99,14 +99,31 @@ final class DbTemplateRecordLinkRepository implements TemplateRecordLinkReposito
         $stmt->bindValue(':zone_templ_id', $templateId, PDO::PARAM_INT);
         $stmt->execute();
         $removed = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        $keptIds = [];
+        if ($keep !== null) {
+            foreach ($removed as $i => $row) {
+                if ($keep($row)) {
+                    $keptIds[] = (int) $row['id'];
+                    unset($removed[$i]);
+                }
+            }
+            $removed = array_values($removed);
+        }
 
         $this->deleteRecordsByIds(array_map(static fn(array $row): int => (int) $row['id'], $removed));
 
         // Clear the links even when the records were already gone, otherwise a
         // reused SQLite rowid could later resolve a stale link to an unrelated record.
-        $stmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE domain_id = :zone_id AND zone_templ_id = :zone_templ_id");
-        $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
-        $stmt->bindValue(':zone_templ_id', $templateId, PDO::PARAM_INT);
+        $sql = "DELETE FROM records_zone_templ WHERE domain_id = ? AND zone_templ_id = ?";
+        if ($keptIds !== []) {
+            $sql .= ' AND record_id NOT IN (' . implode(',', array_fill(0, count($keptIds), '?')) . ')';
+        }
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(1, $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(2, $templateId, PDO::PARAM_INT);
+        foreach ($keptIds as $i => $id) {
+            $stmt->bindValue($i + 3, $id, PDO::PARAM_INT);
+        }
         $stmt->execute();
 
         return $removed;

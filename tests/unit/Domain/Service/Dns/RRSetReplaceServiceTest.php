@@ -342,6 +342,32 @@ class RRSetReplaceServiceTest extends TestCase
         $this->assertSame(['7'], $vacated);
     }
 
+    public function testTheStoredContentReachesTheRewriteSoAnUnlistedSetIsNotLostAfterTheDelete(): void
+    {
+        // The re-add validates again after the old set is gone; without the stored content an
+        // unlisted type is refused there, and the API backend cannot roll the delete back.
+        $this->existing = [['id' => 7, 'content' => '10 5060 sip.example.com']];
+        $validated = [];
+        $this->validator = $this->createMock(DnsRecordValidationServiceInterface::class);
+        $this->validator->method('validateRecord')->willReturnCallback(function (...$args) use (&$validated) {
+            $validated[] = $args[10] ?? null;
+            return ValidationResult::success(['content' => $args[3], 'ttl' => $args[6], 'prio' => $args[5]]);
+        });
+        $stored = [];
+        $this->manager = $this->createMock(RecordManagerInterface::class);
+        $this->manager->method('deleteRecord')->willReturn(RecordWriteResult::ok());
+        $this->manager->method('addRecordGetId')->willReturnCallback(function (...$args) use (&$stored) {
+            $stored[] = $args[11] ?? null;
+            return RecordWriteResult::ok(8);
+        });
+
+        $this->service()->replace(self::ZONE_ID, self::ZONE_NAME, '_sip._tcp.example.com', 'SRV', 600, self::input(['10 5060 sip.example.com']));
+
+        $this->assertSame([['10 5060 sip.example.com']], $validated);
+        // The validated form joins the stored one, as a validator may normalise the content
+        $this->assertSame([['10 5060 sip.example.com', '10 5060 sip.example.com']], $stored);
+    }
+
     public function testTheValidatorsNormalisedValuesWinOverTheInput(): void
     {
         $this->validator = $this->createMock(DnsRecordValidationServiceInterface::class);
@@ -357,7 +383,7 @@ class RRSetReplaceServiceTest extends TestCase
 
         $result = $this->service()->replace(self::ZONE_ID, self::ZONE_NAME, 'txt.example.com', 'TXT', 300, [['content' => 'quoted', 'priority' => 0, 'disabled' => 1]]);
 
-        $this->assertSame([[self::ZONE_ID, 'txt.example.com', 'TXT', '"quoted"', 60, 10, 1, false, null, false, []]], $added);
+        $this->assertSame([[self::ZONE_ID, 'txt.example.com', 'TXT', '"quoted"', 60, 10, 1, false, null, false, [], ['', '', '"quoted"']]], $added);
         $this->assertSame([['content' => '"quoted"', 'ttl' => 60, 'priority' => 10, 'disabled' => 1]], $result['records']);
     }
 

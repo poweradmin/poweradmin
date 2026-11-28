@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Service\Template;
 
 use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\DnsValidation\CNAMERecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\DnsValidation\SOARecordValidator;
@@ -86,6 +87,7 @@ final class ZoneTemplateRecordValidationService
      * @param mixed $ttl TTL value
      * @param mixed $prio Priority value
      * @param int $defaultTtl Default TTL used when the record has none
+     * @param array<string, mixed>|null $stored The stored row an edit replaces; keeping its type and content passes the type lists
      *
      * @return ValidationResult Successful result carries true, never the resolved values
      */
@@ -95,10 +97,17 @@ final class ZoneTemplateRecordValidationService
         string $content,
         mixed $ttl,
         mixed $prio,
-        int $defaultTtl
+        int $defaultTtl,
+        ?array $stored = null
     ): ValidationResult {
         // Applying a template writes its records without validating them again
         if (!$this->validatorRegistry->isKnownType($type)) {
+            return ValidationResult::failure(_('Invalid record type.'));
+        }
+        $keepsStored = $stored !== null
+            && strtoupper((string)($stored['type'] ?? '')) === strtoupper($type)
+            && RecordManager::sameContent($type, $content, (string)($stored['content'] ?? ''));
+        if (!$keepsStored && !$this->validatorRegistry->isAllowedByTypeLists($type, null)) {
             return ValidationResult::failure(_('Invalid record type.'));
         }
         if (!$this->validatorRegistry->isTypeSupportedByServer($type)) {

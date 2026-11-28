@@ -74,7 +74,8 @@ class RRSetReplaceService
             // The old set is deleted before the new one is written, so it must not conflict with it
             $vacatedIds = array_map(static fn(array $record): string => (string)$record['id'], $existing);
 
-            $validation = $this->validateRecords($zoneId, $normalizedName, $type, $ttl, $records, $vacatedIds);
+            $storedContents = array_map(static fn(array $record): string => (string)($record['content'] ?? ''), $existing);
+            $validation = $this->validateRecords($zoneId, $normalizedName, $type, $ttl, $records, $vacatedIds, $storedContents);
             if ($validation['error'] !== null) {
                 return $this->rollBack($useTransaction, $validation['error']);
             }
@@ -117,7 +118,7 @@ class RRSetReplaceService
             // The manager writes the change log per record; the serial and rectify happen once below
             $recordsCreated = 0;
             foreach ($validated as $vr) {
-                $created = $this->recordManager->addRecordGetId($zoneId, $normalizedName, $type, $vr['content'], $vr['ttl'], $vr['priority'], $vr['disabled'], false);
+                $created = $this->recordManager->addRecordGetId($zoneId, $normalizedName, $type, $vr['content'], $vr['ttl'], $vr['priority'], $vr['disabled'], false, null, false, [], [...$storedContents, $vr['content']]);
                 if (!$created->success) {
                     return $this->rollBack($useTransaction, self::failure((string)$created->message, $created->refusal) + ['write' => $created, 'content' => $vr['content']]);
                 }
@@ -150,16 +151,17 @@ class RRSetReplaceService
 
     /**
      * @param list<string> $vacatedIds Ids of the stored records the replace deletes first
+     * @param list<string> $storedContents Content of those records
      * @return array{records: list<array{content: string, ttl: int, priority: int, disabled: int}>, error: array{success: false, message: string, refusal: Refusal}|null}
      */
-    private function validateRecords(int $zoneId, string $normalizedName, string $type, int $ttl, array $records, array $vacatedIds): array
+    private function validateRecords(int $zoneId, string $normalizedName, string $type, int $ttl, array $records, array $vacatedIds, array $storedContents): array
     {
         $hostmaster = $this->config->get('dns', 'hostmaster');
         $defaultTtl = (int)$this->config->get('dns', 'ttl');
 
         $validated = [];
         foreach ($records as $record) {
-            $result = $this->validationService->validateRecord(-1, $zoneId, $type, $record['content'], $normalizedName, $record['priority'], $ttl, $hostmaster, $defaultTtl, $vacatedIds);
+            $result = $this->validationService->validateRecord(-1, $zoneId, $type, $record['content'], $normalizedName, $record['priority'], $ttl, $hostmaster, $defaultTtl, $vacatedIds, $storedContents);
             if (!$result->isValid()) {
                 return ['records' => [], 'error' => self::failure($result->getFirstError(), Refusal::INVALID_INPUT)];
             }

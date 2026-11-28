@@ -282,4 +282,19 @@ class ZoneTemplateRecordValidationServiceTest extends SqliteDnsBackendTestCase
         $this->assertFalse($result->isValid());
         $this->assertStringContainsString('cannot load WALLET records', $result->getFirstError());
     }
+    public function testRefusesTypeOutsideTheConfiguredListsButKeepsAStoredRow(): void
+    {
+        $config = new FakeConfiguration(['dns' => ['domain_record_types' => ['A', 'MX', 'SRV']]]);
+        $service = new ZoneTemplateRecordValidationService(
+            new DnsValidatorRegistry($config, $this->sqliteBackendProvider())
+        );
+        $lua = 'A "ifportup(443, {\'192.0.2.1\'})"';
+
+        $this->assertSame('Invalid record type.', $service->validate('www.[ZONE]', 'LUA', $lua, 3600, 0, 3600)->getFirstError());
+        // A TTL edit of a row stored before the list narrowed still saves
+        $stored = ['type' => 'LUA', 'content' => $lua];
+        $this->assertNotSame('Invalid record type.', $service->validate('www.[ZONE]', 'LUA', $lua, 600, 0, 3600, $stored)->getFirstError());
+        // Changing its content does not
+        $this->assertSame('Invalid record type.', $service->validate('www.[ZONE]', 'LUA', 'A "ifportup(80, {\'192.0.2.1\'})"', 600, 0, 3600, $stored)->getFirstError());
+    }
 }

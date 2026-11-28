@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service\Dns;
 
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Repository\ZoneTemplateSyncRepositoryInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
@@ -30,6 +31,7 @@ use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Port\RecordChangeWriterInterface;
 use Poweradmin\Domain\Port\TransactionInterface;
+use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\DnsValidation\NIDRecordValidator;
 use Poweradmin\Domain\Service\Template\ZoneTemplatePlaceholders;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -61,6 +63,7 @@ class ZoneTemplateApplier
     private ZoneTemplatePlaceholders $placeholders;
     private RecordChangeWriterInterface $changeLogger;
     private LoggerInterface $logger;
+    private ?ConfigurationInterface $config;
 
     public function __construct(
         TransactionInterface $transaction,
@@ -72,7 +75,8 @@ class ZoneTemplateApplier
         ZoneTemplateSyncRepositoryInterface $syncService,
         ZoneTemplatePlaceholders $placeholders,
         RecordChangeWriterInterface $changeLogger,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        ?ConfigurationInterface $config = null
     ) {
         $this->transaction = $transaction;
         $this->backendProvider = $backendProvider;
@@ -84,6 +88,7 @@ class ZoneTemplateApplier
         $this->placeholders = $placeholders;
         $this->changeLogger = $changeLogger;
         $this->logger = $logger;
+        $this->config = $config;
     }
 
     /**
@@ -116,10 +121,11 @@ class ZoneTemplateApplier
         try {
             $refused = [];
             $conflicts = [];
+            $unlisted = [];
             if ($templateId !== 0) {
                 $refused = $this->removeTemplateRecords($zoneId, $templateId);
                 if ($writeRecords) {
-                    [$writeRefused, $conflicts] = $this->writeTemplateRecords($zoneId, $templateId, $defaultTtl);
+                    [$writeRefused, $conflicts, $unlisted] = $this->writeTemplateRecords($zoneId, $templateId, $defaultTtl);
                     $refused = array_merge($refused, $writeRefused);
                 }
             }
@@ -127,10 +133,13 @@ class ZoneTemplateApplier
             if (!$joinsBackend) {
                 $this->transaction->begin();
             }
-            $this->relinkZoneTemplate($zoneId, $templateId, $refused === [] && $conflicts === []);
+            $this->relinkZoneTemplate($zoneId, $templateId, $refused === [] && $conflicts === [] && $unlisted === []);
             $this->finishTransaction(true);
 
             $conflictMessage = $conflicts === [] ? '' : sprintf(_('Template records skipped because they conflict with a CNAME at the same name: %s'), implode(', ', $conflicts));
+            if ($unlisted !== []) {
+                $conflictMessage = trim($conflictMessage . ' ' . sprintf(_('Template records skipped because their type is not allowed in this zone: %s'), implode(', ', $unlisted)));
+            }
             if ($refused !== []) {
                 $message = sprintf(_('Failed to update zone records: %s'), implode(', ', $refused));
                 return ZoneWriteResult::backendFailure(trim($message . ' ' . $conflictMessage));
@@ -184,14 +193,21 @@ class ZoneTemplateApplier
     }
 
     /**
-     * Remove the records an earlier application of this template wrote.
+     * Remove the records an earlier application of this template wrote. Records of a type the
+     * zone's type list now refuses stay, linked, as a stored record keeps its type on edits too.
      *
      * @return list<string> API backend records PowerDNS refused to delete
      */
     private function removeTemplateRecords(int $zoneId, int $templateId): array
     {
+        $domain = (string) $this->domainRepository->getDomainNameById($zoneId);
+        // The apex NS is rewritten past the lists like the SOA, so it is replaced rather than kept
+        $keep = fn(array $record): bool => $this->config !== null
+            && !(strtoupper((string) ($record['type'] ?? '')) === 'NS' && DnsHelper::isZoneApex((string) ($record['name'] ?? ''), $domain))
+            && !DnsValidatorRegistry::typeListsAllow($this->config, (string) ($record['type'] ?? ''), $domain);
+
         if ($this->backendProvider->recordIdsAreNumeric()) {
-            $this->logDeletes($this->recordLinks->removeLinkedRecords($zoneId, $templateId), $zoneId);
+            $this->logDeletes($this->recordLinks->removeLinkedRecords($zoneId, $templateId, $keep), $zoneId);
             return [];
         }
 
@@ -217,6 +233,9 @@ class ZoneTemplateApplier
             $record = $recordsByEncodedId[(string) $link['record_id']] ?? null;
             if ($record === null) {
                 $unlink[] = (int) $link['id'];
+                continue;
+            }
+            if ($keep($record)) {
                 continue;
             }
             if (!$this->backendProvider->deleteRecord((string) $link['record_id'])) {
@@ -247,13 +266,14 @@ class ZoneTemplateApplier
      * are records that would sit beside a stored CNAME and template CNAMEs that
      * would share their name with any other record. The apex SOA and NS are always written.
      *
-     * @return array{0: list<string>, 1: list<string>} API backend records PowerDNS
-     *     refused to add, and records skipped for a CNAME conflict
+     * @return array{0: list<string>, 1: list<string>, 2: list<string>} API backend records PowerDNS
+     *     refused to add, records skipped for a CNAME conflict, and records whose type the zone's type list refuses
      */
     private function writeTemplateRecords(int $zoneId, int $templateId, int $defaultTtl): array
     {
         $refused = [];
         $conflicts = [];
+        $unlisted = [];
         $domain = (string) $this->domainRepository->getDomainNameById($zoneId);
         $soaRecord = $this->soaRecordManager->getSOARecord($zoneId);
         $templateRecords = $this->zoneTemplateRepository->getZoneTemplateRecords($templateId);
@@ -296,6 +316,11 @@ class ZoneTemplateApplier
                 $conflicts[] = $name . ' ' . $type;
                 continue;
             }
+            // A template saved before the admin narrowed the type lists must not write past them
+            if (!$apexAnchor && $this->config !== null && !DnsValidatorRegistry::typeListsAllow($this->config, $type, $domain)) {
+                $unlisted[] = $name . ' ' . $type;
+                continue;
+            }
 
             $recordId = $this->backendProvider->addRecordGetId($zoneId, $name, $type, $content, $ttl, $prio);
             if ($recordId === null) {
@@ -319,7 +344,7 @@ class ZoneTemplateApplier
             });
         }
 
-        return [$refused, $conflicts];
+        return [$refused, $conflicts, $unlisted];
     }
 
     /**

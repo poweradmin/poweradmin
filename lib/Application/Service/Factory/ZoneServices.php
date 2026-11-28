@@ -291,7 +291,8 @@ final class ZoneServices
             $this->zoneTemplateSync(),
             $this->zoneTemplatePlaceholders(),
             $this->services->recordChangeLogger(),
-            $this->logger
+            $this->logger,
+            $this->config
         );
     }
 

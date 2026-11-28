@@ -234,7 +234,7 @@ class EditZoneTemplController extends BaseController
             if ($updated->success) {
                 $syncedZoneIds[] = $zone['zone_id'];
             } elseif ($updated->refusal === Refusal::INVALID_INPUT) {
-                // The applier refuses this way only for records skipped beside a CNAME; the rest was written
+                // The applier refuses this way only for skipped records (CNAME conflict or type list); the rest was written
                 $partial[] = (string)$updated->message;
             } else {
                 $failures[] = (string)$updated->message;
@@ -251,8 +251,8 @@ class EditZoneTemplController extends BaseController
             if ($partial !== []) {
                 $summary[] = sprintf(
                     ngettext(
-                        '%d zone was updated without the template records that conflict with a CNAME.',
-                        '%d zones were updated without the template records that conflict with a CNAME.',
+                        '%d zone was updated without some of the template records.',
+                        '%d zones were updated without some of the template records.',
                         count($partial)
                     ),
                     count($partial)

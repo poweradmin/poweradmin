@@ -175,7 +175,16 @@ class EditRecordController extends BaseController
             return;
         }
 
-        $recordTypes = $this->recordTypeService()->getAllTypes($this->getRecordTypeCapabilities());
+        // A configured list for this kind of zone is all a save accepts, so offer only that
+        $isReverseZone = DnsHelper::isReverseZoneName($zone_name);
+        $isDnsSecEnabled = (bool)$this->config->get('dnssec', 'enabled', false);
+        if ($this->config->get('dns', $isReverseZone ? 'reverse_record_types' : 'domain_record_types')) {
+            $recordTypes = $isReverseZone
+                ? $this->recordTypeService()->getReverseZoneTypes($isDnsSecEnabled, $this->getRecordTypeCapabilities())
+                : $this->recordTypeService()->getDomainZoneTypes($isDnsSecEnabled, $this->getRecordTypeCapabilities());
+        } else {
+            $recordTypes = $this->recordTypeService()->getAllTypes($this->getRecordTypeCapabilities());
+        }
         $record = $recordRepository->getRecordFromId($record_id);
         if ($record === null) {
             $this->showError(_('Record not found.'));

@@ -75,7 +75,8 @@ class ZoneTemplateRecordsController extends PublicApiController
             $content,
             $ttl,
             $priority,
-            (int)$this->config->get('dns', 'ttl', 3600)
+            (int)$this->config->get('dns', 'ttl', 3600),
+            $stored
         );
 
         if ($result->isValid()) {
