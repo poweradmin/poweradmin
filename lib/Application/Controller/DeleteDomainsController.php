@@ -25,7 +25,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -68,8 +68,11 @@ class DeleteDomainsController extends BaseController
 
     public function run(): void
     {
-        $zone_ids = $_POST['zone_id'] ?? null;
-        if (!$zone_ids) {
+        $zone_ids = array_values(array_unique(array_filter(
+            array_map('intval', array_filter((array)($_POST['zone_id'] ?? []), 'is_scalar')),
+            fn($id) => $id > 0
+        )));
+        if ($zone_ids === []) {
             $referrer = $_SERVER['HTTP_REFERER'] ?? null;
             $return_page = 'list_forward_zones';
 
