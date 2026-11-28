@@ -580,4 +580,20 @@ class TXTRecordValidatorTest extends TestCase
         $data = $result->getData();
         $this->assertEquals($content, $data['content']);
     }
+
+    public function testRefusesBadlyQuotedStrings(): void
+    {
+        foreach (['"abc\\"', '"a"b"', '"a\\\\\\"', '"a\\" "b"'] as $content) {
+            $result = $this->validator->validate($content, 'test.example.com', 0, 3600, 86400);
+            $this->assertFalse($result->isValid(), $content);
+        }
+    }
+
+    public function testAcceptsCorrectlyEscapedQuotedStrings(): void
+    {
+        foreach (['"a\\\\"', '"a\\"b"', '"abc"', '"a" "b"', '"a\\\\" "b"'] as $content) {
+            $result = $this->validator->validate($content, 'test.example.com', 0, 3600, 86400);
+            $this->assertTrue($result->isValid(), $content . ' ' . implode(' ', $result->getErrors()));
+        }
+    }
 }

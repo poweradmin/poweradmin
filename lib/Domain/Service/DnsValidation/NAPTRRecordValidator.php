@@ -481,7 +481,7 @@ class NAPTRRecordValidator implements DnsRecordValidatorInterface
      */
     private function validateQuotedString(string $value): ValidationResult
     {
-        if (preg_match('/^".*"$/', $value) === 1) {
+        if (preg_match('/^".*"$/', $value) === 1 && $this->hasOnlyEscapedQuotes(substr($value, 1, -1))) {
             return ValidationResult::success(true);
         }
         return ValidationResult::failure(_('Value must be enclosed in double quotes.'));
@@ -497,5 +497,26 @@ class NAPTRRecordValidator implements DnsRecordValidatorInterface
     {
         $result = $this->validateQuotedString($value);
         return $result->isValid();
+    }
+
+    /**
+     * True when no quote in the text between the outer quotes is bare and the text
+     * does not end in a lone backslash, which would escape the closing quote.
+     */
+    private function hasOnlyEscapedQuotes(string $inner): bool
+    {
+        $length = strlen($inner);
+        for ($i = 0; $i < $length; $i++) {
+            if ($inner[$i] === '\\') {
+                if ($i + 1 >= $length) {
+                    return false;
+                }
+                $i++;
+            } elseif ($inner[$i] === '"') {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

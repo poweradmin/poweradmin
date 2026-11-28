@@ -462,4 +462,20 @@ class NAPTRRecordValidatorTest extends BaseDnsTest
         }
         $this->assertTrue($foundEnumDomainWarning);
     }
+
+    public function testRefusesBadlyQuotedStrings(): void
+    {
+        foreach (['100 10 "u" "sip+E2U" "abc\\" .', '100 10 "u" "sip+E2U" "a"b" .', '100 10 "u" "sip+E2U" "a\\\\\\" .'] as $content) {
+            $result = $this->validator->validate($content, 'test.example.com', 0, 3600, 86400);
+            $this->assertFalse($result->isValid(), $content);
+        }
+    }
+
+    public function testAcceptsCorrectlyEscapedQuotedStrings(): void
+    {
+        foreach (['100 10 "u" "sip+E2U" "!^(.*)$!\\1!" .', '100 10 "u" "sip+E2U" "!^.*$!sip:a\\"b@example.com!" .'] as $content) {
+            $result = $this->validator->validate($content, 'test.example.com', 0, 3600, 86400);
+            $this->assertTrue($result->isValid(), $content . ' ' . implode(' ', $result->getErrors()));
+        }
+    }
 }

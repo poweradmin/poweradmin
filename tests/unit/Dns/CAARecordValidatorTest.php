@@ -249,4 +249,20 @@ class CAARecordValidatorTest extends TestCase
         $this->assertDoesNotMatchRegularExpression('/\ballow all\b/i', $label);
         $this->assertStringContainsStringIgnoringCase('disallow', $label);
     }
+
+    public function testRefusesBadlyQuotedStrings(): void
+    {
+        foreach (['0 future "abc\\"', '0 future "a"b"', '0 future "a\\\\\\"'] as $content) {
+            $result = $this->validator->validate($content, 'host.example.com', 0, 3600, 86400);
+            $this->assertFalse($result->isValid(), $content);
+        }
+    }
+
+    public function testAcceptsCorrectlyEscapedQuotedStrings(): void
+    {
+        foreach (['0 future "a\\\\"', '0 future "a\\"b"', '0 future "abc"'] as $content) {
+            $result = $this->validator->validate($content, 'host.example.com', 0, 3600, 86400);
+            $this->assertTrue($result->isValid(), $content . ' ' . implode(' ', $result->getErrors()));
+        }
+    }
 }
