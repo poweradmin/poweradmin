@@ -286,7 +286,8 @@ class EditController extends BaseController
             // Change slave master
             if (isset($_POST['slave_master_change'])) {
                 $this->validateCsrfToken();
-                if ($this->dnsRecord->changeZoneSlaveMaster($zone_id, $_POST['new_master'])) {
+                $new_master = is_string($_POST['new_master'] ?? null) ? $_POST['new_master'] : '';
+                if ($this->dnsRecord->changeZoneSlaveMaster($zone_id, $new_master)) {
                     $this->setMessage('edit', 'success', _('Slave master has been changed successfully.'));
                 }
             }
