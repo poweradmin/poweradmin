@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -288,5 +288,24 @@ class SMIMEARecordValidatorTest extends TestCase
         $this->assertTrue($result->isValid());
         $data = $result->getData();
         $this->assertEquals(86400, $data['ttl']);
+    }
+
+    public function testRejectsEmptyLabelInSmimeaName()
+    {
+        $content = '3 1 1 a0b9b16969687adf0323d15048fb4fa4c354c4e01594e8956522cfe3566cae74';
+
+        $result = $this->validator->validate($content, 'abc123._smimecert..example.com', 0, 3600, 86400);
+
+        $this->assertFalse($result->isValid());
+    }
+
+    public function testRejectsOverlongLabelInSmimeaName()
+    {
+        $content = '3 1 1 a0b9b16969687adf0323d15048fb4fa4c354c4e01594e8956522cfe3566cae74';
+        $name = str_repeat('a', 64) . '._smimecert.example.com';
+
+        $result = $this->validator->validate($content, $name, 0, 3600, 86400);
+
+        $this->assertFalse($result->isValid());
     }
 }
