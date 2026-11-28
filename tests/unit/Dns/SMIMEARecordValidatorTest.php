@@ -305,4 +305,25 @@ class SMIMEARecordValidatorTest extends TestCase
         $result = $this->validator->validate($content, 'abc._smimecert.example.com', 0, 3600, 86400);
         $this->assertTrue($result->isValid());
     }
+
+    public function testNoHashWarningForFiftySixHexCharacterLocalPartHash()
+    {
+        $content = '3 1 1 a0b9b16969687adf0323d15048fb4fa4c354c4e01594e8956522cfe3566cae74';
+        $name = str_repeat('ab', 28) . '._smimecert.example.com';
+
+        $result = $this->validator->validate($content, $name, 0, 3600, 86400);
+
+        $this->assertTrue($result->isValid());
+        $this->assertStringNotContainsString('56-character hex hash', implode("\n", $result->getWarnings()));
+    }
+
+    public function testWarnsForLocalPartHashOfWrongLength()
+    {
+        $content = '3 1 1 a0b9b16969687adf0323d15048fb4fa4c354c4e01594e8956522cfe3566cae74';
+
+        $result = $this->validator->validate($content, 'abc123._smimecert.example.com', 0, 3600, 86400);
+
+        $this->assertTrue($result->isValid());
+        $this->assertStringContainsString('56-character hex hash', implode("\n", $result->getWarnings()));
+    }
 }
